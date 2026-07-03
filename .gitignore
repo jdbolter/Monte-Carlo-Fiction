@@ -2,3 +2,16 @@ node_modules/
 .env
 .DS_Store
 *.log
+
+# Generated worlds are fully reproducible from theme + seed (worldgen.js
+# uses a deterministic RNG) — no need to version them. (Ignoring contents
+# one level down, not the directory itself, so .gitkeep can survive.)
+data/worlds/*/*
+!data/worlds/*/.gitkeep
+
+# Rendered stories cost real API calls and aren't reproducible (model
+# output varies run to run), but they're still generated artifacts, not
+# source — keep them out of git too. Copy specific ones out manually if
+# you want to preserve/share a particular story.
+outputs/stories/*/*
+!outputs/stories/*/.gitkeep

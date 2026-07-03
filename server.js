@@ -110,9 +110,34 @@ const server = http.createServer(async (req, res) => {
   serveStatic(url.pathname, res);
 });
 
-server.listen(PORT, () => {
-  console.log(`Monte Carlo Fiction running at http://localhost:${PORT}`);
+// --- Listen, auto-incrementing the port if it's already taken ---
+const BASE_PORT = Number(PORT);
+const MAX_PORT_ATTEMPTS = 20;
+let attemptedPort = BASE_PORT;
+
+server.on('listening', () => {
+  const actualPort = server.address().port;
+  console.log(`Monte Carlo Fiction running at http://localhost:${actualPort}`);
+  if (actualPort !== BASE_PORT) {
+    console.log(`  (port ${BASE_PORT} was already in use — moved up to ${actualPort})`);
+  }
   if (!process.env.ANTHROPIC_API_KEY) {
     console.warn('  ANTHROPIC_API_KEY not set — world generation will work, but story rendering will fail. Copy .env.example to .env and add your key.');
   }
 });
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    if (attemptedPort - BASE_PORT >= MAX_PORT_ATTEMPTS) {
+      console.error(`Could not find an open port after ${MAX_PORT_ATTEMPTS} attempts starting from ${BASE_PORT}.`);
+      process.exit(1);
+    }
+    attemptedPort += 1;
+    server.listen(attemptedPort);
+    return;
+  }
+  console.error('[server] failed to start:', err);
+  process.exit(1);
+});
+
+server.listen(attemptedPort);
