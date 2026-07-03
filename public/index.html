@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Monte Carlo Fiction</title>
+<link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="#" class="brand" data-nav="home">Monte Carlo Fiction</a>
+    <nav class="topnav">
+      <button class="nav-link" data-nav="home">Themes</button>
+      <button class="nav-link" data-nav="generate">Generate</button>
+      <button class="nav-link" data-nav="library">Library</button>
+    </nav>
+  </div>
+</header>
+
+<main id="app">
+
+  <!-- ============ HOME: theme picker ============ -->
+  <section id="screen-home" class="screen active">
+    <div class="hero">
+      <h1>Monte Carlo Fiction</h1>
+      <p class="lede">Generate a large run of structurally distinct alternate-history worlds from a theme's milestone pool, then render any of them as short fiction.</p>
+    </div>
+    <div class="section-heading">
+      <h2>Choose a theme</h2>
+      <span class="muted" id="theme-count-label"></span>
+    </div>
+    <div id="theme-grid" class="card-grid">
+      <p class="muted">Loading themes…</p>
+    </div>
+  </section>
+
+  <!-- ============ GENERATE ============ -->
+  <section id="screen-generate" class="screen">
+    <div class="section-heading">
+      <h2 id="gen-theme-name">Generate</h2>
+      <span class="muted" id="gen-theme-desc"></span>
+    </div>
+
+    <div class="panel">
+      <div class="form-row">
+        <label for="gen-count">Number of worlds</label>
+        <input type="number" id="gen-count" min="1" max="500" value="20">
+        <button id="btn-generate" class="btn btn-primary">Generate worlds</button>
+        <span class="hint">Free &amp; instant — no model calls yet.</span>
+      </div>
+      <div id="gen-status" class="status"></div>
+    </div>
+
+    <div id="diversity-report" class="panel hidden"></div>
+
+    <div id="worlds-grid" class="card-grid"></div>
+  </section>
+
+  <!-- ============ LIBRARY ============ -->
+  <section id="screen-library" class="screen">
+    <div class="section-heading">
+      <h2>Library</h2>
+      <select id="library-theme-select"></select>
+    </div>
+    <div id="library-grid" class="card-grid"></div>
+  </section>
+
+</main>
+
+<!-- ============ STORY READER MODAL ============ -->
+<div id="reader" class="reader hidden">
+  <div class="reader-inner">
+    <button id="reader-close" class="reader-close">&times;</button>
+    <div id="reader-content"></div>
+  </div>
+</div>
+
+<script src="/js/app.js"></script>
+</body>
+</html>

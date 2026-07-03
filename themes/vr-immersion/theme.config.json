@@ -1,0 +1,20 @@
+{
+  "id": "vr-immersion",
+  "name": "VR & Immersive Media",
+  "description": "Counterfactual history of virtual reality and immersive technology, ported from the VR_Speculation pastcasting milestone pool as the first working test theme for the Monte Carlo engine. Two structurally complementary paradigms: Sutherland (visual/computational) and Heilig (somatic/multisensory).",
+  "axes": ["sensory", "interaction", "institutional", "scale"],
+  "categoryField": "category",
+  "startMilestoneId": "3d-golden-era-1952",
+  "stepsPerWorld": 6,
+  "worldgen": {
+    "topN": 3,
+    "branchPointBonus": 1.0,
+    "crossCategoryBonusEvery": 3
+  },
+  "render": {
+    "model": "claude-sonnet-4-6",
+    "maxTokens": 900,
+    "minWords": 400,
+    "maxWords": 500
+  }
+}

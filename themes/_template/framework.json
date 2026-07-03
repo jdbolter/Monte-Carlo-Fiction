@@ -1,0 +1,11 @@
+{
+  "lineages": {
+    "paradigm-a": "One paragraph describing the first structural paradigm this theme's worlds oscillate around.",
+    "paradigm-b": "One paragraph describing the complementary/opposing paradigm."
+  },
+  "causal_principles": [
+    "A short causal rule the model should respect when tracing consequences forward.",
+    "Another one."
+  ],
+  "voice_guidance": "One or two sentences on the tone/register this theme's fiction should use."
+}

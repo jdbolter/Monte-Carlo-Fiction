@@ -1,0 +1,14 @@
+{
+  "lineages": {
+    "sutherland": "The visual/computational lineage. Ivan Sutherland's 'The Ultimate Display' (1965) and Sword of Damocles HMD (1968) established presence through accurate rendering, head-tracked perspective, and computer graphics. Runs through NASA/DARPA research, VPL Research (1987), to Oculus (2012) and Apple Vision Pro (2024). Obsolesces somatic/haptic experience; retrieves Renaissance perspective and the stereoscope.",
+    "heilig": "The somatic/multisensory lineage. Morton Heilig's 'El Cine del Futuro' (1955) and Sensorama (1962) proposed presence through full-body sensory engagement: smell, wind, vibration, sound, plus stereo film. Institutional failure was financial, not technical — no patron appeared. Retrieves sensory theater traditions and the fairground; reverses into sensory overload rather than sensory deprivation."
+  },
+  "causal_principles": [
+    "Institutional funding lag: government or corporate funding in decade N tends to produce commercial dominance in decade N+2.",
+    "Technology constraint respect: alternatives must respect what was physically possible at the time (see each milestone's era_constraints).",
+    "Paradigm complementarity: elevating one lineage tends to suppress the other — institutional resources and cultural attention are finite, not independently additive.",
+    "Ambivalence required: no alternative should be purely utopian. Every gain (e.g. richer somatic presence) has a cost (e.g. cost, complexity, exclusion, or slower scalability).",
+    "Path dependence: institutions that fund a paradigm shape who works in it and what questions get asked — arts funding produces different practitioners than military/research funding."
+  ],
+  "voice_guidance": "Presence in the Sutherland paradigm is optical — you are 'there' when the visual system cannot distinguish virtual from real. Presence in the Heilig paradigm is somatic — you are 'there' when your whole body is addressed, not just your eyes. Let the story's sensory register reflect whichever paradigm the chosen path leans toward."
+}

@@ -1,0 +1,357 @@
+{
+  "meta": {
+    "description": "Inflection-point pool for the vr-immersion theme, ported from VR_Speculation's pastcasting milestone data (a subset — 17 of the original 32 points, chosen for branch-point density and lineage coverage).",
+    "total_points": 17,
+    "categories": ["vr", "3d-film", "gaming"]
+  },
+  "milestones": [
+    {
+      "id": "wheatstone-stereoscope-1838",
+      "date": "1838",
+      "label": "Wheatstone's Reflecting Stereoscope",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "description": "Charles Wheatstone demonstrates that presenting each eye with a slightly different 2D image produces a compelling illusion of 3D depth. Establishes stereopsis as the primary technology for visual immersion. Begins a 190-year project of visual-depth enhancement.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": -3, "interaction": -2, "institutional": 2, "scale": -2 }
+    },
+    {
+      "id": "cinerama-1952",
+      "date": "1952",
+      "label": "This is Cinerama",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "description": "Widescreen Cinerama (three projectors, curved screen, 146-degree field of view, stereo surround sound) opens in New York to enormous success. Presence through visual scale and peripheral immersion rather than stereoscopic depth. A collective, theatrical, overwhelming spectacle.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -2, "interaction": -3, "institutional": -2, "scale": 3 },
+      "branch_alternatives": [
+        {
+          "id": "cinerama-adds-haptics",
+          "description": "Cinerama adds wind, vibration, and scent to its theatrical installations, building on the surround-sound precedent to address more sensory channels.",
+          "plausibility": "medium",
+          "requirement": "Entertainment industry interest in differentiating cinema from television through multisensory experience",
+          "downstream_effects": [
+            "Multisensory cinema becomes a commercial standard before VR research begins",
+            "Heilig's Sensorama (1962) emerges into a market that already understands multisensory presence",
+            "Cinema engineering develops haptic infrastructure decades earlier"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "3d-golden-era-1952",
+      "date": "1952-1955",
+      "label": "3D Film Golden Era",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "description": "Hollywood's first 3D boom: Bwana Devil (1952), House of Wax (1953), Creature from the Black Lagoon (1954), Dial M for Murder (1954). Over 50 3D features produced. The precise cultural context in which Heilig writes 'El Cine del Futuro' — he is critiquing cinema at its most immersively ambitious, arguing stereopsis alone is not enough.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -3, "interaction": -3, "institutional": -3, "scale": 2 },
+      "branch_alternatives": [
+        {
+          "id": "3d-boom-sustains",
+          "description": "The 3D golden era does not collapse in 1955 — improved polaroid systems solve sync and eyestrain problems, and 3D becomes the permanent default of Hollywood cinema.",
+          "plausibility": "low-medium",
+          "requirement": "Technical solutions to eyestrain and projector sync; continued studio investment",
+          "downstream_effects": [
+            "Visual-only stereoscopic presence becomes the established cinema grammar",
+            "Heilig's somatic alternative has even less traction",
+            "The VR paradigm that eventually develops is even more visually centered"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "heilig-manifesto-1955",
+      "date": "1955",
+      "label": "El Cine del Futuro (Heilig's Manifesto)",
+      "category": "vr",
+      "lineage": "heilig",
+      "description": "Morton Heilig publishes 'El Cine del Futuro' in a Mexican film journal. Argues that cinema must address all five senses to produce genuine presence. Written as the 3D boom collapses — Heilig diagnoses why: visual-only immersion is insufficient. Predates Sutherland's 'Ultimate Display' by a decade.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": 3, "interaction": -2, "institutional": 3, "scale": 2 }
+    },
+    {
+      "id": "heilig-telesphere-1960",
+      "date": "1960",
+      "label": "Heilig Telesphere Mask Patent",
+      "category": "vr",
+      "lineage": "heilig",
+      "description": "Heilig patents the Telesphere Mask — a head-mounted display for stereoscopic TV and film with stereo sound. Predates Sutherland's HMD by eight years. Unlike Sutherland's later HMD, it is designed for cinematic content rather than computer graphics, and is non-interactive.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -1, "interaction": -2, "institutional": 2, "scale": -2 },
+      "branch_alternatives": [
+        {
+          "id": "telesphere-tv-licensing",
+          "description": "A television network licenses the Telesphere Mask for home stereo TV broadcasts, making Heilig the pioneer of consumer HMDs rather than Sutherland.",
+          "plausibility": "low",
+          "requirement": "TV industry interest in premium immersive content; manufacturing at scale",
+          "downstream_effects": [
+            "HMD as consumer entertainment device enters homes in the 1960s",
+            "Development pressure on lightweight, comfortable HMD design begins two decades earlier",
+            "The HMD paradigm develops from cinematic content tradition, not CGI"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "sensorama-1962",
+      "date": "1962",
+      "label": "Sensorama",
+      "category": "vr",
+      "lineage": "heilig",
+      "description": "Heilig builds the Sensorama — a coin-operated multisensory film booth with stereoscopic film, stereo sound, a vibrating seat, wind fans, and a scent dispenser. Five short films made. Uses 3D cinema as its visual substrate and augments it with the missing sensory channels. Cinematic, passive, somatic. No computer involvement.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": 4, "interaction": -2, "institutional": 3, "scale": -2 },
+      "branch_alternatives": [
+        {
+          "id": "sensorama-arcade-chain",
+          "description": "An entertainment investor funds a chain of Sensorama arcade installations, building commercial infrastructure for multisensory cinema before VR research begins.",
+          "plausibility": "medium",
+          "requirement": "Entertainment investor interested in differentiating from TV",
+          "downstream_effects": [
+            "Multisensory delivery infrastructure gets commercial engineering investment",
+            "Somatic presence becomes a commercial baseline, not an experimental curiosity"
+          ]
+        },
+        {
+          "id": "sensorama-darpa-funding",
+          "description": "DARPA funds Heilig's multisensory work for human-factors and sensory environment research.",
+          "plausibility": "low",
+          "requirement": "DARPA interest in full-sensorium simulation for training and research, parallel to their actual funding of Sutherland",
+          "downstream_effects": [
+            "Somatic VR enters the military-industrial research pipeline",
+            "Develops toward training simulations rather than entertainment"
+          ]
+        }
+      ],
+      "era_constraints": {
+        "available": ["pneumatic scent delivery", "electromechanical vibration seats", "stereoscopic polaroid film", "stereo audio", "wind fans", "coin-op arcade infrastructure"],
+        "not_available": ["real-time CGI", "electronic haptics at scale", "head tracking", "miniaturized displays", "digital control systems"]
+      }
+    },
+    {
+      "id": "spacewar-1962",
+      "date": "1962",
+      "label": "Spacewar!",
+      "category": "gaming",
+      "lineage": "sutherland",
+      "description": "Martin Graetz, Wayne Witanen, and Steve Russell create Spacewar! at MIT — the first widely influential interactive computer game. Visual, two-player, competitive. Runs on a PDP-1 at MIT, the same institution and year as Sensorama, but in a completely different paradigm: interactive, computational, visual.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": -2, "interaction": 3, "institutional": 2, "scale": -1 }
+    },
+    {
+      "id": "heilig-experience-theater-1964",
+      "date": "c. 1964",
+      "label": "Heilig Experience Theater Proposal",
+      "category": "vr",
+      "lineage": "heilig",
+      "description": "Heilig proposes a full-scale multisensory theater — a room-sized Sensorama for audiences. Rejected by investors and institutions. The failure was not technical but institutional: no capital, no research backing, no corporate champion. This is the moment the Heilig lineage effectively loses its chance at development.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": 4, "interaction": -2, "institutional": 3, "scale": 4 },
+      "branch_alternatives": [
+        {
+          "id": "nea-arts-funding",
+          "description": "The National Endowment for the Arts (or a foundation like Rockefeller) funds the Experience Theater as an experimental arts installation.",
+          "plausibility": "medium",
+          "requirement": "Arts funding bodies interested in expanded cinema and installation art (Happenings, Fluxus context)",
+          "downstream_effects": [
+            "Somatic VR develops within the experimental arts world alongside Fluxus and expanded cinema",
+            "Its aesthetic vocabulary is avant-garde, not commercial"
+          ]
+        },
+        {
+          "id": "world-fair-installation",
+          "description": "The Experience Theater is installed at a World's Fair (1964-65 New York World's Fair context) as a major attraction.",
+          "plausibility": "medium",
+          "requirement": "Corporate sponsor interested in immersive pavilion experience",
+          "downstream_effects": [
+            "Somatic VR gets massive public exposure and corporate legitimacy",
+            "Public expectation for VR is set by the somatic paradigm rather than the CGI paradigm"
+          ]
+        }
+      ],
+      "era_constraints": {
+        "available": ["large-format projection", "pneumatic infrastructure", "theater construction", "electroacoustic audio", "scent delivery systems", "vibrating floor technology"],
+        "not_available": ["affordable digital control", "miniaturized electronics", "distributed computing for control systems"]
+      }
+    },
+    {
+      "id": "sutherland-ultimate-display-1965",
+      "date": "1965",
+      "label": "The Ultimate Display (Sutherland)",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Ivan Sutherland publishes 'The Ultimate Display' at IFIP. Imagines a computer display as a room in which the computer can control the existence of matter — presence through total visual illusion. The foundational imaginative blueprint for visual VR. Completely ignores smell, touch, taste.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": -4, "interaction": 3, "institutional": 2, "scale": -2 }
+    },
+    {
+      "id": "sword-of-damocles-1968",
+      "date": "1968",
+      "label": "Sword of Damocles (Sutherland HMD)",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Sutherland builds the first computer-driven HMD at Harvard. Purely visual, wireframe-only graphics. So heavy it requires ceiling mounting — the 'Sword of Damocles.' Head-tracked. Sets the paradigm for visual-first, CGI-based VR for fifty years.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -4, "interaction": 3, "institutional": 1, "scale": -3 },
+      "branch_alternatives": [
+        {
+          "id": "darpa-parallel-somatic-track",
+          "description": "DARPA simultaneously funds a somatic/haptic track alongside Sutherland's visual work — treating them as two research streams in a single immersive environment program.",
+          "plausibility": "medium",
+          "requirement": "DARPA interest in full-sensorium simulation for pilot training",
+          "downstream_effects": [
+            "Two paradigms develop with equivalent institutional resources through the 1970s",
+            "The 'VR headset' is not automatically the defining interface — haptic suits, scent chambers develop in parallel"
+          ]
+        }
+      ],
+      "era_constraints": {
+        "available": ["CRT displays (heavy)", "analog computers for simple transforms", "mechanical head-tracking linkages", "wireframe vector graphics"],
+        "not_available": ["texture mapping", "miniaturized displays", "real-time shading", "force-feedback at scale", "digital haptics"]
+      }
+    },
+    {
+      "id": "nasa-view-1985",
+      "date": "1985",
+      "label": "NASA VIEW Program",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "NASA Ames develops the Virtual Interface Environment Workstation (VIEW) — an HMD with DataGlove for telepresence and simulation. First major institutional application of visual VR after Sutherland. Establishes VR as a serious research and operational tool.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -3, "interaction": 3, "institutional": 1, "scale": -3 },
+      "branch_alternatives": [
+        {
+          "id": "nasa-view-full-sensorium",
+          "description": "NASA VIEW program includes a parallel multisensory track — developing full-body haptic suits and olfactory interfaces alongside the visual HMD.",
+          "plausibility": "medium",
+          "requirement": "NASA interest in realistic simulation of planetary environments for astronaut training",
+          "downstream_effects": [
+            "Full-body haptic suit gets NASA engineering resources in the 1980s",
+            "Military-grade somatic VR develops alongside visual VR"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "vpl-research-1987",
+      "date": "1987",
+      "label": "VPL Research / Jaron Lanier",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Jaron Lanier founds VPL Research and coins 'virtual reality.' Produces the DataGlove (gesture interface) and EyePhone HMD. First commercial VR company. Primarily visual but the DataGlove introduces haptic gesture — a partial Heilig retrieval within the Sutherland paradigm. Expensive; professional/research market only.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -2, "interaction": 4, "institutional": 0, "scale": -2 },
+      "branch_alternatives": [
+        {
+          "id": "vpl-somatic-pivot",
+          "description": "VPL prioritizes the DataGlove somatic/haptic work over the EyePhone visual HMD — betting that gesture and touch interfaces are the key innovation.",
+          "plausibility": "medium",
+          "requirement": "Different investor priorities; medical/therapeutic market demand for haptic precision",
+          "downstream_effects": [
+            "The defining VR technology of the late 1980s is the haptic glove, not the HMD",
+            "Consumer VR in the 1990s is haptic-first, not display-first"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "power-glove-1989",
+      "date": "1989",
+      "label": "Nintendo Power Glove",
+      "category": "gaming",
+      "lineage": "heilig",
+      "description": "Nintendo and Mattel release the Power Glove — a consumer gesture/haptic controller for the NES. Fails commercially (poor tracking accuracy, few compatible games). Becomes culturally iconic as a failed future. The first mass-market attempt to make gesture/body interface the gaming paradigm.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": 2, "interaction": 4, "institutional": -2, "scale": -2 },
+      "branch_alternatives": [
+        {
+          "id": "power-glove-succeeds",
+          "description": "The Power Glove achieves accurate gesture tracking and Nintendo builds a substantial game library around it — establishing body-gesture as the dominant gaming interface 17 years before the Wii.",
+          "plausibility": "medium",
+          "requirement": "Better accelerometer technology; Nintendo commitment to game development for the format",
+          "downstream_effects": [
+            "Gesture/body interface becomes the gaming default in the early 1990s",
+            "The somatic paradigm in gaming has a 10-year head start"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "nintendo-wii-2006",
+      "date": "2006",
+      "label": "Nintendo Wii",
+      "category": "gaming",
+      "lineage": "heilig",
+      "description": "Nintendo releases the Wii with motion-controller interface. 100 million units sold. The most commercially successful example of somatic/body interface gaming. A partial Heilig retrieval: somatic presence without multisensory richness, but at mass-market scale.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": 3, "interaction": 4, "institutional": -2, "scale": 2 },
+      "branch_alternatives": [
+        {
+          "id": "wii-vr-integration",
+          "description": "Nintendo follows the Wii's somatic success by partnering with a VR researcher to produce a Wii VR headset that prioritizes body-motion interface over visual fidelity.",
+          "plausibility": "medium",
+          "requirement": "Nintendo strategic decision to leverage somatic success into immersive hardware before Oculus gets there",
+          "downstream_effects": [
+            "Consumer VR in 2008-2010 is defined by motion-somatic interface rather than high-fidelity visual display",
+            "The Oculus Rift (2012) enters a market already shaped by somatic VR expectations"
+          ]
+        },
+        {
+          "id": "wii-feeds-back-to-vr-research",
+          "description": "The Wii's success at somatic gaming triggers a wave of VR research funding aimed at multisensory somatic presence.",
+          "plausibility": "high",
+          "requirement": "Research community recognizes the Wii as evidence for the Heilig paradigm; funding follows",
+          "downstream_effects": [
+            "Somatic VR research gets a 6-year head start on visual VR research before Oculus appears",
+            "The haptic suit, not the headset, becomes the primary VR research challenge"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "oculus-kickstarter-2012",
+      "date": "2012",
+      "label": "Oculus Rift Kickstarter",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Palmer Luckey launches the Oculus Rift on Kickstarter — using cheap smartphone OLED panels and IMU sensors to revive consumer VR. Pure visual paradigm. Acquired by Facebook for $2B in 2014. Arrives precisely as somatic gaming (Wii, Kinect) is retreating.",
+      "is_branch_point": true,
+      "trajectory_contribution": { "sensory": -4, "interaction": 4, "institutional": -2, "scale": -3 },
+      "branch_alternatives": [
+        {
+          "id": "haptic-rift-parallel",
+          "description": "A parallel Kickstarter for a consumer haptic suit succeeds simultaneously with Oculus — establishing somatic and visual VR as co-equal consumer products from 2012 onward.",
+          "plausibility": "medium",
+          "requirement": "Kickstarter crowdfunding ecosystem for hardware; consumer appetite for somatic gaming after Wii",
+          "downstream_effects": [
+            "Consumer VR from 2012 onward includes both visual and somatic paradigms as options",
+            "Facebook/Oculus acquisition does not automatically mean visual VR wins"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "consumer-vr-2016",
+      "date": "2016",
+      "label": "Consumer VR Launch (Oculus CV1, HTC Vive, PSVR)",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Three consumer VR headsets launch within months of each other. Visual VR at consumer price points. Room-scale tracking (Vive) is new; controllers are the interaction paradigm. The Sutherland visual-computational lineage reaches mass-market consumer deployment after 48 years.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": -4, "interaction": 4, "institutional": -3, "scale": -2 }
+    },
+    {
+      "id": "apple-vision-pro-2024",
+      "date": "2024",
+      "label": "Apple Vision Pro",
+      "category": "vr",
+      "lineage": "sutherland",
+      "description": "Apple launches the Vision Pro at $3,499 — ultra-high-fidelity visual display, spatial computing, eye and hand tracking, passthrough AR/MR. Repositioned as 'spatial computer,' not headset. The culmination of the Sutherland lineage. No somatic channels; purely optical presence.",
+      "is_branch_point": false,
+      "trajectory_contribution": { "sensory": -5, "interaction": 4, "institutional": -4, "scale": -4 },
+      "notes": "The end-point of the standard timeline — the alternative histories converge toward or diverge from this present."
+    }
+  ]
+}
