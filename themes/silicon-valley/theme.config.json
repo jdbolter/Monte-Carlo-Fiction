@@ -12,8 +12,8 @@
     "crossCategoryBonusEvery": 3
   },
   "render": {
-    "model": "claude-sonnet-4-6",
-    "maxTokens": 900,
+    "model": "claude-sonnet-5",
+    "maxTokens": 1300,
     "minWords": 400,
     "maxWords": 500
   }

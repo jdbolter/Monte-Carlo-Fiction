@@ -90,13 +90,13 @@ export function buildRenderPrompt(theme, world) {
 export async function renderStory(theme, world) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.example to .env and add your key.');
+    throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.local.example to .env.local and add your key.');
   }
 
   const { systemPrompt, userPrompt } = buildRenderPrompt(theme, world);
   const render = theme.config.render || {};
-  const model     = render.model     || 'claude-sonnet-4-6';
-  const maxTokens = render.maxTokens || 900;
+  const model     = render.model     || 'claude-sonnet-5';
+  const maxTokens = render.maxTokens || 1300;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method:  'POST',
@@ -109,7 +109,15 @@ export async function renderStory(theme, world) {
       model,
       max_tokens: maxTokens,
       system:     systemPrompt,
-      messages:   [{ role: 'user', content: userPrompt }]
+      messages:   [{ role: 'user', content: userPrompt }],
+      // Sonnet 5 turns on adaptive thinking by default for any request that
+      // doesn't set `thinking`, and max_tokens is a hard cap on thinking +
+      // response combined. This is a straightforward creative-writing call
+      // with no reasoning need, so disable it — keeps the full token budget
+      // going to story text and matches the old no-thinking Sonnet 4.6
+      // behavior. If a theme configures an older/different model that
+      // rejects this field, remove it for that theme.
+      thinking: { type: 'disabled' }
     })
   });
 

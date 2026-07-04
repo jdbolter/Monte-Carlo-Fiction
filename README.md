@@ -19,10 +19,17 @@ Two layers, kept deliberately separate so new themes never require touching engi
 ## Running it
 
 ```
-npm run dev          # starts a local server at http://localhost:3000, no dependencies to install
+npm run dev          # starts a local server at http://localhost:3000 (auto-increments the port if taken), no dependencies to install
 ```
 
-World generation works immediately with no setup. To render stories, copy `.env.example` to `.env` and add an `ANTHROPIC_API_KEY`.
+World generation works immediately with no setup. To render stories, copy `.env.local.example` to `.env.local` and add an `ANTHROPIC_API_KEY`.
+
+There are also CLI equivalents for batch work, in `scripts/`:
+
+```
+npm run generate -- --theme vr-immersion --count 100        # free, no API key needed
+npm run render -- --theme vr-immersion --limit 20            # renders un-rendered worlds, costs real API calls
+```
 
 ## Adding a theme
 

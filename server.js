@@ -19,9 +19,9 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const PORT = process.env.PORT || 3000;
 
-// --- Load .env (no dependency on dotenv) ---
+// --- Load .env.local (no dependency on dotenv) ---
 function loadEnv() {
-  const envPath = join(__dirname, '.env');
+  const envPath = join(__dirname, '.env.local');
   if (!existsSync(envPath)) return;
   const lines = readFileSync(envPath, 'utf8').split('\n');
   for (const line of lines) {
@@ -122,7 +122,7 @@ server.on('listening', () => {
     console.log(`  (port ${BASE_PORT} was already in use — moved up to ${actualPort})`);
   }
   if (!process.env.ANTHROPIC_API_KEY) {
-    console.warn('  ANTHROPIC_API_KEY not set — world generation will work, but story rendering will fail. Copy .env.example to .env and add your key.');
+    console.warn('  ANTHROPIC_API_KEY not set — world generation will work, but story rendering will fail. Copy .env.local.example to .env.local and add your key.');
   }
 });
 

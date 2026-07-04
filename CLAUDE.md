@@ -58,6 +58,10 @@ Monte-Carlo-Fiction/
 │                                serves public/, routes /api/<name> to api/<name>.js,
 │                                auto-increments port on EADDRINUSE (tries up to 20 ports above the default)
 │
+├── scripts/                   CLI equivalents of the web UI, for batch work
+│   ├── generate-worlds.js      --theme --count --start-seed — free, wraps engine/worldgen.js directly
+│   └── render-stories.js       --theme --limit --world-id — renders un-rendered worlds, wraps engine/render.js
+│
 ├── data/worlds/<themeId>/      generated world JSON, one file per run — gitignored (reproducible from seed)
 ├── outputs/stories/<themeId>/  rendered story JSON, one file per run — gitignored (not reproducible; copy out manually to keep one)
 │
@@ -76,7 +80,7 @@ npm run dev
 
 No `npm install` needed — `server.js` and everything under `engine/`/`api/` use only Node built-ins (`fetch` is global in Node ≥18). Starts at `http://localhost:3000`; if that port is taken, it automatically tries higher ports (up to 20 above) and prints which one it landed on.
 
-World generation works immediately with no setup — it's the free, deterministic layer. To render stories, copy `.env.example` to `.env` and set `ANTHROPIC_API_KEY`. `server.js` reads `.env` itself (no dotenv dependency).
+World generation works immediately with no setup — it's the free, deterministic layer. To render stories, copy `.env.local.example` to `.env.local` and set `ANTHROPIC_API_KEY`. `server.js` and `scripts/render-stories.js` each read `.env.local` themselves (no dotenv dependency). `.env.local` is the deliberate convention here (not plain `.env`) to match the sibling `VR_Speculation` repo, which uses `.env.local` because it deploys via Vercel and `vercel dev` auto-loads that filename — this repo doesn't use `vercel dev`, but the naming was kept consistent across both projects anyway.
 
 ---
 
