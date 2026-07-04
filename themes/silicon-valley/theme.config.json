@@ -1,0 +1,20 @@
+{
+  "id": "silicon-valley",
+  "name": "Silicon Valley",
+  "description": "Counterfactual history of Silicon Valley from Lee de Forest's vacuum tube (1913) to the generative-AI investment surge (2024). Sourced from Michael Houck's 'The Entire History of Silicon Valley' (Founding Journey, 2025) for the venture-capital/company throughline, and Steve Blank's 'Secret History of Silicon Valley' talk/transcript for the WWII/Cold War military-university origin story usually left out of garage-founder mythology. Two structurally complementary lineages: the Terman model (military-funded, institutional, top-down) and the garage-founder model (individual risk-taking, bottom-up).",
+  "axes": ["capital", "founder_power", "openness", "scale"],
+  "categoryField": "category",
+  "startMilestoneId": "deforest-vacuum-tube-1913",
+  "stepsPerWorld": 7,
+  "worldgen": {
+    "topN": 3,
+    "branchPointBonus": 1.0,
+    "crossCategoryBonusEvery": 3
+  },
+  "render": {
+    "model": "claude-sonnet-4-6",
+    "maxTokens": 900,
+    "minWords": 400,
+    "maxWords": 500
+  }
+}
