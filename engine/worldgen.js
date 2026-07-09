@@ -6,7 +6,7 @@
 // sampling one branch_alternative at every branch point, and records
 // the full chosen path as a structured "world" object. Run this
 // hundreds of times with different seeds to get a Monte Carlo batch;
-// render.js (Layer 2) turns any one world into prose.
+// render-verbal.js (Layer 2) turns any one world into prose.
 // =========================================
 
 import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync } from 'fs';

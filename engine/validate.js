@@ -28,7 +28,13 @@ export function diversityReport(worlds, axes = []) {
   const uniqueChains = new Set(chainKeys).size;
 
   // --- Terminal diversity ---
-  const terminalKeys = worlds.map(w => w.terminalProfile.milestoneId);
+  // Keyed by milestoneId + chosenAlternative.id (when the terminal step is a
+  // branch point) so two worlds that reach the same milestone but diverge
+  // into different branch alternatives count as different endings.
+  const terminalKeys = worlds.map(w => {
+    const last = w.steps[w.steps.length - 1];
+    return last.chosenAlternative ? `${last.milestoneId}::${last.chosenAlternative.id}` : last.milestoneId;
+  });
   const uniqueTerminals = new Set(terminalKeys).size;
   const terminalCounts = {};
   terminalKeys.forEach(k => { terminalCounts[k] = (terminalCounts[k] || 0) + 1; });

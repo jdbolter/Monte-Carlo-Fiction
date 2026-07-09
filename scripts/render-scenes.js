@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 // =========================================
-// scripts/render-stories.js — CLI wrapper around engine/render-verbal.js
+// scripts/render-scenes.js — CLI wrapper around engine/render-visual.js
 //
-// Renders prose for a whole batch of already-generated worlds in one
-// command, instead of clicking "Render story" on each world card in
-// the web UI one at a time.
+// Renders scene scripts (one animation scene per milestone, with visual
+// direction + narration text) for a batch of already-generated worlds.
 //
 // Usage:
-//   node scripts/render-stories.js --theme vr-immersion            # renders every un-rendered world
-//   node scripts/render-stories.js --theme vr-immersion --limit 10 # cap how many to render this run
-//   node scripts/render-stories.js --theme vr-immersion --world-id vr-immersion-0007
-//   npm run render -- --theme vr-immersion --limit 10
+//   node scripts/render-scenes.js --theme silicon-valley             # renders every un-rendered world
+//   node scripts/render-scenes.js --theme silicon-valley --limit 10  # cap how many to render this run
+//   node scripts/render-scenes.js --theme silicon-valley --world-id silicon-valley-0007
+//   npm run render-scenes -- --theme silicon-valley --limit 10
 //
-// Requires ANTHROPIC_API_KEY (loaded from .env.local). Each rendered story is
-// one real model call — see MONTE_CARLO_STRATEGY.md / CLAUDE.md for cost notes.
+// Requires ANTHROPIC_API_KEY (loaded from .env.local). Each rendered scene
+// script is one real model call — see MONTE_CARLO_STRATEGY.md / CLAUDE.md
+// for cost notes.
 // =========================================
 
 import { readFileSync, existsSync } from 'fs';
@@ -21,7 +21,7 @@ import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { loadTheme } from '../engine/theme-loader.js';
 import { listWorlds } from '../engine/worldgen.js';
-import { renderStory, saveStory, listStories } from '../engine/render-verbal.js';
+import { renderSceneScript, saveSceneScript, listSceneScripts } from '../engine/render-visual.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -59,7 +59,7 @@ const limit   = args.limit ? Number(args.limit) : Infinity;
 const onlyId  = args['world-id'];
 
 if (!themeId) {
-  console.error('Usage: node scripts/render-stories.js --theme <themeId> [--limit <n>] [--world-id <id>]');
+  console.error('Usage: node scripts/render-scenes.js --theme <themeId> [--limit <n>] [--world-id <id>]');
   process.exit(1);
 }
 
@@ -74,30 +74,30 @@ let worlds  = listWorlds(themeId).sort((a, b) => a.seed - b.seed);
 if (onlyId) {
   worlds = worlds.filter(w => w.worldId === onlyId);
 } else {
-  const alreadyRendered = new Set(listStories(themeId).map(s => s.worldId));
+  const alreadyRendered = new Set(listSceneScripts(themeId).map(s => s.worldId));
   worlds = worlds.filter(w => !alreadyRendered.has(w.worldId));
 }
 
 worlds = worlds.slice(0, limit);
 
 if (worlds.length === 0) {
-  console.log('Nothing to render — all worlds already have stories (or none match the given world-id).');
+  console.log('Nothing to render — all worlds already have scene scripts (or none match the given world-id).');
   process.exit(0);
 }
 
-console.log(`Rendering ${worlds.length} stor${worlds.length === 1 ? 'y' : 'ies'} for theme "${themeId}"...`);
+console.log(`Rendering ${worlds.length} scene script${worlds.length === 1 ? '' : 's'} for theme "${themeId}"...`);
 
 let done = 0;
 for (const world of worlds) {
   process.stdout.write(`  [${done + 1}/${worlds.length}] ${world.worldId}... `);
   try {
-    const story = await renderStory(theme, world);
-    saveStory(story);
-    console.log(`done (${story.wordCount} words)`);
+    const sceneScript = await renderSceneScript(theme, world);
+    saveSceneScript(sceneScript);
+    console.log(`done (${sceneScript.scenes.length} scenes)`);
   } catch (err) {
     console.log(`FAILED: ${err.message}`);
   }
   done++;
 }
 
-console.log(`\nSaved to outputs/stories/${themeId}/`);
+console.log(`\nSaved to outputs/scenes/${themeId}/`);

@@ -1,5 +1,5 @@
 // =========================================
-// engine/render.js — Layer 2: single-shot prose rendering.
+// engine/render-verbal.js — Layer 2: single-shot prose rendering.
 //
 // Takes one structured world (from worldgen.js) and makes exactly one
 // call to the model to render it as a short story. This is the only

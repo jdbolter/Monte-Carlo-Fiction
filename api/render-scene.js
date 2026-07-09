@@ -1,9 +1,9 @@
-// POST /api/render-story  { themeId, worldId }
-// The one place that spends tokens: loads a saved world and makes a
-// single call to render it as prose, then saves the story to disk.
+// POST /api/render-scene  { themeId, worldId }
+// The visual-render sibling to /api/render-story: loads a saved world and
+// makes a single call to render it as a scene script, then saves it to disk.
 import { loadTheme } from '../engine/theme-loader.js';
 import { loadWorld } from '../engine/worldgen.js';
-import { renderStory, saveStory } from '../engine/render-verbal.js';
+import { renderSceneScript, saveSceneScript } from '../engine/render-visual.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
@@ -22,12 +22,12 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: `World ${worldId} not found for theme ${themeId}` });
     }
 
-    const story = await renderStory(theme, world);
-    saveStory(story);
+    const sceneScript = await renderSceneScript(theme, world);
+    saveSceneScript(sceneScript);
 
-    return res.status(200).json({ story });
+    return res.status(200).json({ sceneScript });
   } catch (err) {
-    console.error('[render-story] error:', err);
+    console.error('[render-scene] error:', err);
     return res.status(500).json({ error: err.message });
   }
 }

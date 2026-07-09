@@ -146,6 +146,19 @@ function renderWorldsGrid(worlds) {
   worlds.forEach(world => grid.appendChild(worldCard(world)));
 }
 
+// Fetch an already-rendered story/scene script by worldId, for the case
+// where a world card is showing hasStory/hasSceneScript = true (e.g. the
+// same seed range was regenerated) but this page load hasn't rendered it
+// itself and so has no in-memory copy yet.
+async function fetchExistingStory(themeId, worldId) {
+  const { stories } = await api(`/api/list-stories?theme=${encodeURIComponent(themeId)}`);
+  return stories.find(s => s.worldId === worldId) || null;
+}
+async function fetchExistingSceneScript(themeId, worldId) {
+  const { sceneScripts } = await api(`/api/list-scenes?theme=${encodeURIComponent(themeId)}`);
+  return sceneScripts.find(s => s.worldId === worldId) || null;
+}
+
 function worldCard(world) {
   const card = document.createElement('div');
   card.className = 'card world-card';
@@ -158,30 +171,78 @@ function worldCard(world) {
     </div>
     <div class="tag-row">
       <span class="tag branch">${branchCount} branch point${branchCount === 1 ? '' : 's'}</span>
-      ${world.hasStory ? '<span class="tag rendered">rendered</span>' : ''}
+      <span class="tag rendered tag-story ${world.hasStory ? '' : 'hidden'}">story ✓</span>
+      <span class="tag rendered tag-scenes ${world.hasSceneScript ? '' : 'hidden'}">scenes ✓</span>
     </div>
     <div class="actions">
-      <button class="btn btn-small btn-render">Render story</button>
+      <button class="btn btn-small btn-render-story">${world.hasStory ? 'View story' : 'Render story'}</button>
+      <button class="btn btn-small btn-render-scenes">${world.hasSceneScript ? 'View scenes' : 'Render scenes'}</button>
     </div>
   `;
-  card.querySelector('.btn-render').addEventListener('click', async (e) => {
+
+  // Once a world has been rendered (this session or a previous one), that
+  // version stays — the button switches to just viewing it and never calls
+  // the model again on repeat clicks. Rendering a fresh version requires
+  // deleting the saved file (or picking a different seed) outside the UI.
+  let story = null;
+  let sceneScript = null;
+
+  const storyBtn = card.querySelector('.btn-render-story');
+  storyBtn.addEventListener('click', async (e) => {
     e.stopPropagation();
-    const btn = e.target;
-    btn.disabled = true;
-    btn.textContent = 'Rendering…';
+    if (story) { openStoryReader(world, story); return; }
+    storyBtn.disabled = true;
+    storyBtn.textContent = world.hasStory ? 'Loading…' : 'Rendering…';
     try {
-      const { story } = await api('/api/render-story', {
-        method: 'POST',
-        body: JSON.stringify({ themeId: state.currentTheme.id, worldId: world.worldId })
-      });
-      openReader(world, story);
-      btn.textContent = 'Rendered ✓';
+      if (world.hasStory) {
+        story = await fetchExistingStory(state.currentTheme.id, world.worldId);
+      } else {
+        const res = await api('/api/render-story', {
+          method: 'POST',
+          body: JSON.stringify({ themeId: state.currentTheme.id, worldId: world.worldId })
+        });
+        story = res.story;
+        world.hasStory = true;
+        card.querySelector('.tag-story').classList.remove('hidden');
+      }
+      openStoryReader(world, story);
+      storyBtn.textContent = 'View story';
     } catch (err) {
-      btn.textContent = 'Failed — retry';
-      btn.disabled = false;
+      storyBtn.textContent = 'Failed — retry';
       alert(err.message);
+    } finally {
+      storyBtn.disabled = false;
     }
   });
+
+  const scenesBtn = card.querySelector('.btn-render-scenes');
+  scenesBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    if (sceneScript) { openSceneReader(world, sceneScript); return; }
+    scenesBtn.disabled = true;
+    scenesBtn.textContent = world.hasSceneScript ? 'Loading…' : 'Rendering…';
+    try {
+      if (world.hasSceneScript) {
+        sceneScript = await fetchExistingSceneScript(state.currentTheme.id, world.worldId);
+      } else {
+        const res = await api('/api/render-scene', {
+          method: 'POST',
+          body: JSON.stringify({ themeId: state.currentTheme.id, worldId: world.worldId })
+        });
+        sceneScript = res.sceneScript;
+        world.hasSceneScript = true;
+        card.querySelector('.tag-scenes').classList.remove('hidden');
+      }
+      openSceneReader(world, sceneScript);
+      scenesBtn.textContent = 'View scenes';
+    } catch (err) {
+      scenesBtn.textContent = 'Failed — retry';
+      alert(err.message);
+    } finally {
+      scenesBtn.disabled = false;
+    }
+  });
+
   return card;
 }
 
@@ -197,11 +258,13 @@ async function loadLibrary() {
 
   grid.innerHTML = '<p class="muted">Loading…</p>';
   try {
-    const [{ worlds }, { stories }] = await Promise.all([
+    const [{ worlds }, { stories }, { sceneScripts }] = await Promise.all([
       api(`/api/list-worlds?theme=${encodeURIComponent(themeId)}`),
-      api(`/api/list-stories?theme=${encodeURIComponent(themeId)}`)
+      api(`/api/list-stories?theme=${encodeURIComponent(themeId)}`),
+      api(`/api/list-scenes?theme=${encodeURIComponent(themeId)}`)
     ]);
     const storyByWorld = Object.fromEntries(stories.map(s => [s.worldId, s]));
+    const sceneScriptByWorld = Object.fromEntries(sceneScripts.map(s => [s.worldId, s]));
 
     if (worlds.length === 0) {
       grid.innerHTML = '<p class="muted">No worlds generated yet for this theme. Go to Generate.</p>';
@@ -211,19 +274,32 @@ async function loadLibrary() {
     grid.innerHTML = '';
     worlds.forEach(world => {
       const story = storyByWorld[world.worldId];
+      const sceneScript = sceneScriptByWorld[world.worldId];
       const card = document.createElement('div');
       card.className = 'card';
       card.innerHTML = `
         <h3>${esc(world.worldId)}</h3>
         <p>${esc(world.trajectoryDescription)}</p>
         <div class="tag-row">
-          ${story ? `<span class="tag rendered">${story.wordCount} words</span>` : '<span class="tag">not rendered</span>'}
+          ${story ? `<span class="tag rendered">${story.wordCount} words</span>` : '<span class="tag">no story</span>'}
+          ${sceneScript ? `<span class="tag rendered">${sceneScript.scenes.length} scenes</span>` : '<span class="tag">no scenes</span>'}
+        </div>
+        <div class="actions">
+          <button class="btn btn-small btn-view-story" ${story ? '' : 'disabled'}>Read story</button>
+          <button class="btn btn-small btn-view-scenes" ${sceneScript ? '' : 'disabled'}>View scenes</button>
         </div>
       `;
       if (story) {
-        card.addEventListener('click', () => openReader(world, story));
-      } else {
-        card.style.opacity = '0.6';
+        card.querySelector('.btn-view-story').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openStoryReader(world, story);
+        });
+      }
+      if (sceneScript) {
+        card.querySelector('.btn-view-scenes').addEventListener('click', (e) => {
+          e.stopPropagation();
+          openSceneReader(world, sceneScript);
+        });
       }
       grid.appendChild(card);
     });
@@ -239,7 +315,7 @@ const reader = document.getElementById('reader');
 document.getElementById('reader-close').addEventListener('click', () => reader.classList.add('hidden'));
 reader.addEventListener('click', (e) => { if (e.target === reader) reader.classList.add('hidden'); });
 
-function openReader(world, story) {
+function openStoryReader(world, story) {
   const content = document.getElementById('reader-content');
   const paragraphs = story.text.split(/\n\n+/).filter(p => p.trim()).map(p => `<p>${esc(p.trim())}</p>`).join('');
   content.innerHTML = `
@@ -254,6 +330,29 @@ function openReader(world, story) {
           ${s.chosenAlternative ? esc(s.chosenAlternative.description) : esc(s.description)}
         </div>
       `).join('')}
+    </div>
+  `;
+  reader.classList.remove('hidden');
+}
+
+function openSceneReader(world, sceneScript) {
+  const content = document.getElementById('reader-content');
+  const stepByMilestone = Object.fromEntries(world.steps.map(s => [s.milestoneId, s]));
+  content.innerHTML = `
+    <h3>${esc(world.worldId)}</h3>
+    <div class="reader-meta">${esc(world.trajectoryDescription)} · ${sceneScript.scenes.length} scenes · ${esc(sceneScript.model)}</div>
+    <div class="style-guide"><strong>Style guide</strong><p>${esc(sceneScript.styleGuide)}</p></div>
+    <div class="scene-list">
+      ${sceneScript.scenes.map((scene, i) => {
+        const step = stepByMilestone[scene.milestoneId];
+        return `
+          <div class="scene-block">
+            <div class="scene-heading">Scene ${i + 1}${step ? ` — ${esc(step.date)} — ${esc(step.label)}` : ''}${scene.pacingSeconds ? ` <span class="scene-pacing">${scene.pacingSeconds}s</span>` : ''}</div>
+            <div class="scene-field"><span class="scene-label">Visual</span>${esc(scene.visualDirection)}</div>
+            <div class="scene-field"><span class="scene-label">Narration</span>${esc(scene.narration)}</div>
+          </div>
+        `;
+      }).join('')}
     </div>
   `;
   reader.classList.remove('hidden');

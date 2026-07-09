@@ -17,10 +17,13 @@ This is a sibling project to `/Users/jaybolter/Documents/GitHub/VR_Speculation` 
 **Layer 1 — `engine/worldgen.js` (structured, free, fast, no model calls).**
 Walks a theme's milestone pool and produces a "world": an ordered sequence of milestones plus, at every branch point, one sampled `branch_alternative` locking in what happened in that world. Uses a seeded RNG (`engine/selector.js`, `makeRng`) so a given seed always reproduces the same world — this is why generated worlds are gitignored (see below): they can always be regenerated on demand from theme + seed.
 
-**Layer 2 — `engine/render.js` (one model call per world, costs money).**
-Takes one saved world and renders it as a 400-500 word short story. The prompt sends only that world's specific chosen path (not a full research-wiki dump — that was the old, much more expensive `VR_Speculation/api/fiction.js` pattern) plus a short generic style primer and the theme's optional `framework.json` primer.
+**Layer 2 — one model call per world, costs money. Two sibling renderers, same input, different output shape:**
+- `engine/render-verbal.js` renders a world as a single 400-500 word short story (continuous prose).
+- `engine/render-visual.js` renders a world as a scene-by-scene animation script: one scene per milestone step, each with a `visualDirection` (a terse prompt for a future image/video generation pass) and a `narration` line (a voiceover script for a future TTS pass), plus one `styleGuide` string anchoring the whole world's visual language. Still text-only output — no image/video/audio generation exists yet; this is the structured intermediate a future visual-rendering pipeline would consume. Added 2026-07-09 as a prototype; see Known state below.
 
-Never blur these two layers. Worldgen should never make a network call; render should never contain selection/scoring logic. Adding a new theme should never require touching either engine file — themes only supply data and config.
+Both renderers send only that world's specific chosen path (not a full research-wiki dump — that was the old, much more expensive `VR_Speculation/api/fiction.js` pattern) plus a short generic style primer and the theme's optional `framework.json` primer, adapted per output format.
+
+Never blur these two layers. Worldgen should never make a network call; render should never contain selection/scoring logic. Adding a new theme should never require touching any engine file — themes only supply data and config.
 
 ---
 
@@ -32,12 +35,14 @@ Monte-Carlo-Fiction/
 │   ├── selector.js            MilestoneSelector — trajectory-vector scoring, seeded RNG, branch sampling
 │   ├── theme-loader.js        reads a theme folder into { id, config, milestones, framework }
 │   ├── worldgen.js            generateWorld / generateWorldBatch / save|list|loadWorld
-│   ├── render.js               buildRenderPrompt / renderStory / save|list|loadStory
+│   ├── render-verbal.js       buildRenderPrompt / renderStory / save|list|loadStory — prose story renderer
+│   ├── render-visual.js       buildScenePrompt / renderSceneScript / save|list|loadSceneScript — scene-script renderer (visualDirection + narration per milestone, prototype)
 │   └── validate.js            diversityReport — chain diversity, repeated-ending rate, branch-choice distribution, axis stats
 │
 ├── themes/
 │   ├── _template/              copy this to add a new theme — README.md documents the full schema
-│   └── vr-immersion/           first working theme, ported from VR_Speculation (17 of its ~32 milestones)
+│   ├── vr-immersion/           first working theme, ported from VR_Speculation (17 of its ~32 milestones)
+│   └── silicon-valley/         counterfactual Silicon Valley history, 1913-2024 (28 milestones, 19 branch points)
 │       ├── theme.config.json    axes, categoryField, startMilestoneId, stepsPerWorld, worldgen tuning, render model/word count
 │       ├── milestones.json      the inflection-point pool
 │       └── framework.json       short lineage/causal-principle primer injected into render calls
@@ -45,14 +50,16 @@ Monte-Carlo-Fiction/
 ├── api/                       thin HTTP handlers (Vercel-handler-shaped: (req,res) => ...)
 │   ├── list-themes.js          GET  — every theme under themes/ except _template
 │   ├── generate-worlds.js      POST { themeId, count, startSeed? } — batch worldgen + diversity report
-│   ├── render-story.js         POST { themeId, worldId } — the only route that calls the model
-│   ├── list-worlds.js          GET  ?theme= — saved worlds, flagged with hasStory
-│   └── list-stories.js         GET  ?theme= — saved stories
+│   ├── render-story.js         POST { themeId, worldId } — calls the model, prose renderer
+│   ├── render-scene.js         POST { themeId, worldId } — calls the model, scene-script renderer
+│   ├── list-worlds.js          GET  ?theme= — saved worlds, flagged with hasStory / hasSceneScript
+│   ├── list-stories.js         GET  ?theme= — saved stories
+│   └── list-scenes.js          GET  ?theme= — saved scene scripts
 │
 ├── public/                    static web frontend (vanilla JS, no build step)
 │   ├── index.html              three views: theme picker, generate, library
 │   ├── css/style.css
-│   └── js/app.js               fetch calls into api/, renders diversity report + world/story cards + reader modal
+│   └── js/app.js               fetch calls into api/, renders diversity report + world cards (render story / render scenes) + reader modal (openStoryReader / openSceneReader)
 │
 ├── server.js                  zero-dependency local dev server (Node built-ins only)
 │                                serves public/, routes /api/<name> to api/<name>.js,
@@ -60,10 +67,12 @@ Monte-Carlo-Fiction/
 │
 ├── scripts/                   CLI equivalents of the web UI, for batch work
 │   ├── generate-worlds.js      --theme --count --start-seed — free, wraps engine/worldgen.js directly
-│   └── render-stories.js       --theme --limit --world-id — renders un-rendered worlds, wraps engine/render.js
+│   ├── render-stories.js       --theme --limit --world-id — renders un-rendered worlds, wraps engine/render-verbal.js
+│   └── render-scenes.js        --theme --limit --world-id — renders un-rendered scene scripts, wraps engine/render-visual.js
 │
 ├── data/worlds/<themeId>/      generated world JSON, one file per run — gitignored (reproducible from seed)
 ├── outputs/stories/<themeId>/  rendered story JSON, one file per run — gitignored (not reproducible; copy out manually to keep one)
+├── outputs/scenes/<themeId>/   rendered scene-script JSON, one file per run — gitignored, same reasoning as outputs/stories/
 │
 ├── MONTE_CARLO_STRATEGY.md    original design doc / phase plan
 ├── README.md                  quick-start + architecture summary
@@ -80,7 +89,9 @@ npm run dev
 
 No `npm install` needed — `server.js` and everything under `engine/`/`api/` use only Node built-ins (`fetch` is global in Node ≥18). Starts at `http://localhost:3000`; if that port is taken, it automatically tries higher ports (up to 20 above) and prints which one it landed on.
 
-World generation works immediately with no setup — it's the free, deterministic layer. To render stories, copy `.env.local.example` to `.env.local` and set `ANTHROPIC_API_KEY`. `server.js` and `scripts/render-stories.js` each read `.env.local` themselves (no dotenv dependency). `.env.local` is the deliberate convention here (not plain `.env`) to match the sibling `VR_Speculation` repo, which uses `.env.local` because it deploys via Vercel and `vercel dev` auto-loads that filename — this repo doesn't use `vercel dev`, but the naming was kept consistent across both projects anyway.
+World generation works immediately with no setup — it's the free, deterministic layer. To render stories or scene scripts, copy `.env.local.example` to `.env.local` and set `ANTHROPIC_API_KEY`. `server.js`, `scripts/render-stories.js`, and `scripts/render-scenes.js` each read `.env.local` themselves (no dotenv dependency). `.env.local` is the deliberate convention here (not plain `.env`) to match the sibling `VR_Speculation` repo, which uses `.env.local` because it deploys via Vercel and `vercel dev` auto-loads that filename — this repo doesn't use `vercel dev`, but the naming was kept consistent across both projects anyway.
+
+`npm run render-scenes -- --theme <id> --limit <n>` renders scene scripts from the CLI. The web UI (`npm run dev`) also has per-world "Render story" and "Render scenes" buttons on the Generate screen, and separate "Read story" / "View scenes" actions in the Library — both formats render independently per world.
 
 ---
 
@@ -98,9 +109,13 @@ Adding a theme: copy `themes/_template/` to `themes/<new-id>/`, edit the three f
 
 - **`vr-immersion` is a partial port** (17 of the source project's ~32 milestones) — good enough to validate the engine, not a finished theme. A test batch surfaced a real diversity problem worth knowing about: too few milestones/branch points after ~2012 causes ~83% of worlds to converge on the same terminal milestone (Apple Vision Pro 2024). Fix is adding more late-era branch points, not a code bug — `engine/validate.js`'s `repeatedEndingFlag` correctly caught this.
 - **No character-simulation layer yet** (`MONTE_CARLO_STRATEGY.md` Phase 5/6 — running characters through validated worlds, then cross-layer analysis). Only world generation and single-world prose rendering exist so far.
-- **No batch-render or "render all" UI action yet** — the web UI renders one world at a time; rendering a large batch currently means clicking through each world card individually.
+- **No batch-render or "render all" UI action yet** — the web UI renders one world (and one format — story or scenes, chosen per click) at a time; rendering a large batch currently means clicking through each world card individually.
 - **Generated data is gitignored by design.** `data/worlds/*/*` and `outputs/stories/*/*` are excluded (with `!.../\.gitkeep` exceptions so the folder structure survives a fresh clone) because worlds are deterministically reproducible from theme + seed, and stories are one-off model outputs, not source. If a specific rendered story is worth keeping/sharing, copy it out of `outputs/stories/` into a location that isn't gitignored.
-- **No new theme has been designed yet beyond vr-immersion.** Picking a first non-VR theme (per `MONTE_CARLO_STRATEGY.md`'s "Immediate Next Steps") is still open.
+- **`silicon-valley` is the first non-VR theme** (per `MONTE_CARLO_STRATEGY.md`'s "Immediate Next Steps"), added 2026-07-04. Counterfactual history of Silicon Valley from Lee de Forest's vacuum tube (1913) to the generative-AI investment surge (2024) — 28 milestones, 19 branch points, `axes: [capital, founder_power, openness, scale]`. Sourced from Michael Houck's "The Entire History of Silicon Valley" (venture-capital/company throughline) and Steve Blank's "The Secret History of Silicon Valley" (WWII/Cold War military-university origin story). `framework.json` frames the whole theme as tension between two lineages — the Terman model (military-funded, institutional, top-down) and the garage-founder model (individual risk-taking, bottom-up) — and asks render prose to let voice register whichever lineage a given world's path leans toward.
+  - **Pilot batch run 2026-07-09** (`npm run generate -- --theme silicon-valley --count 20`): 100% unique milestone chains. Terminal milestone `genai-boom-2022-2024` was originally not a branch point, so 17/20 worlds converged there identically — added 2 branch alternatives to it (`incumbents-absorb-ai-boom`, `ai-boom-decentralizes-geography`) plus a second alternative each to the three other late-era branch points (`zirp-global-spread-2010s`, `kalanick-neumann-ousters-2017`, `openai-founded-2015`) in `themes/silicon-valley/milestones.json`. After the fix: 4 unique endings, 80% repeated-ending rate — still high, but 18/20 worlds landing on `genai-boom-2022-2024` is judged acceptable-by-design, since that milestone's own `notes` field frames it as the deliberate convergence point ("alternative histories converge toward or diverge from this present"). Decision: accepted, not pursued further.
+  - **Found and fixed a real bug in `engine/validate.js` while investigating this**: the repeated-ending check keyed terminal worlds by `terminalProfile.milestoneId` alone, ignoring `chosenAlternative` — so two worlds that reached the same milestone but diverged into different branch content were wrongly counted as identical endings. Fixed by keying on `milestoneId::chosenAlternative.id` when the terminal step is a branch point. This affects diversity reporting for every theme, not just `silicon-valley` — worth knowing if past diversity reports (including the `vr-immersion` ~83% figure above) are revisited, since that number was measured before this fix and may shift slightly on re-run.
+- **`engine/render-visual.js` is a new prototype layer, added 2026-07-09.** First step toward an eventual animation pipeline (`data/worlds/` → scene script → some future image/video/TTS generation stage, none of which exists yet). Sibling to `render-verbal.js`, not a replacement — old file renamed to `engine/render-verbal.js` in the same change to make the two-renderer split explicit. Output schema per world: `{ styleGuide, scenes: [{ milestoneId, visualDirection, narration, pacingSeconds }] }`, one scene per milestone step, in order. `visualDirection` and `narration` are deliberately separate fields (concrete/machine-facing vs. spoken/TTS-facing registers) rather than one blended paragraph, since they're expected to feed different downstream generators later. Validated against `silicon-valley-0001` and `-0002` (5/5 scenes each, correctly reflecting each world's branch alternatives, e.g. Terman staying east coast, the 1978 tax cut failing) — but only 2 worlds total, not stress-tested across a full batch or edge cases. Model output is parsed as raw JSON (asked for directly in the prompt, no forced tool-use/schema yet) — `parseSceneResponse` in `render-visual.js` does only minimal validation (JSON parses, scene count matches step count).
+- **Web UI and `api/` wiring for scene scripts added 2026-07-09**, same day as `render-visual.js` itself. New routes `api/render-scene.js` (POST, mirrors `render-story.js`) and `api/list-scenes.js` (GET, mirrors `list-stories.js`); `api/list-worlds.js` now also flags `hasSceneScript`. Generate screen has separate "Render story" / "Render scenes" buttons per world card; Library screen has separate "Read story" / "View scenes" actions (each disabled if that format hasn't been rendered for that world) and a new `openSceneReader` reader-modal view (style guide + per-scene visual/narration blocks) alongside the existing `openStoryReader` (renamed from `openReader`). Verified end-to-end via the API directly (render, list, flag-propagation all confirmed working); the actual browser rendering of the new buttons/modal has not been visually checked in-browser, only via HTML/JS content inspection.
 
 ---
 

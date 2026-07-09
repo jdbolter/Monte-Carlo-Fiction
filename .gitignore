@@ -15,3 +15,7 @@ data/worlds/*/*
 # you want to preserve/share a particular story.
 outputs/stories/*/*
 !outputs/stories/*/.gitkeep
+
+# Same reasoning for rendered scene scripts (visual-render layer).
+outputs/scenes/*/*
+!outputs/scenes/*/.gitkeep

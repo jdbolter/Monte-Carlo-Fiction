@@ -1,5 +1,5 @@
 // GET /api/list-stories?theme=<themeId>
-import { listStories } from '../engine/render.js';
+import { listStories } from '../engine/render-verbal.js';
 
 export default async function handler(req, res) {
   const themeId = req.query?.theme;

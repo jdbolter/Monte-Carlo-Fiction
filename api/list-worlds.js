@@ -1,6 +1,7 @@
 // GET /api/list-worlds?theme=<themeId>
 import { listWorlds } from '../engine/worldgen.js';
-import { listStories } from '../engine/render.js';
+import { listStories } from '../engine/render-verbal.js';
+import { listSceneScripts } from '../engine/render-visual.js';
 
 export default async function handler(req, res) {
   const themeId = req.query?.theme;
@@ -11,9 +12,10 @@ export default async function handler(req, res) {
   try {
     const worlds = listWorlds(themeId);
     const renderedIds = new Set(listStories(themeId).map(s => s.worldId));
+    const sceneRenderedIds = new Set(listSceneScripts(themeId).map(s => s.worldId));
     const withStatus = worlds
       .sort((a, b) => a.seed - b.seed)
-      .map(w => ({ ...w, hasStory: renderedIds.has(w.worldId) }));
+      .map(w => ({ ...w, hasStory: renderedIds.has(w.worldId), hasSceneScript: sceneRenderedIds.has(w.worldId) }));
 
     return res.status(200).json({ worlds: withStatus });
   } catch (err) {

@@ -1,6 +1,6 @@
 // =========================================
 // engine/theme-loader.js — reads a theme folder from themes/<id>/
-// into the plain objects worldgen.js and render.js expect.
+// into the plain objects worldgen.js and render-verbal.js expect.
 // =========================================
 
 import { readFileSync, readdirSync, existsSync } from 'fs';
