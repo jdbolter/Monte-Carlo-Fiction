@@ -84,7 +84,7 @@ async function loadThemes() {
   }
 }
 
-function openGenerate(theme) {
+async function openGenerate(theme) {
   state.currentTheme = theme;
   document.getElementById('gen-theme-name').textContent = theme.name;
   document.getElementById('gen-theme-desc').textContent = theme.description || '';
@@ -92,6 +92,20 @@ function openGenerate(theme) {
   document.getElementById('diversity-report').classList.add('hidden');
   document.getElementById('gen-status').textContent = '';
   showScreen('generate');
+
+  // Default the start seed to one past the highest seed already generated
+  // for this theme, so repeat clicks produce a fresh batch instead of
+  // silently regenerating (and overwriting) the same worlds.
+  const seedInput = document.getElementById('gen-start-seed');
+  seedInput.value = 1;
+  try {
+    const { worlds } = await api(`/api/list-worlds?theme=${encodeURIComponent(theme.id)}`);
+    if (worlds.length) {
+      seedInput.value = Math.max(...worlds.map(w => w.seed)) + 1;
+    }
+  } catch (err) {
+    // No worlds yet for this theme (or list failed) — leave default at 1.
+  }
 }
 
 // =========================================
@@ -100,22 +114,24 @@ function openGenerate(theme) {
 document.getElementById('btn-generate').addEventListener('click', async () => {
   if (!state.currentTheme) return;
   const count = Number(document.getElementById('gen-count').value) || 20;
+  const startSeed = Number(document.getElementById('gen-start-seed').value) || 1;
   const statusEl = document.getElementById('gen-status');
   const btn = document.getElementById('btn-generate');
 
   btn.disabled = true;
   statusEl.className = 'status';
-  statusEl.textContent = `Generating ${count} worlds…`;
+  statusEl.textContent = `Generating ${count} worlds (seed ${startSeed})…`;
 
   try {
     const { worlds, report } = await api('/api/generate-worlds', {
       method: 'POST',
-      body: JSON.stringify({ themeId: state.currentTheme.id, count })
+      body: JSON.stringify({ themeId: state.currentTheme.id, count, startSeed })
     });
     state.lastWorlds = worlds;
-    statusEl.textContent = `Generated ${worlds.length} worlds.`;
+    statusEl.textContent = `Generated ${worlds.length} worlds (seed ${startSeed}–${startSeed + worlds.length - 1}).`;
     renderDiversityReport(report);
     renderWorldsGrid(worlds);
+    document.getElementById('gen-start-seed').value = startSeed + worlds.length;
   } catch (err) {
     statusEl.className = 'status error';
     statusEl.textContent = err.message;
@@ -307,6 +323,40 @@ async function loadLibrary() {
     grid.innerHTML = `<p class="muted">${esc(err.message)}</p>`;
   }
 }
+
+document.getElementById('btn-clear-library').addEventListener('click', async () => {
+  const sel = document.getElementById('library-theme-select');
+  const themeId = sel.value;
+  if (!themeId) return;
+
+  const themeName = state.themes.find(t => t.id === themeId)?.name || themeId;
+  const ok = confirm(
+    `Delete ALL rendered stories and scene scripts for "${themeName}"?\n\n` +
+    `This does not touch the generated worlds — only rendered prose/scenes, ` +
+    `which cost API calls to regenerate. This cannot be undone.`
+  );
+  if (!ok) return;
+
+  const statusEl = document.getElementById('library-status');
+  const btn = document.getElementById('btn-clear-library');
+  btn.disabled = true;
+  statusEl.className = 'status';
+  statusEl.textContent = 'Clearing…';
+
+  try {
+    const { storiesDeleted, scenesDeleted } = await api('/api/clear-library', {
+      method: 'POST',
+      body: JSON.stringify({ themeId })
+    });
+    statusEl.textContent = `Deleted ${storiesDeleted} stor${storiesDeleted === 1 ? 'y' : 'ies'} and ${scenesDeleted} scene script${scenesDeleted === 1 ? '' : 's'}.`;
+    loadLibrary();
+  } catch (err) {
+    statusEl.className = 'status error';
+    statusEl.textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
+});
 
 // =========================================
 // READER

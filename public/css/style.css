@@ -110,6 +110,8 @@ select { width: auto; }
 .btn:hover { border-color: var(--accent); }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
 .btn-primary { background: var(--accent); border-color: var(--accent); color: #201c1a; font-weight: 600; }
+.btn-danger { border-color: var(--danger); color: var(--danger); }
+.btn-danger:hover { background: var(--danger); color: #201c1a; }
 .btn-small { padding: 5px 12px; font-size: 0.82rem; }
 .hint { color: var(--text-dim); font-size: 0.82rem; }
 

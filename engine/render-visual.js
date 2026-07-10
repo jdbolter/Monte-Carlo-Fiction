@@ -13,7 +13,7 @@
 // Same cost/call shape as render-verbal.js: exactly one model call per world.
 // =========================================
 
-import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync } from 'fs';
+import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -176,4 +176,14 @@ export function loadSceneScript(themeId, worldId) {
   const path = join(OUT_ROOT, themeId, `${worldId}.json`);
   if (!existsSync(path)) return null;
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+// Deletes every rendered scene script for a theme (not the worlds themselves).
+// Leaves .gitkeep alone so the folder survives in git. Returns count deleted.
+export function clearSceneScripts(themeId) {
+  const dir = join(OUT_ROOT, themeId);
+  if (!existsSync(dir)) return 0;
+  const files = readdirSync(dir).filter(f => f.endsWith('.json'));
+  files.forEach(f => unlinkSync(join(dir, f)));
+  return files.length;
 }
