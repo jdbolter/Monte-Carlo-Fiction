@@ -57,10 +57,40 @@ function formatWorldForPrompt(world) {
   }).join('\n\n');
 }
 
-function buildJsonShapeExample(world) {
-  const exampleScenes = world.steps.map(s => `    { "milestoneId": "${s.milestoneId}", "visualDirection": "...", "narration": "...", "pacingSeconds": 10 }`).join(',\n');
-  return `{\n  "styleGuide": "...",\n  "scenes": [\n${exampleScenes}\n  ]\n}`;
-}
+// Forcing a tool call (rather than asking the model to hand-format a JSON
+// blob in plain text) means the Anthropic API itself is responsible for
+// producing syntactically valid JSON for tool_use.input — we get back a
+// parsed object, not text we have to regex-strip and JSON.parse ourselves.
+// The earlier plain-text-JSON approach broke in practice whenever narration
+// or visualDirection prose contained an unescaped quote.
+const SCENE_TOOL = {
+  name: 'emit_scene_script',
+  description: 'Emit the completed scene-by-scene animation script for this world.',
+  input_schema: {
+    type: 'object',
+    properties: {
+      styleGuide: {
+        type: 'string',
+        description: "A short persistent visual/tonal anchor (palette, era texture, recurring motif) for the whole world, so every scene's visualDirection reads as part of one consistent animation."
+      },
+      scenes: {
+        type: 'array',
+        description: 'One scene per milestone, in the same order as the given path.',
+        items: {
+          type: 'object',
+          properties: {
+            milestoneId:     { type: 'string', description: 'Must exactly match the milestoneId given for this step.' },
+            visualDirection: { type: 'string', description: 'Terse, concrete prompt for a future image/video generation pass — setting, era-appropriate detail, composition/framing, key objects/actions/people. Written for a machine to visualize.' },
+            narration:       { type: 'string', description: 'A voiceover line for a future text-to-speech pass — documentary narrator register, spoken sentences, not literary prose.' },
+            pacingSeconds:   { type: 'integer', description: 'Approximate on-screen duration for this scene, in seconds.' }
+          },
+          required: ['milestoneId', 'visualDirection', 'narration', 'pacingSeconds']
+        }
+      }
+    },
+    required: ['styleGuide', 'scenes']
+  }
+};
 
 export function buildScenePrompt(theme, world) {
   const systemPrompt = [
@@ -75,8 +105,7 @@ export function buildScenePrompt(theme, world) {
     '',
     `This world's overall trajectory: ${world.trajectoryDescription}.`,
     '',
-    `Respond with ONLY valid JSON, no markdown code fences, no commentary before or after. Match this exact shape, one scene per milestone in order, using the given milestoneId values exactly:`,
-    buildJsonShapeExample(world)
+    `Call emit_scene_script with exactly ${world.steps.length} scenes, one per milestone in order, using the given milestoneId values exactly.`
   ].filter(Boolean).join('\n');
 
   const userPrompt = [
@@ -84,24 +113,10 @@ export function buildScenePrompt(theme, world) {
     '',
     formatWorldForPrompt(world),
     '',
-    `Produce the JSON scene script now. One scene per milestone, ${world.steps.length} scenes total, in order.`
+    `Call emit_scene_script now. One scene per milestone, ${world.steps.length} scenes total, in order.`
   ].join('\n');
 
   return { systemPrompt, userPrompt };
-}
-
-function parseSceneResponse(text, world) {
-  const cleaned = text.trim().replace(/^```(?:json)?\s*/i, '').replace(/```\s*$/, '');
-  let parsed;
-  try {
-    parsed = JSON.parse(cleaned);
-  } catch (err) {
-    throw new Error(`Model did not return valid JSON: ${err.message}`);
-  }
-  if (!Array.isArray(parsed.scenes) || parsed.scenes.length !== world.steps.length) {
-    throw new Error(`Expected ${world.steps.length} scenes, got ${parsed.scenes?.length ?? 0}`);
-  }
-  return parsed;
 }
 
 export async function renderSceneScript(theme, world) {
@@ -116,8 +131,14 @@ export async function renderSceneScript(theme, world) {
   // Structured per-scene output (visual direction + narration + style guide
   // for every milestone) runs longer than the single continuous story
   // render.maxTokens is tuned for, so this layer sizes its own budget off
-  // step count instead of reusing that value.
-  const maxTokens  = render.visualMaxTokens || (800 + world.steps.length * 300);
+  // step count instead of reusing that value. The forced tool-use call for
+  // emit_scene_script (see SCENE_TOOL) needs noticeably more headroom than
+  // plain prose: a 5-step silicon-valley world measured ~2250 output tokens
+  // in practice, and a too-tight budget causes the response to hit
+  // stop_reason "max_tokens" mid-array — the API then silently drops the
+  // incomplete "scenes" field entirely, which surfaced as a scene-count
+  // mismatch even though the tool_use JSON itself was well-formed.
+  const maxTokens  = render.visualMaxTokens || (1500 + world.steps.length * 700);
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method:  'POST',
@@ -128,10 +149,12 @@ export async function renderSceneScript(theme, world) {
     },
     body: JSON.stringify({
       model,
-      max_tokens: maxTokens,
-      system:     systemPrompt,
-      messages:   [{ role: 'user', content: userPrompt }],
-      thinking:   { type: 'disabled' }
+      max_tokens:  maxTokens,
+      system:      systemPrompt,
+      messages:    [{ role: 'user', content: userPrompt }],
+      thinking:    { type: 'disabled' },
+      tools:       [SCENE_TOOL],
+      tool_choice: { type: 'tool', name: SCENE_TOOL.name }
     })
   });
 
@@ -141,8 +164,14 @@ export async function renderSceneScript(theme, world) {
   }
 
   const data = await response.json();
-  const text = data.content?.[0]?.text ?? '';
-  const { styleGuide, scenes } = parseSceneResponse(text, world);
+  const toolUse = data.content?.find(c => c.type === 'tool_use');
+  if (!toolUse) {
+    throw new Error('Model did not return a tool_use block for emit_scene_script');
+  }
+  const { styleGuide, scenes } = toolUse.input;
+  if (!Array.isArray(scenes) || scenes.length !== world.steps.length) {
+    throw new Error(`Expected ${world.steps.length} scenes, got ${scenes?.length ?? 0}`);
+  }
 
   return {
     worldId:    world.worldId,
