@@ -1,6 +1,6 @@
 {
   "lineages": {
-    "sutherland": "The visual/computational lineage. Ivan Sutherland's 'The Ultimate Display' (1965) and Sword of Damocles HMD (1968) established presence through accurate rendering, head-tracked perspective, and computer graphics. Runs through NASA/DARPA research, VPL Research (1987), to Oculus (2012) and Apple Vision Pro (2024). Obsolesces somatic/haptic experience; retrieves Renaissance perspective and the stereoscope.",
+    "sutherland": "The visual/computational lineage. Ivan Sutherland's 'The Ultimate Display' (1965) and Sword of Damocles HMD (1968) established presence through accurate rendering, head-tracked perspective, and computer graphics. Runs through NASA/DARPA research, VPL Research (1987), to Oculus (2012) and Apple Vision Pro (2024). Plays down somatic/haptic experience; emphasizes visual perspective and the stereoscope.",
     "heilig": "The somatic/multisensory lineage. Morton Heilig's 'El Cine del Futuro' (1955) and Sensorama (1962) proposed presence through full-body sensory engagement: smell, wind, vibration, sound, plus stereo film. Institutional failure was financial, not technical — no patron appeared. Retrieves sensory theater traditions and the fairground; reverses into sensory overload rather than sensory deprivation."
   },
   "causal_principles": [
