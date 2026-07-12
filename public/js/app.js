@@ -190,6 +190,9 @@ function worldCard(world) {
       <span class="tag rendered tag-story ${world.hasStory ? '' : 'hidden'}">story ✓</span>
       <span class="tag rendered tag-scenes ${world.hasSceneScript ? '' : 'hidden'}">scenes ✓</span>
     </div>
+    <label class="extrapolate-toggle" title="Continue roughly 10 years past this world's last milestone, into territory the model invents itself. Only applies the first time a world is rendered.">
+      <input type="checkbox" class="chk-extrapolate">Extrapolate ~10y
+    </label>
     <div class="actions">
       <button class="btn btn-small btn-render-story">${world.hasStory ? 'View story' : 'Render story'}</button>
       <button class="btn btn-small btn-render-scenes">${world.hasSceneScript ? 'View scenes' : 'Render scenes'}</button>
@@ -202,6 +205,7 @@ function worldCard(world) {
   // deleting the saved file (or picking a different seed) outside the UI.
   let story = null;
   let sceneScript = null;
+  const extrapolateChk = card.querySelector('.chk-extrapolate');
 
   const storyBtn = card.querySelector('.btn-render-story');
   storyBtn.addEventListener('click', async (e) => {
@@ -215,11 +219,16 @@ function worldCard(world) {
       } else {
         const res = await api('/api/render-story', {
           method: 'POST',
-          body: JSON.stringify({ themeId: state.currentTheme.id, worldId: world.worldId })
+          body: JSON.stringify({
+            themeId: state.currentTheme.id,
+            worldId: world.worldId,
+            extrapolate: extrapolateChk.checked
+          })
         });
         story = res.story;
         world.hasStory = true;
         card.querySelector('.tag-story').classList.remove('hidden');
+        extrapolateChk.disabled = true;
       }
       openStoryReader(world, story);
       storyBtn.textContent = 'View story';
@@ -243,11 +252,16 @@ function worldCard(world) {
       } else {
         const res = await api('/api/render-scene', {
           method: 'POST',
-          body: JSON.stringify({ themeId: state.currentTheme.id, worldId: world.worldId })
+          body: JSON.stringify({
+            themeId: state.currentTheme.id,
+            worldId: world.worldId,
+            extrapolate: extrapolateChk.checked
+          })
         });
         sceneScript = res.sceneScript;
         world.hasSceneScript = true;
         card.querySelector('.tag-scenes').classList.remove('hidden');
+        extrapolateChk.disabled = true;
       }
       openSceneReader(world, sceneScript);
       scenesBtn.textContent = 'View scenes';
@@ -297,8 +311,8 @@ async function loadLibrary() {
         <h3>${esc(world.worldId)}</h3>
         <p>${esc(world.trajectoryDescription)}</p>
         <div class="tag-row">
-          ${story ? `<span class="tag rendered">${story.wordCount} words</span>` : '<span class="tag">no story</span>'}
-          ${sceneScript ? `<span class="tag rendered">${sceneScript.scenes.length} scenes</span>` : '<span class="tag">no scenes</span>'}
+          ${story ? `<span class="tag rendered">${story.wordCount} words${story.extrapolated ? ` +${story.extrapolationYears || 10}y` : ''}</span>` : '<span class="tag">no story</span>'}
+          ${sceneScript ? `<span class="tag rendered">${sceneScript.scenes.length} scenes${sceneScript.extrapolated ? ` +${sceneScript.extrapolationYears || 10}y` : ''}</span>` : '<span class="tag">no scenes</span>'}
         </div>
         <div class="actions">
           <button class="btn btn-small btn-view-story" ${story ? '' : 'disabled'}>Read story</button>
@@ -370,7 +384,7 @@ function openStoryReader(world, story) {
   const paragraphs = story.text.split(/\n\n+/).filter(p => p.trim()).map(p => `<p>${esc(p.trim())}</p>`).join('');
   content.innerHTML = `
     <h3>${esc(world.worldId)}</h3>
-    <div class="reader-meta">${esc(world.trajectoryDescription)} · ${story.wordCount} words · ${esc(story.model)}</div>
+    <div class="reader-meta">${esc(world.trajectoryDescription)} · ${story.wordCount} words · ${esc(story.model)}${story.extrapolated ? ` · <span class="extrapolated-badge">extrapolated +${story.extrapolationYears || 10}y</span>` : ''}</div>
     <div class="story-body">${paragraphs}</div>
     <div class="world-path">
       <h4>Chosen path</h4>
@@ -390,14 +404,14 @@ function openSceneReader(world, sceneScript) {
   const stepByMilestone = Object.fromEntries(world.steps.map(s => [s.milestoneId, s]));
   content.innerHTML = `
     <h3>${esc(world.worldId)}</h3>
-    <div class="reader-meta">${esc(world.trajectoryDescription)} · ${sceneScript.scenes.length} scenes · ${esc(sceneScript.model)}</div>
+    <div class="reader-meta">${esc(world.trajectoryDescription)} · ${sceneScript.scenes.length} scenes · ${esc(sceneScript.model)}${sceneScript.extrapolated ? ` · <span class="extrapolated-badge">extrapolated +${sceneScript.extrapolationYears || 10}y</span>` : ''}</div>
     <div class="style-guide"><strong>Style guide</strong><p>${esc(sceneScript.styleGuide)}</p></div>
     <div class="scene-list">
       ${sceneScript.scenes.map((scene, i) => {
         const step = stepByMilestone[scene.milestoneId];
         return `
           <div class="scene-block">
-            <div class="scene-heading">Scene ${i + 1}${step ? ` — ${esc(step.date)} — ${esc(step.label)}` : ''}${scene.pacingSeconds ? ` <span class="scene-pacing">${scene.pacingSeconds}s</span>` : ''}</div>
+            <div class="scene-heading">Scene ${i + 1}${step ? ` — ${esc(step.date)} — ${esc(step.label)}` : scene.isExtrapolated ? ' — invented continuation' : ''}${scene.pacingSeconds ? ` <span class="scene-pacing">${scene.pacingSeconds}s</span>` : ''}</div>
             <div class="scene-field"><span class="scene-label">Visual</span>${esc(scene.visualDirection)}</div>
             <div class="scene-field"><span class="scene-label">Narration</span>${esc(scene.narration)}</div>
           </div>

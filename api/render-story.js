@@ -10,7 +10,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { themeId, worldId } = req.body || {};
+  const { themeId, worldId, extrapolate, extrapolationYears } = req.body || {};
   if (!themeId || !worldId) {
     return res.status(400).json({ error: 'Missing required fields: themeId, worldId' });
   }
@@ -22,7 +22,7 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: `World ${worldId} not found for theme ${themeId}` });
     }
 
-    const story = await renderStory(theme, world);
+    const story = await renderStory(theme, world, { extrapolate, extrapolationYears });
     saveStory(story);
 
     return res.status(200).json({ story });

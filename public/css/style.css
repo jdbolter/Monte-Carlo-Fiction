@@ -129,6 +129,13 @@ select { width: auto; }
 .world-card .steps { margin: 10px 0; font-size: 0.82rem; color: var(--text-dim); }
 .world-card .steps span { display: block; padding: 2px 0; }
 .world-card .actions { margin-top: 12px; display: flex; gap: 8px; align-items: center; }
+.extrapolate-toggle {
+  display: flex; align-items: center; gap: 6px; margin-top: 10px;
+  font-size: 0.8rem; color: var(--text-dim); cursor: pointer; user-select: none;
+}
+.extrapolate-toggle input { accent-color: var(--accent); cursor: pointer; }
+.extrapolate-toggle input:disabled { cursor: not-allowed; }
+.extrapolated-badge { color: var(--accent); }
 
 /* --- Reader modal --- */
 .reader {
