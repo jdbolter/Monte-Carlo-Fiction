@@ -25,6 +25,19 @@ const OUT_ROOT  = join(__dirname, '..', 'outputs', 'stories');
 
 const DEFAULT_STYLE_PRIMER = `Write literary short fiction, not an essay or a summary. Specific characters, concrete sensory detail, an ending that resonates without explaining itself. No headers, no bullet points, no analysis — flowing prose paragraphs only. The story should move through time, tracing consequences forward from the first moment toward a speculative present. The reader should feel both the plausibility of the alternative path and the strangeness of the world it produces. End on an image, not a thesis.`;
 
+// --- Extrapolation (optional, off by default) ---
+// Promoted from scripts/experiment-extrapolation.js after a single validated
+// test run against vr-immersion-0001. When enabled, the final portion of the
+// story continues past the world's last real/counterfactual milestone into
+// invented territory roughly extrapolationYears further on. Disciplined by
+// two hard constraints so the coda doesn't drift into generic sci-fi: (1) no
+// unrelated future technology — extend the logic already established in the
+// path's downstream_effects, and (2) no new geographic settings beyond what
+// the path already established. New named characters are explicitly fine —
+// only the invented technology and the invented geography are constrained.
+const DEFAULT_EXTRAPOLATION_YEARS = 10;
+const DEFAULT_EXTRAPOLATION_WORDS = 150;
+
 function buildFrameworkPrimer(theme) {
   const fw = theme.framework;
   if (!fw) return '';
@@ -57,43 +70,69 @@ function formatWorldForPrompt(world) {
   }).join('\n\n');
 }
 
-export function buildRenderPrompt(theme, world) {
+export function buildRenderPrompt(theme, world, options = {}) {
   const render = theme.config.render || {};
   const minWords = render.minWords || 400;
   const maxWords = render.maxWords || 500;
+  const extrapolate = !!options.extrapolate;
+  const extrapolationYears = options.extrapolationYears ?? render.extrapolationYears ?? DEFAULT_EXTRAPOLATION_YEARS;
+  const extrapolationWords = options.extrapolationWords ?? render.extrapolationWords ?? DEFAULT_EXTRAPOLATION_WORDS;
+  const lastStep = world.steps[world.steps.length - 1];
+
+  const taskLines = extrapolate
+    ? [
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Write a short story of ${minWords}-${maxWords} words total that does two things in sequence:`,
+        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${lastStep.date}).`,
+        `2. For the final ~${extrapolationWords} words: continue PAST that last moment, roughly ${extrapolationYears} years further, into events that are NOT in the given path — invent them yourself. This invented continuation must be disciplined, not generic science fiction: it must follow specifically from (a) this world's overall trajectory — ${world.trajectoryDescription} — and (b) the named institutions, technologies, tensions, and downstream consequences already established in the path above, especially any "downstream consequences" text attached to counterfactual choices. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion in this world. Inventing new named characters for this continuation is fine.`
+      ]
+    : [
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that dramatizes this exact path, moving through time from its first moment toward its terminal moment.`
+      ];
 
   const systemPrompt = [
     `You are writing speculative fiction for the "${theme.config.name}" Monte Carlo narrative project.`,
     '',
     `## Your task`,
-    `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that dramatizes this exact path, moving through time from its first moment toward its terminal moment.`,
+    ...taskLines,
     '',
     DEFAULT_STYLE_PRIMER,
     '',
     buildFrameworkPrimer(theme),
     '',
     `This world's overall trajectory: ${world.trajectoryDescription}.`,
-    `Word count: ${minWords}-${maxWords}. Not fewer, not more. Count carefully.`
+    extrapolate
+      ? `Word count: ${minWords}-${maxWords} total, with the final ~${extrapolationWords} words being the invented post-path continuation. Count carefully. Do not label or announce the transition (no "ten years later" headers) — let it read as one continuous story.`
+      : `Word count: ${minWords}-${maxWords}. Not fewer, not more. Count carefully.`
   ].filter(Boolean).join('\n');
 
-  const userPrompt = [
-    `The chosen path through this world:`,
-    '',
-    formatWorldForPrompt(world),
-    '',
-    `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists.`
-  ].join('\n');
+  const userPrompt = extrapolate
+    ? [
+        `The chosen path through this world (ends at "${lastStep.label}", ${lastStep.date} — extrapolate past this point for the final ~${extrapolationWords} words):`,
+        '',
+        formatWorldForPrompt(world),
+        '',
+        `Write the story now. ${minWords}-${maxWords} words total. Flowing prose paragraphs. No headers or lists. The last ~${extrapolationWords} words should move past "${lastStep.label}" into invented territory roughly ${extrapolationYears} years further on, grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences. Do not introduce a new geographic setting; inventing new named characters is fine.`
+      ].join('\n')
+    : [
+        `The chosen path through this world:`,
+        '',
+        formatWorldForPrompt(world),
+        '',
+        `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists.`
+      ].join('\n');
 
   return { systemPrompt, userPrompt };
 }
 
-export async function renderStory(theme, world) {
+export async function renderStory(theme, world, options = {}) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.local.example to .env.local and add your key.');
   }
 
-  const { systemPrompt, userPrompt } = buildRenderPrompt(theme, world);
+  const extrapolate = !!options.extrapolate;
+  const extrapolationYears = options.extrapolationYears ?? theme.config.render?.extrapolationYears ?? DEFAULT_EXTRAPOLATION_YEARS;
+  const { systemPrompt, userPrompt } = buildRenderPrompt(theme, world, options);
   const render = theme.config.render || {};
   const model     = render.model     || 'claude-sonnet-5';
   const maxTokens = render.maxTokens || 1300;
@@ -135,6 +174,8 @@ export async function renderStory(theme, world) {
     model,
     text,
     wordCount: text.trim().split(/\s+/).filter(Boolean).length,
+    extrapolated: extrapolate,
+    extrapolationYears: extrapolate ? extrapolationYears : undefined,
     renderedAt: new Date().toISOString()
   };
 }

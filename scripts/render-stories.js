@@ -10,7 +10,14 @@
 //   node scripts/render-stories.js --theme vr-immersion            # renders every un-rendered world
 //   node scripts/render-stories.js --theme vr-immersion --limit 10 # cap how many to render this run
 //   node scripts/render-stories.js --theme vr-immersion --world-id vr-immersion-0007
+//   node scripts/render-stories.js --theme vr-immersion --world-id vr-immersion-0007 --extrapolate
+//   node scripts/render-stories.js --theme vr-immersion --extrapolate --extrapolation-years 15
 //   npm run render -- --theme vr-immersion --limit 10
+//
+// --extrapolate continues the story roughly --extrapolation-years (default 10)
+// past the world's last milestone, into territory the model invents itself —
+// disciplined by the world's trajectory and established downstream
+// consequences, not a generic future. See engine/render-verbal.js.
 //
 // Requires ANTHROPIC_API_KEY (loaded from .env.local). Each rendered story is
 // one real model call — see MONTE_CARLO_STRATEGY.md / CLAUDE.md for cost notes.
@@ -57,9 +64,11 @@ const args = parseArgs(process.argv.slice(2));
 const themeId = args.theme;
 const limit   = args.limit ? Number(args.limit) : Infinity;
 const onlyId  = args['world-id'];
+const extrapolate = !!args.extrapolate;
+const extrapolationYears = args['extrapolation-years'] ? Number(args['extrapolation-years']) : undefined;
 
 if (!themeId) {
-  console.error('Usage: node scripts/render-stories.js --theme <themeId> [--limit <n>] [--world-id <id>]');
+  console.error('Usage: node scripts/render-stories.js --theme <themeId> [--limit <n>] [--world-id <id>] [--extrapolate] [--extrapolation-years <n>]');
   process.exit(1);
 }
 
@@ -85,13 +94,13 @@ if (worlds.length === 0) {
   process.exit(0);
 }
 
-console.log(`Rendering ${worlds.length} stor${worlds.length === 1 ? 'y' : 'ies'} for theme "${themeId}"...`);
+console.log(`Rendering ${worlds.length} stor${worlds.length === 1 ? 'y' : 'ies'} for theme "${themeId}"${extrapolate ? ` (extrapolating ~${extrapolationYears ?? 10} years past each world's end)` : ''}...`);
 
 let done = 0;
 for (const world of worlds) {
   process.stdout.write(`  [${done + 1}/${worlds.length}] ${world.worldId}... `);
   try {
-    const story = await renderStory(theme, world);
+    const story = await renderStory(theme, world, { extrapolate, extrapolationYears });
     saveStory(story);
     console.log(`done (${story.wordCount} words)`);
   } catch (err) {

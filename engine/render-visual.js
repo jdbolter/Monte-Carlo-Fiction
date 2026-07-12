@@ -25,6 +25,16 @@ const DEFAULT_STYLE_PRIMER = `You are producing a scene-by-scene animation scrip
 - "narration": a voiceover line for a future text-to-speech pass — documentary narrator register, describing what happened at this milestone and why it matters. Meant to be heard, not read as fiction: clear, spoken-register sentences, not literary prose.
 Also produce one "styleGuide" string for the whole world: a short persistent visual/tonal anchor (palette, era texture, recurring motif) so every scene's visualDirection reads as part of one consistent animation rather than independent images.`;
 
+// --- Extrapolation (optional, off by default) ---
+// Sibling to the extrapolation option in render-verbal.js — same discipline,
+// adapted to the scene-script shape: instead of a prose coda, one additional
+// invented scene is appended past the world's last real/counterfactual
+// milestone. Same two hard constraints: no unrelated future technology
+// (extend the path's established downstream_effects instead), and no new
+// geographic setting beyond what the path already established. New named
+// characters are fine to invent for that scene.
+const DEFAULT_EXTRAPOLATION_YEARS = 10;
+
 function buildFrameworkPrimer(theme) {
   const fw = theme.framework;
   if (!fw) return '';
@@ -79,12 +89,13 @@ const SCENE_TOOL = {
         items: {
           type: 'object',
           properties: {
-            milestoneId:     { type: 'string', description: 'Must exactly match the milestoneId given for this step.' },
+            milestoneId:     { type: 'string', description: 'Must exactly match the milestoneId given for this step. For an invented extrapolation scene (only present when instructed), use the given extrapolated milestoneId placeholder exactly.' },
             visualDirection: { type: 'string', description: 'Terse, concrete prompt for a future image/video generation pass — setting, era-appropriate detail, composition/framing, key objects/actions/people. Written for a machine to visualize.' },
             narration:       { type: 'string', description: 'A voiceover line for a future text-to-speech pass — documentary narrator register, spoken sentences, not literary prose.' },
-            pacingSeconds:   { type: 'integer', description: 'Approximate on-screen duration for this scene, in seconds.' }
+            pacingSeconds:   { type: 'integer', description: 'Approximate on-screen duration for this scene, in seconds.' },
+            isExtrapolated:  { type: 'boolean', description: 'True only for the one invented scene that continues past the world\'s last given milestone; false for every scene that corresponds to a given milestone.' }
           },
-          required: ['milestoneId', 'visualDirection', 'narration', 'pacingSeconds']
+          required: ['milestoneId', 'visualDirection', 'narration', 'pacingSeconds', 'isExtrapolated']
         }
       }
     },
@@ -92,12 +103,22 @@ const SCENE_TOOL = {
   }
 };
 
-export function buildScenePrompt(theme, world) {
+export function buildScenePrompt(theme, world, options = {}) {
+  const extrapolate = !!options.extrapolate;
+  const extrapolationYears = options.extrapolationYears ?? theme.config.render?.extrapolationYears ?? DEFAULT_EXTRAPOLATION_YEARS;
+  const lastStep = world.steps[world.steps.length - 1];
+  const extrapolatedMilestoneId = `${lastStep.milestoneId}__extrapolated`;
+  const totalScenes = world.steps.length + (extrapolate ? 1 : 0);
+
+  const taskLine = extrapolate
+    ? `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Produce one scene per given milestone, in order (isExtrapolated: false, milestoneId matching exactly), PLUS one additional final scene that you invent: a continuation roughly ${extrapolationYears} years past ${lastStep.label}. This invented scene must be disciplined, not generic science fiction: it must follow specifically from this world's overall trajectory and the named institutions, technologies, tensions, and downstream consequences already established in the path above. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion. Inventing new named characters for this final scene is fine. Set that final scene's milestoneId to exactly "${extrapolatedMilestoneId}" and isExtrapolated to true.`
+    : `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Produce exactly one scene per milestone, in the same order, translating each into a visualDirection and a narration line. Set isExtrapolated to false for every scene.`;
+
   const systemPrompt = [
     `You are writing an animation scene script for the "${theme.config.name}" Monte Carlo narrative project.`,
     '',
     `## Your task`,
-    `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Produce exactly one scene per milestone, in the same order, translating each into a visualDirection and a narration line.`,
+    taskLine,
     '',
     DEFAULT_STYLE_PRIMER,
     '',
@@ -105,27 +126,34 @@ export function buildScenePrompt(theme, world) {
     '',
     `This world's overall trajectory: ${world.trajectoryDescription}.`,
     '',
-    `Call emit_scene_script with exactly ${world.steps.length} scenes, one per milestone in order, using the given milestoneId values exactly.`
+    extrapolate
+      ? `Call emit_scene_script with exactly ${totalScenes} scenes: ${world.steps.length} from the given path (in order, using the given milestoneId values exactly) plus 1 invented extrapolation scene last (milestoneId "${extrapolatedMilestoneId}").`
+      : `Call emit_scene_script with exactly ${totalScenes} scenes, one per milestone in order, using the given milestoneId values exactly.`
   ].filter(Boolean).join('\n');
 
   const userPrompt = [
-    `The chosen path through this world:`,
+    `The chosen path through this world${extrapolate ? ` (ends at "${lastStep.label}", ${lastStep.date} — add one invented extrapolation scene roughly ${extrapolationYears} years past this point)` : ''}:`,
     '',
     formatWorldForPrompt(world),
     '',
-    `Call emit_scene_script now. One scene per milestone, ${world.steps.length} scenes total, in order.`
+    extrapolate
+      ? `Call emit_scene_script now. ${world.steps.length} scenes for the given path, in order, plus 1 final invented extrapolation scene (milestoneId "${extrapolatedMilestoneId}", isExtrapolated true) continuing roughly ${extrapolationYears} years past "${lastStep.label}", grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences. Do not introduce a new geographic setting in that scene; inventing new named characters is fine. ${totalScenes} scenes total.`
+      : `Call emit_scene_script now. One scene per milestone, ${totalScenes} scenes total, in order.`
   ].join('\n');
 
   return { systemPrompt, userPrompt };
 }
 
-export async function renderSceneScript(theme, world) {
+export async function renderSceneScript(theme, world, options = {}) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.local.example to .env.local and add your key.');
   }
 
-  const { systemPrompt, userPrompt } = buildScenePrompt(theme, world);
+  const extrapolate = !!options.extrapolate;
+  const extrapolationYears = options.extrapolationYears ?? theme.config.render?.extrapolationYears ?? DEFAULT_EXTRAPOLATION_YEARS;
+  const totalScenes = world.steps.length + (extrapolate ? 1 : 0);
+  const { systemPrompt, userPrompt } = buildScenePrompt(theme, world, options);
   const render     = theme.config.render || {};
   const model      = render.model || 'claude-sonnet-5';
   // Structured per-scene output (visual direction + narration + style guide
@@ -138,7 +166,7 @@ export async function renderSceneScript(theme, world) {
   // stop_reason "max_tokens" mid-array — the API then silently drops the
   // incomplete "scenes" field entirely, which surfaced as a scene-count
   // mismatch even though the tool_use JSON itself was well-formed.
-  const maxTokens  = render.visualMaxTokens || (1500 + world.steps.length * 700);
+  const maxTokens  = render.visualMaxTokens || (1500 + totalScenes * 700);
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method:  'POST',
@@ -169,8 +197,8 @@ export async function renderSceneScript(theme, world) {
     throw new Error('Model did not return a tool_use block for emit_scene_script');
   }
   const { styleGuide, scenes } = toolUse.input;
-  if (!Array.isArray(scenes) || scenes.length !== world.steps.length) {
-    throw new Error(`Expected ${world.steps.length} scenes, got ${scenes?.length ?? 0}`);
+  if (!Array.isArray(scenes) || scenes.length !== totalScenes) {
+    throw new Error(`Expected ${totalScenes} scenes, got ${scenes?.length ?? 0}`);
   }
 
   return {
@@ -179,6 +207,8 @@ export async function renderSceneScript(theme, world) {
     model,
     styleGuide,
     scenes,
+    extrapolated: extrapolate,
+    extrapolationYears: extrapolate ? extrapolationYears : undefined,
     renderedAt: new Date().toISOString()
   };
 }

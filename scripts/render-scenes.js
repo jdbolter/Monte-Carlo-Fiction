@@ -9,7 +9,14 @@
 //   node scripts/render-scenes.js --theme silicon-valley             # renders every un-rendered world
 //   node scripts/render-scenes.js --theme silicon-valley --limit 10  # cap how many to render this run
 //   node scripts/render-scenes.js --theme silicon-valley --world-id silicon-valley-0007
+//   node scripts/render-scenes.js --theme silicon-valley --world-id silicon-valley-0007 --extrapolate
+//   node scripts/render-scenes.js --theme silicon-valley --extrapolate --extrapolation-years 15
 //   npm run render-scenes -- --theme silicon-valley --limit 10
+//
+// --extrapolate appends one additional invented scene per world, continuing
+// roughly --extrapolation-years (default 10) past the world's last milestone
+// — disciplined by the world's trajectory and established downstream
+// consequences, not a generic future. See engine/render-visual.js.
 //
 // Requires ANTHROPIC_API_KEY (loaded from .env.local). Each rendered scene
 // script is one real model call — see MONTE_CARLO_STRATEGY.md / CLAUDE.md
@@ -57,9 +64,11 @@ const args = parseArgs(process.argv.slice(2));
 const themeId = args.theme;
 const limit   = args.limit ? Number(args.limit) : Infinity;
 const onlyId  = args['world-id'];
+const extrapolate = !!args.extrapolate;
+const extrapolationYears = args['extrapolation-years'] ? Number(args['extrapolation-years']) : undefined;
 
 if (!themeId) {
-  console.error('Usage: node scripts/render-scenes.js --theme <themeId> [--limit <n>] [--world-id <id>]');
+  console.error('Usage: node scripts/render-scenes.js --theme <themeId> [--limit <n>] [--world-id <id>] [--extrapolate] [--extrapolation-years <n>]');
   process.exit(1);
 }
 
@@ -85,13 +94,13 @@ if (worlds.length === 0) {
   process.exit(0);
 }
 
-console.log(`Rendering ${worlds.length} scene script${worlds.length === 1 ? '' : 's'} for theme "${themeId}"...`);
+console.log(`Rendering ${worlds.length} scene script${worlds.length === 1 ? '' : 's'} for theme "${themeId}"${extrapolate ? ` (extrapolating ~${extrapolationYears ?? 10} years past each world's end)` : ''}...`);
 
 let done = 0;
 for (const world of worlds) {
   process.stdout.write(`  [${done + 1}/${worlds.length}] ${world.worldId}... `);
   try {
-    const sceneScript = await renderSceneScript(theme, world);
+    const sceneScript = await renderSceneScript(theme, world, { extrapolate, extrapolationYears });
     saveSceneScript(sceneScript);
     console.log(`done (${sceneScript.scenes.length} scenes)`);
   } catch (err) {
