@@ -136,6 +136,12 @@ export async function renderStory(theme, world, options = {}) {
   const render = theme.config.render || {};
   const model     = render.model     || 'claude-sonnet-5';
   const maxTokens = render.maxTokens || 1300;
+  // Extrapolation is carved out of this same minWords-maxWords total (see
+  // buildRenderPrompt's taskLines), not additive on top of it — the coda
+  // replaces the story's last ~extrapolationWords, it doesn't extend the
+  // budget — so the runaway-length check below uses these unmodified.
+  const minWords  = render.minWords || 400;
+  const maxWords  = render.maxWords || 500;
 
   const response = await fetch('https://api.anthropic.com/v1/messages', {
     method:  'POST',
@@ -166,14 +172,29 @@ export async function renderStory(theme, world, options = {}) {
   }
 
   const data = await response.json();
+  // A truncated response (hit the max_tokens cap mid-sentence) is the prose
+  // equivalent of the scene-script truncation bug in render-visual.js — the
+  // difference is prose has no array length to catch it by, so it has to be
+  // checked directly via stop_reason instead of inferred after the fact.
+  if (data.stop_reason === 'max_tokens') {
+    throw new Error(`Story was truncated (hit max_tokens=${maxTokens}) before finishing — the model likely ran on far past the requested ${minWords}-${maxWords} word count.`);
+  }
   const text = data.content?.[0]?.text ?? '';
+  const wordCount = text.trim().split(/\s+/).filter(Boolean).length;
+  // Runaway-length guard, symmetric to the scenes-array minItems/maxItems
+  // cap: catches a story that finished cleanly (no max_tokens truncation)
+  // but still blew well past the requested word count.
+  const maxAllowedWords = Math.round(maxWords * 1.5);
+  if (wordCount > maxAllowedWords) {
+    throw new Error(`Story ran away: requested ${minWords}-${maxWords} words, model produced ${wordCount}.`);
+  }
 
   return {
     worldId:   world.worldId,
     themeId:   theme.id,
     model,
     text,
-    wordCount: text.trim().split(/\s+/).filter(Boolean).length,
+    wordCount,
     extrapolated: extrapolate,
     extrapolationYears: extrapolate ? extrapolationYears : undefined,
     renderedAt: new Date().toISOString()

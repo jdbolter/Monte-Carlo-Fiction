@@ -73,35 +73,44 @@ function formatWorldForPrompt(world) {
 // parsed object, not text we have to regex-strip and JSON.parse ourselves.
 // The earlier plain-text-JSON approach broke in practice whenever narration
 // or visualDirection prose contained an unescaped quote.
-const SCENE_TOOL = {
-  name: 'emit_scene_script',
-  description: 'Emit the completed scene-by-scene animation script for this world.',
-  input_schema: {
-    type: 'object',
-    properties: {
-      styleGuide: {
-        type: 'string',
-        description: "A short persistent visual/tonal anchor (palette, era texture, recurring motif) for the whole world, so every scene's visualDirection reads as part of one consistent animation."
-      },
-      scenes: {
-        type: 'array',
-        description: 'One scene per milestone, in the same order as the given path.',
-        items: {
-          type: 'object',
-          properties: {
-            milestoneId:     { type: 'string', description: 'Must exactly match the milestoneId given for this step. For an invented extrapolation scene (only present when instructed), use the given extrapolated milestoneId placeholder exactly.' },
-            visualDirection: { type: 'string', description: 'Terse, concrete prompt for a future image/video generation pass — setting, era-appropriate detail, composition/framing, key objects/actions/people. Written for a machine to visualize.' },
-            narration:       { type: 'string', description: 'A voiceover line for a future text-to-speech pass — documentary narrator register, spoken sentences, not literary prose.' },
-            pacingSeconds:   { type: 'integer', description: 'Approximate on-screen duration for this scene, in seconds.' },
-            isExtrapolated:  { type: 'boolean', description: 'True only for the one invented scene that continues past the world\'s last given milestone; false for every scene that corresponds to a given milestone.' }
-          },
-          required: ['milestoneId', 'visualDirection', 'narration', 'pacingSeconds', 'isExtrapolated']
+// Built per-call (not a static constant) because minItems/maxItems must be
+// pinned to this specific world's totalScenes — without a hard array-length
+// bound, a generous max_tokens budget (needed to avoid the truncation bug
+// above) gives a degenerate model response room to loop and emit far more
+// scene objects than the world has steps, e.g. "expected 6, got 60+".
+function buildSceneTool(totalScenes) {
+  return {
+    name: 'emit_scene_script',
+    description: `Emit the completed scene-by-scene animation script for this world. The scenes array must contain exactly ${totalScenes} items — no more, no fewer.`,
+    input_schema: {
+      type: 'object',
+      properties: {
+        styleGuide: {
+          type: 'string',
+          description: "A short persistent visual/tonal anchor (palette, era texture, recurring motif) for the whole world, so every scene's visualDirection reads as part of one consistent animation."
+        },
+        scenes: {
+          type: 'array',
+          description: `Exactly ${totalScenes} scenes, one per milestone, in the same order as the given path.`,
+          minItems: totalScenes,
+          maxItems: totalScenes,
+          items: {
+            type: 'object',
+            properties: {
+              milestoneId:     { type: 'string', description: 'Must exactly match the milestoneId given for this step. For an invented extrapolation scene (only present when instructed), use the given extrapolated milestoneId placeholder exactly.' },
+              visualDirection: { type: 'string', description: 'Terse, concrete prompt for a future image/video generation pass — setting, era-appropriate detail, composition/framing, key objects/actions/people. Written for a machine to visualize.' },
+              narration:       { type: 'string', description: 'A voiceover line for a future text-to-speech pass — documentary narrator register, spoken sentences, not literary prose.' },
+              pacingSeconds:   { type: 'integer', description: 'Approximate on-screen duration for this scene, in seconds.' },
+              isExtrapolated:  { type: 'boolean', description: 'True only for the one invented scene that continues past the world\'s last given milestone; false for every scene that corresponds to a given milestone.' }
+            },
+            required: ['milestoneId', 'visualDirection', 'narration', 'pacingSeconds', 'isExtrapolated']
+          }
         }
-      }
-    },
-    required: ['styleGuide', 'scenes']
-  }
-};
+      },
+      required: ['styleGuide', 'scenes']
+    }
+  };
+}
 
 export function buildScenePrompt(theme, world, options = {}) {
   const extrapolate = !!options.extrapolate;
@@ -181,8 +190,8 @@ export async function renderSceneScript(theme, world, options = {}) {
       system:      systemPrompt,
       messages:    [{ role: 'user', content: userPrompt }],
       thinking:    { type: 'disabled' },
-      tools:       [SCENE_TOOL],
-      tool_choice: { type: 'tool', name: SCENE_TOOL.name }
+      tools:       [buildSceneTool(totalScenes)],
+      tool_choice: { type: 'tool', name: 'emit_scene_script' }
     })
   });
 
@@ -192,6 +201,11 @@ export async function renderSceneScript(theme, world, options = {}) {
   }
 
   const data = await response.json();
+  // Direct signal instead of inferring truncation after the fact from a
+  // scene-count mismatch — same check added to render-verbal.js for prose.
+  if (data.stop_reason === 'max_tokens') {
+    throw new Error(`Scene script was truncated (hit max_tokens=${maxTokens}) before finishing — expected ${totalScenes} scenes.`);
+  }
   const toolUse = data.content?.find(c => c.type === 'tool_use');
   if (!toolUse) {
     throw new Error('Model did not return a tool_use block for emit_scene_script');
