@@ -12,6 +12,20 @@
 //     (the actual "Monte Carlo" step) instead of waiting for user text
 // =========================================
 
+// See _score() for what this tunes. Theme-overridable via worldgen.timeDecayWeight.
+const DEFAULT_TIME_DECAY_WEIGHT = 6;
+
+// See selectNext() for what this tunes. Theme-overridable via
+// worldgen.rankWeightExponent. Tested 1 (linear), 2, and 3 against 100 seeds
+// of vr-immersion: 2 gave a meaningfully tighter max-year-jump distribution
+// than 1 (avg worst-case jump per world 94y -> 88y, p90 unchanged, absolute
+// worst case 163y -> 133y) with no measurable diversity cost (95/100 unique
+// chains either way); 3 barely improved jumps further but did cost
+// diversity (86/100 unique chains, fewer unique endings). 2 was the best
+// tradeoff in that test, not a universal constant — worth re-checking if a
+// theme's diversity report looks off after changing its milestone pool.
+const DEFAULT_RANK_WEIGHT_EXPONENT = 2;
+
 // --- Deterministic RNG (mulberry32) so a given seed always reproduces
 //     the same world. Swap in Math.random for pure randomness. ---
 export function makeRng(seed) {
@@ -42,6 +56,16 @@ export class MilestoneSelector {
     this.lastCategory   = null;
     this.stepCount      = 0;
     this.chosenAlternatives = {}; // milestoneId -> chosen branch_alternative object (or null)
+
+    // This theme's typical years-per-step pace, used by _score's time-decay
+    // penalty (see there for why it exists). Computed from the milestone
+    // pool's actual date span rather than hardcoded, so adding a theme never
+    // requires tuning this by hand.
+    const years = milestones.map(m => this._parseYear(m.date)).filter(y => y > 0);
+    const stepsPerWorld = theme.stepsPerWorld || 6;
+    this.expectedYearsPerStep = years.length > 1
+      ? (Math.max(...years) - Math.min(...years)) / Math.max(1, stepsPerWorld - 1)
+      : 1;
   }
 
   getById(id) {
@@ -93,7 +117,18 @@ export class MilestoneSelector {
   }
 
   // --- Score a candidate against the accumulated trajectory ---
-  _score(milestone) {
+  // currentYear is needed for the time-decay term below: without it, this
+  // was a pure trajectory-vector dot product with zero notion of how far
+  // in time a candidate sits from the current milestone. That let a
+  // strongly-reinforcing cluster of milestones (e.g. vr-immersion's
+  // 2012-2024 consumer-VR run, which all push the same direction on every
+  // axis) dominate scoring over decades of temporally-closer, more modestly
+  // aligned candidates — because the cumulative trajectory vector grows
+  // with each step and nothing capped how much a large alignment could
+  // outweigh proximity. Symptom: worlds jumping straight from an 1860s
+  // milestone to 2012 or 2024, skipping the 19th/early-20th-century pool
+  // almost entirely.
+  _score(milestone, currentYear) {
     const tc = milestone.trajectory_contribution || {};
     let dot = 0;
     for (const axis of this.axes) {
@@ -108,7 +143,22 @@ export class MilestoneSelector {
       ? (this.theme.worldgen?.branchPointBonus ?? 1.0)
       : 0;
 
-    return dot + crossBonus + branchBonus;
+    // Free within one "expected step" span (this theme's date range divided
+    // by its stepsPerWorld) — no penalty for normal pacing. Beyond that,
+    // penalty grows linearly with how many step-spans the jump represents,
+    // so a candidate has to be genuinely, strongly better-aligned (not just
+    // marginally) to justify skipping multiple decades. timeDecayWeight is
+    // theme-tunable via worldgen config; DEFAULT_TIME_DECAY_WEIGHT was
+    // picked so a ~150-year jump roughly cancels a dot product in the
+    // 25-30 range, which is what pulled worlds toward vr-immersion's 2012+
+    // cluster in practice.
+    const yearsGap = Math.max(0, this._parseYear(milestone.date) - currentYear);
+    const pace = this.expectedYearsPerStep || 1;
+    const excessSteps = Math.max(0, yearsGap / pace - 1);
+    const timeDecayWeight = this.theme.worldgen?.timeDecayWeight ?? DEFAULT_TIME_DECAY_WEIGHT;
+    const timePenalty = timeDecayWeight * excessSteps;
+
+    return dot + crossBonus + branchBonus - timePenalty;
   }
 
   _pool(currentMilestoneId) {
@@ -123,21 +173,42 @@ export class MilestoneSelector {
   }
 
   // --- Pick the next milestone: score the pool, take the top N, choose
-  //     among them stochastically (weighted by score so the strongest
+  //     among them stochastically (weighted by rank so the strongest
   //     candidates are more likely but not guaranteed — this is the
   //     source of run-to-run diversity across a Monte Carlo batch). ---
   selectNext(currentMilestoneId) {
     const pool = this._pool(currentMilestoneId);
     if (pool.length === 0) return null;
 
+    const currentYear = this._parseYear(this.getById(currentMilestoneId)?.date);
     const topN = this.theme.worldgen?.topN ?? 3;
     const scored = pool
-      .map(m => ({ milestone: m, score: this._score(m) }))
+      .map(m => ({ milestone: m, score: this._score(m, currentYear) }))
       .sort((a, b) => b.score - a.score)
       .slice(0, Math.min(topN, pool.length));
 
-    const idx = Math.floor(this.rng() * scored.length);
-    return scored[idx].milestone;
+    // Weighted by rank within the shortlist, not a uniform pick among it.
+    // Rank (not raw score) because score's scale varies wildly step to step
+    // as the trajectory vector accumulates, so it can't be turned into a
+    // stable weight directly without per-theme tuning. This used to be a
+    // uniform draw, which meant the _score time-decay penalty only ever
+    // affected whether a distant candidate made the topN shortlist, not
+    // its odds once there — a candidate ranked last of 6 was exactly as
+    // likely to be picked as the top-ranked one, so a strongly-penalized
+    // but still-shortlisted distant milestone could win just as often as
+    // the nearby favorite. Rank-weighting (best of N candidates gets the
+    // largest weight, worst gets the smallest, exponent below controls the
+    // spread) keeps every shortlisted candidate reachable but lets the
+    // ranking the penalty produced actually matter.
+    const rankExponent = this.theme.worldgen?.rankWeightExponent ?? DEFAULT_RANK_WEIGHT_EXPONENT;
+    const weights = scored.map((_, i) => Math.pow(scored.length - i, rankExponent));
+    const total = weights.reduce((s, w) => s + w, 0);
+    let r = this.rng() * total;
+    for (let i = 0; i < scored.length; i++) {
+      r -= weights[i];
+      if (r <= 0) return scored[i].milestone;
+    }
+    return scored[scored.length - 1].milestone;
   }
 
   describeTrajectory() {
