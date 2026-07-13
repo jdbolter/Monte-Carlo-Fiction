@@ -23,7 +23,15 @@ import { fileURLToPath } from 'url';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const OUT_ROOT  = join(__dirname, '..', 'outputs', 'stories');
 
-const DEFAULT_STYLE_PRIMER = `Write literary short fiction, not an essay or a summary. Specific characters, concrete sensory detail, an ending that resonates without explaining itself. No headers, no bullet points, no analysis — flowing prose paragraphs only. The story should move through time, tracing consequences forward from the first moment toward a speculative present. The reader should feel both the plausibility of the alternative path and the strangeness of the world it produces. End on an image, not a thesis.`;
+// Rewritten 2026-07-13 after live samples read as too allusive/elusive —
+// evocative prose that assumed the reader already knew the real history
+// behind each milestone (e.g. alluding to "Sutherland's wireframe cubes"
+// or "the smell team" with no grounding), and endings that only implied
+// the world's meaning through imagery rather than ever stating it. See
+// taskLines below for the structural fix (thesis stated before the final
+// image, not left for the image to carry alone) — this primer covers the
+// per-milestone legibility half of the fix.
+const DEFAULT_STYLE_PRIMER = `Write literary short fiction, not an essay or a summary — but never assume the reader already knows this history. Every time the story reaches a real invention, technology, institution, or event from the given path, ground it in a clear phrase or sentence woven into the prose: what it actually was, what it did, why it mattered — not just an evocative allusion to a name or date. Specific characters, concrete sensory detail, no headers, no bullet points, no dry exposition dump. The prose can still be atmospheric and oblique in its imagery — just not opaque about the facts underneath it. The reader should feel both the plausibility of the alternative path and the strangeness of the world it produces.`;
 
 // --- Extrapolation (optional, off by default) ---
 // Promoted from scripts/experiment-extrapolation.js after a single validated
@@ -79,14 +87,33 @@ export function buildRenderPrompt(theme, world, options = {}) {
   const extrapolationWords = options.extrapolationWords ?? render.extrapolationWords ?? DEFAULT_EXTRAPOLATION_WORDS;
   const lastStep = world.steps[world.steps.length - 1];
 
+  // Structure fixed 2026-07-13: previously ended purely on an image, which
+  // left the world's overall meaning implied rather than stated — readable
+  // as "hip sci-fi" mood over legible payoff. Now the thesis (what this
+  // world's trajectory adds up to) is named directly as its own beat before
+  // the closing anecdote, so the final image lands with that meaning
+  // already established instead of straining to carry it alone.
+  //
+  // Tightened again same day: the first version of this fix asked for the
+  // thesis to be said "plainly," but the model kept writing it in the same
+  // literary-compression register as the rest of the story (e.g. "image
+  // scaled to everyone, touch given to almost no one" — still a poetic
+  // parallelism standing in for the idea, not actually explaining it). The
+  // THESIS_INSTRUCTION text below now explicitly calls for a register shift
+  // to plain analytical prose for just this sentence, with a worked
+  // good/bad contrast, since "plainly" alone wasn't enough to break the
+  // model out of the surrounding voice.
+  const THESIS_INSTRUCTION = `state the world's thesis directly in plain, analytical prose — not literary compression. For just this sentence or two, break from the story's imagery and figurative voice: name the actual axis or dynamic that shifted (which capability, sense, or institution advanced; which was left behind; and why), the way someone explaining the pattern would write it, not the way a scene would evoke it. Avoid poetic parallelism or a compressed image standing in for the idea. For example, prefer "The emphasis fell on visual fidelity, developed for the largest possible audience, while technologies for the other senses — touch, proprioception, even hearing — were left undeveloped" over a compressed line like "image scaled to everyone, touch given to almost no one." A reader should be able to state what this world is about from this sentence alone, without having to interpret an image.`;
+
   const taskLines = extrapolate
     ? [
-        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Write a short story of ${minWords}-${maxWords} words total that does two things in sequence:`,
-        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${lastStep.date}).`,
-        `2. For the final ~${extrapolationWords} words: continue PAST that last moment, roughly ${extrapolationYears} years further, into events that are NOT in the given path — invent them yourself. This invented continuation must be disciplined, not generic science fiction: it must follow specifically from (a) this world's overall trajectory — ${world.trajectoryDescription} — and (b) the named institutions, technologies, tensions, and downstream consequences already established in the path above, especially any "downstream consequences" text attached to counterfactual choices. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion in this world. Inventing new named characters for this continuation is fine.`
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Write a short story of ${minWords}-${maxWords} words total that does three things in sequence:`,
+        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${lastStep.date}), grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered.`,
+        `2. Near the end of that dramatization, before moving past ${lastStep.label}: ${THESIS_INSTRUCTION}`,
+        `3. For the final ~${extrapolationWords} words: continue PAST that last moment, roughly ${extrapolationYears} years further, into events that are NOT in the given path — invent them yourself. This invented continuation must be disciplined, not generic science fiction: it must follow specifically from (a) this world's overall trajectory — ${world.trajectoryDescription} — and (b) the named institutions, technologies, tensions, and downstream consequences already established in the path above, especially any "downstream consequences" text attached to counterfactual choices. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion in this world. Inventing new named characters for this continuation is fine. This closing anecdote should land with the weight of the thesis just stated in step 2, not have to carry that meaning by itself — and it may return to the story's normal literary register, only the thesis sentence itself needs the plain-analytical shift.`
       ]
     : [
-        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that dramatizes this exact path, moving through time from its first moment toward its terminal moment.`
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that does three things in sequence: first, dramatize this exact path, moving through time from its first moment toward its terminal moment, grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered. Then, near the end, ${THESIS_INSTRUCTION} Only after that, close on one final anecdote or image — back in the story's normal literary register — that lands with the weight of that stated meaning, rather than straining to carry the whole meaning by itself.`
       ];
 
   const systemPrompt = [
@@ -111,14 +138,14 @@ export function buildRenderPrompt(theme, world, options = {}) {
         '',
         formatWorldForPrompt(world),
         '',
-        `Write the story now. ${minWords}-${maxWords} words total. Flowing prose paragraphs. No headers or lists. The last ~${extrapolationWords} words should move past "${lastStep.label}" into invented territory roughly ${extrapolationYears} years further on, grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences. Do not introduce a new geographic setting; inventing new named characters is fine.`
+        `Write the story now. ${minWords}-${maxWords} words total. Flowing prose paragraphs. No headers or lists. Before you move past "${lastStep.label}", shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why. Then the last ~${extrapolationWords} words move past it into invented territory roughly ${extrapolationYears} years further on, grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences, back in the story's normal register, landing on that already-stated meaning. Do not introduce a new geographic setting; inventing new named characters is fine.`
       ].join('\n')
     : [
         `The chosen path through this world:`,
         '',
         formatWorldForPrompt(world),
         '',
-        `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists.`
+        `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists. Ground each milestone in plain terms as it appears. Near the end, shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why — then return to the story's normal register and close on one image that lands with that meaning already established.`
       ].join('\n');
 
   return { systemPrompt, userPrompt };
