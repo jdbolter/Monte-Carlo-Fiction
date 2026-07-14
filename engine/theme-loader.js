@@ -21,9 +21,13 @@ export function loadTheme(themeId) {
   if (!existsSync(dir)) {
     throw new Error(`Theme "${themeId}" not found under themes/`);
   }
+  return loadThemeDirectory(themeId, dir);
+}
 
-  const config     = JSON.parse(readFileSync(join(dir, 'theme.config.json'), 'utf8'));
-  const milestones = JSON.parse(readFileSync(join(dir, 'milestones.json'), 'utf8')).milestones;
+// Exported separately so schema-version loading can be tested against an
+// isolated fixture without creating an auto-discovered theme under themes/.
+export function loadThemeDirectory(themeId, dir) {
+  const config = JSON.parse(readFileSync(join(dir, 'theme.config.json'), 'utf8'));
 
   let framework = null;
   const frameworkPath = join(dir, 'framework.json');
@@ -31,6 +35,28 @@ export function loadTheme(themeId) {
     framework = JSON.parse(readFileSync(frameworkPath, 'utf8'));
   }
 
+  if (config.schemaVersion === 2) {
+    const eventFile = config.eventFile || 'events.json';
+    const registryFile = config.stateRegistryFile || 'state-registry.json';
+    const eventDocument = JSON.parse(readFileSync(join(dir, eventFile), 'utf8'));
+    const stateRegistry = JSON.parse(readFileSync(join(dir, registryFile), 'utf8'));
+    if (eventDocument.schemaVersion !== 2 || eventDocument.themeId !== themeId) {
+      throw new Error(`Causal event file must use schemaVersion 2 and themeId "${themeId}"`);
+    }
+    if (stateRegistry.schemaVersion !== 2 || stateRegistry.themeId !== themeId) {
+      throw new Error(`State registry must use schemaVersion 2 and themeId "${themeId}"`);
+    }
+    return {
+      id: themeId,
+      schemaVersion: 2,
+      config,
+      events: eventDocument.events,
+      stateRegistry,
+      framework
+    };
+  }
+
+  const milestones = JSON.parse(readFileSync(join(dir, 'milestones.json'), 'utf8')).milestones;
   return { id: themeId, config, milestones, framework };
 }
 

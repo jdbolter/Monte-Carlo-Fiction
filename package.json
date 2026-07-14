@@ -8,7 +8,8 @@
     "dev": "node server.js",
     "generate": "node scripts/generate-worlds.js",
     "render": "node scripts/render-stories.js",
-    "render-scenes": "node scripts/render-scenes.js"
+    "render-scenes": "node scripts/render-scenes.js",
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"

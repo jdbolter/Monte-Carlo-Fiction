@@ -5,6 +5,7 @@
   "description": "Version-2 causal pilot kept separate from the legacy VR theme for direct comparison.",
   "eventFile": "events.json",
   "stateRegistryFile": "state-registry.json",
+  "startEventId": "holmes-stereoscope-1861",
   "startDate": "1861-01-01",
   "endDate": "1970-12-31",
   "stepsPerWorld": 8,

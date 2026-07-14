@@ -1,8 +1,8 @@
-# Causal theme schema v2 — design spike
+# Causal theme schema v2 — pilot runtime
 
-Status: **design only, not connected to the running application**.
+Status: **runtime implemented and tested; pilot fixture not yet an active application theme**.
 
-The files in this directory define the proposed version-2 causal theme format before any engine or theme migration begins. They deliberately live outside `themes/`, because the current theme loader treats every non-underscore theme folder as a runnable legacy theme.
+The files in this directory define the version-2 causal theme format and its first eight-event VR fixture. They deliberately live outside `themes/`, so the incomplete pilot is not auto-discovered in the UI. The theme loader and world generator can run this format once a completed v2 theme is placed under `themes/`.
 
 The spike answers four questions:
 
@@ -16,21 +16,21 @@ The spike answers four questions:
 - `causal-theme-config.schema.json` — JSON Schema for versioning, axes, and divergence policy.
 - `state-registry.schema.json` — JSON Schema for the controlled axis/fact vocabulary.
 - `causal-events.schema.json` — JSON Schema for a version-2 event file.
-- `pilot-theme-config.example.json` — proposed theme-version and divergence-policy configuration.
+- `pilot-theme-config.example.json` — theme-version and divergence-policy configuration used by the tests.
 - `vr-state-registry.example.json` — controlled vocabulary for the pilot's trajectory axes and typed facts.
 - `vr-events.example.json` — three worked branch points (Holmes, Lumière, Sensorama) plus the dependent events needed to demonstrate eligibility.
 - `sample-world.example.json` — an illustrative generated trace using three noncanonical outcomes.
 
-None of these files changes current seeded output. The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the current selector.
+None of these files changes current seeded output. The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes.
 
-## Runtime compatibility proposal
+## Runtime compatibility
 
-Task 2 should dispatch by an explicit `schemaVersion`:
+`engine/worldgen.js` dispatches by explicit `schemaVersion`:
 
 - missing or `1`: legacy `MilestoneSelector`, with its RNG call sequence unchanged;
-- `2`: new causal selector, state registry, eligibility scheduler, and causal validation.
+- `2`: causal selector, state registry, eligibility scheduler, and causal validation.
 
-The v2 selector should normalize its output into the fields already consumed by the UI and renderers (`milestoneId`, `date`, `label`, `description`, `isBranchPoint`, `chosenAlternative`) while adding `chosenOutcome`, `stateBefore`, `stateAfter`, `appliedEffects`, and `eligibilityTrace`.
+The v2 selector normalizes its output into the fields already consumed by the UI and renderers (`milestoneId`, `date`, `label`, `description`, `isBranchPoint`, `chosenAlternative`) while adding `chosenOutcome`, `stateBefore`, `stateAfter`, `appliedEffects`, and `eligibilityTrace`.
 
 The sample world stores only facts that differ from registry defaults (`stateEncoding: "nonDefaultFacts"`), keeping the trace auditable without repeating every default value at every step.
 
@@ -89,23 +89,27 @@ Every event has a time window with ISO `earliest` and `latest` values plus the o
 
 Selecting an event advances the world clock to an occurrence inside its window. Other unvisited events in the same year remain eligible while their windows are still open, fixing the legacy selector's same-year exclusion.
 
+Each theme also names a fixed `startEventId`. That event must be a default-activation event eligible at `startDate`, giving every comparison batch the same historical starting point before stochastic selection begins.
+
 `requires` supports fact comparisons, prior-event checks, and prior-outcome checks combined through `all`, `any`, and `none` arrays.
 
 ## Divergence policies
 
-Canonical history is one explicit outcome at every branch point. The proposed policies are:
+Canonical history is one explicit outcome at every branch point. The supported policies are:
 
 - `baseline`: always choose the canonical outcome;
-- `single`: choose exactly one noncanonical outcome when at least one is reachable, then canonical outcomes thereafter;
-- `limited`: choose between `minDivergences` and `maxDivergences` noncanonical outcomes;
+- `single`: choose a noncanonical outcome at the first reachable branch, then canonical outcomes thereafter;
+- `limited`: sample a target between `minDivergences` and `maxDivergences`, diverge at reachable branches until that target is met, then use canonical outcomes;
 - `naturalistic`: sample canonical and noncanonical outcomes from their authored weights;
 - `all-counterfactual`: exclude canonical outcomes at every encountered branch, preserving the current experiment's premise as an available mode.
 
-The pilot configuration proposes `limited` with one to three divergences. A 100-world comparison should also run `baseline`, `single`, and `all-counterfactual` so the effect of policy is visible rather than assumed.
+The pilot configuration uses `limited` with one to three divergences. A comparison batch can also run `baseline`, `single`, `naturalistic`, and `all-counterfactual` so the effect of policy is visible rather than assumed.
 
-## Validation contract for Task 2
+The current `single` and `limited` implementations deliberately guarantee their divergence counts by taking early reachable forks. Before treating `single` as a diversity mode, add a strategy that varies the chosen point of divergence while preserving exactly one divergence; the eight-event fixture is too small to settle that policy design.
 
-Static theme validation should reject:
+## Validation contract
+
+Static theme validation rejects:
 
 - unknown facts or axes;
 - invalid fact values;
@@ -115,7 +119,7 @@ Static theme validation should reject:
 - explicit events that can never be enabled;
 - contradictory effects that both enable and disable the same event in one outcome.
 
-Per-world validation should verify:
+Every generated v2 world is replayed immediately, and validation verifies:
 
 - every selected event was within its time window;
 - all preconditions were true immediately before selection;
@@ -125,10 +129,10 @@ Per-world validation should verify:
 - divergence count obeys the configured policy;
 - the saved trajectory equals the sum of applied deltas.
 
-Batch diagnostics should additionally report unreachable events, outcomes never sampled, frequently blocked preconditions, terminal-state diversity, and distributions of divergence count and point-of-divergence date.
+The automated suite also covers all five divergence modes, same-year event selection, tampered-state detection, v2 directory loading, and exact legacy seed compatibility. Batch-level causal diagnostics—unreachable events, outcomes never sampled, frequently blocked preconditions, terminal-state diversity, and distributions of divergence count and point-of-divergence date—remain a later addition.
 
 ## Research status of the examples
 
 The worked events are schema examples derived from the current theme's milestone descriptions, requirements, and downstream effects. They are not a newly researched or source-audited historical model. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it.
 
-The first Task-2 review should focus on whether the vocabulary and hard/soft boundary are right. Numerical weights and deltas are provisional tuning values.
+The next content review should focus on whether the vocabulary and hard/soft boundary are right before expanding the pilot to a fuller event pool. Numerical weights and deltas remain provisional tuning values.

@@ -68,16 +68,24 @@ function buildFrameworkPrimer(theme) {
 
 function formatWorldForPrompt(world) {
   return world.steps.map((s, i) => {
-    const branch = s.chosenAlternative
-      ? `\n  In this world, the path taken here: ${s.chosenAlternative.description}` +
-        (s.chosenAlternative.requirement
-          ? `\n  What made this plausible: ${s.chosenAlternative.requirement}`
+    const outcome = s.chosenOutcome
+      ? `\n  Outcome in this world${s.chosenOutcome.canonical ? ' (canonical control)' : ' (counterfactual)'}: ${s.chosenOutcome.description}` +
+        (s.chosenOutcome.requirement
+          ? `\n  What made this plausible: ${s.chosenOutcome.requirement}`
           : '') +
-        (s.chosenAlternative.downstreamEffects?.length
-          ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
+        (s.chosenOutcome.narrativeConsequences?.length
+          ? `\n  Downstream consequences: ${s.chosenOutcome.narrativeConsequences.join('; ')}`
           : '')
+      : s.chosenAlternative
+        ? `\n  In this world, the path taken here: ${s.chosenAlternative.description}` +
+          (s.chosenAlternative.requirement
+            ? `\n  What made this plausible: ${s.chosenAlternative.requirement}`
+            : '') +
+          (s.chosenAlternative.downstreamEffects?.length
+            ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
+            : '')
       : '';
-    return `${i + 1}. [${s.date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${branch}`;
+    return `${i + 1}. [${s.date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${outcome}`;
   }).join('\n\n');
 }
 

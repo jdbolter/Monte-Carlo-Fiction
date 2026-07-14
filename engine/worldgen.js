@@ -2,17 +2,18 @@
 // engine/worldgen.js — structured world generation, no AI calls.
 //
 // This is Layer 1 of the two-layer architecture: pure, fast, free,
-// auditable. Walks a theme's milestone pool with MilestoneSelector,
-// sampling one branch_alternative at every branch point, and records
-// the full chosen path as a structured "world" object. Run this
-// hundreds of times with different seeds to get a Monte Carlo batch;
-// render-verbal.js (Layer 2) turns any one world into prose.
+// auditable. Schema-v1 themes retain the MilestoneSelector path;
+// schema-v2 themes dispatch to causal-worldgen.js, where selected outcomes
+// mutate typed state and determine later eligibility. Run either path hundreds
+// of times with different seeds to get a Monte Carlo batch; render-verbal.js
+// (Layer 2) turns any one world into prose.
 // =========================================
 
 import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { MilestoneSelector, makeRng } from './selector.js';
+import { generateCausalWorld } from './causal-worldgen.js';
 
 const __dirname  = dirname(fileURLToPath(import.meta.url));
 const DATA_ROOT  = join(__dirname, '..', 'data', 'worlds');
@@ -42,10 +43,10 @@ function buildStep(theme, milestone, chosenAlternative) {
 
 /**
  * Generate one structured world from a theme, given a numeric seed.
- * @param {{id:string, config:object, milestones:object[], framework:object|null}} theme
+ * @param {{id:string, config:object, milestones?:object[], events?:object[], stateRegistry?:object, framework:object|null}} theme
  * @param {number} seed
  */
-export function generateWorld(theme, seed) {
+export function generateLegacyWorld(theme, seed) {
   const rng      = makeRng(seed);
   const selector = new MilestoneSelector(theme.config, theme.milestones, rng);
 
@@ -86,6 +87,16 @@ export function generateWorld(theme, seed) {
       date:        last.date
     }
   };
+}
+
+/**
+ * Dispatch to the correct generator without reinterpreting legacy themes.
+ * Missing schemaVersion is deliberately version 1 for backward compatibility.
+ */
+export function generateWorld(theme, seed) {
+  return theme.config.schemaVersion === 2
+    ? generateCausalWorld(theme, seed)
+    : generateLegacyWorld(theme, seed);
 }
 
 /**

@@ -8,7 +8,7 @@ This file is the operating manual for an LLM agent working on this repo. Read it
 
 A testbed for generating a large run (>99) of narratives that vary on a shared theme, so the resulting set can be read and analyzed as a batch rather than one story at a time. See `MONTE_CARLO_STRATEGY.md` for the original design rationale (JSON-first world state, Monte Carlo sampling over a milestone pool, a validated world set before spending money on prose).
 
-This is explicitly an **alternate-histories** experiment, not a real-history dramatization tool: whenever a generated world's path reaches a branch point, `engine/selector.js` always samples one of that milestone's `branch_alternatives` — never the real/canonical outcome described in the milestone's own `description` field. Every world therefore diverges from what actually happened at every branch point it passes through, by design. This was raised and deliberately confirmed as intended behavior on 2026-07-14 (not a bug) — do not "fix" it toward sometimes preserving real history without checking with the user first, since that would change the fundamental premise of every theme.
+This is explicitly an **alternate-histories** experiment, not merely a real-history dramatization tool. The two schema-v1 themes preserve their deliberate behavior: whenever a legacy world's path reaches a branch point, `engine/selector.js` samples a `branch_alternative`, never the canonical outcome. Schema v2 adds explicit canonical outcomes and selectable control policies (`baseline`, `single`, `limited`, `naturalistic`, and `all-counterfactual`) so the experiment can compare different degrees of divergence without silently changing the legacy themes.
 
 This is a sibling project to `/Users/jaybolter/Documents/GitHub/VR_Speculation` and its Obsidian vault at `/Users/jaybolter/Documents/VR-Speculation` — several techniques here (the trajectory-vector milestone selector, the single-shot prose-rendering call) were adapted from that project's `pastcasting` and `fiction` tools, but reworked to run headlessly and cheaply across many runs instead of one live user session.
 
@@ -17,7 +17,7 @@ This is a sibling project to `/Users/jaybolter/Documents/GitHub/VR_Speculation` 
 ## Architecture: two layers, kept strictly separate
 
 **Layer 1 — `engine/worldgen.js` (structured, free, fast, no model calls).**
-Walks a theme's milestone pool and produces a "world": an ordered sequence of milestones plus, at every branch point, one sampled `branch_alternative` locking in what happened in that world. Uses a seeded RNG (`engine/selector.js`, `makeRng`) so a given seed always reproduces the same world — this is why generated worlds are gitignored (see below): they can always be regenerated on demand from theme + seed.
+Dispatches by theme schema version. Missing/`schemaVersion: 1` themes retain the legacy milestone selector and always sample a `branch_alternative`; `schemaVersion: 2` themes use the causal selector, whose chosen outcomes mutate typed state and control later event eligibility. Both paths use seeded RNG (`engine/selector.js`, `makeRng`) so a given theme + seed reproduces the same world — this is why generated worlds are gitignored (see below).
 
 **Layer 2 — one model call per world, costs money. Two sibling renderers, same input, different output shape:**
 - `engine/render-verbal.js` renders a world as a single 400-500 word short story (continuous prose).
@@ -35,8 +35,12 @@ Never blur these two layers. Worldgen should never make a network call; render s
 Monte-Carlo-Fiction/
 ├── engine/                   shared, theme-agnostic code
 │   ├── selector.js            MilestoneSelector — trajectory-vector scoring, seeded RNG, branch sampling
-│   ├── theme-loader.js        reads a theme folder into { id, config, milestones, framework }
-│   ├── worldgen.js            generateWorld / generateWorldBatch / save|list|loadWorld
+│   ├── causal-state.js        typed facts, requirements, effects, state snapshots for schema v2
+│   ├── causal-selector.js     time-window eligibility, causal selection, divergence policies for schema v2
+│   ├── causal-validate.js     static v2 theme checks + per-world causal replay validation
+│   ├── causal-worldgen.js     schema-v2 world construction
+│   ├── theme-loader.js        version-aware theme-folder loader
+│   ├── worldgen.js            schema dispatch + generateWorld / generateWorldBatch / persistence
 │   ├── render-verbal.js       buildRenderPrompt / renderStory / save|list|loadStory — prose story renderer; optional { extrapolate } continues ~10y past the world's end, see Known state
 │   ├── render-visual.js       buildScenePrompt / renderSceneScript / save|list|loadSceneScript — scene-script renderer (visualDirection + narration per milestone, prototype); optional { extrapolate } appends one invented scene
 │   └── validate.js            diversityReport — chain diversity, repeated-ending rate, branch-choice distribution, axis stats
@@ -76,6 +80,7 @@ Monte-Carlo-Fiction/
 ├── outputs/stories/<themeId>/  rendered story JSON, one file per run — gitignored (not reproducible; copy out manually to keep one)
 ├── outputs/scenes/<themeId>/   rendered scene-script JSON, one file per run — gitignored, same reasoning as outputs/stories/
 │
+├── test/                       Node test suite: causal runtime + exact legacy seed compatibility
 ├── MONTE_CARLO_STRATEGY.md    original design doc / phase plan
 ├── README.md                  quick-start + architecture summary
 └── CLAUDE.md                  this file
@@ -87,6 +92,7 @@ Monte-Carlo-Fiction/
 
 ```
 npm run dev
+npm test
 ```
 
 No `npm install` needed — `server.js` and everything under `engine/`/`api/` use only Node built-ins (`fetch` is global in Node ≥18). Starts at `http://localhost:3000`; if that port is taken, it automatically tries higher ports (up to 20 above) and prints which one it landed on.
@@ -111,7 +117,7 @@ Adding a theme: copy `themes/_template/` to `themes/<new-id>/`, edit the three f
 
 ## Known state / open items
 
-- **Causal theme schema v2 design spike added 2026-07-14, not yet connected to runtime.** `docs/causal-v2/` contains the proposed schema, versioned pilot config, controlled VR state/axis registry, three worked causal forks (Holmes stereoscope ownership, Lumière collective-vs-private exhibition, Sensorama funding), dependent-event examples, and an illustrative auditable world trace. The existing theme loader, selector, world generator, renderers, API, and UI remain unchanged; do not treat the example files as an active theme. The proposed Task-2 architecture dispatches missing/`schemaVersion: 1` themes through the unchanged legacy selector and `schemaVersion: 2` themes through a new causal selector. The worked causal claims and numerical weights are provisional design hypotheses derived from existing milestone prose, not newly source-audited research.
+- **Causal schema-v2 runtime implemented 2026-07-14; pilot still inactive.** `engine/worldgen.js` now dispatches missing/`schemaVersion: 1` themes through the unchanged legacy generator and `schemaVersion: 2` themes through `causal-worldgen.js`. The v2 path has typed facts, outcome-specific `sets`/`trajectoryDelta`/`enables`/`disables`/`influences`, time-window and precondition eligibility (including same-year events), fixed `startEventId`, and `baseline`/`single`/`limited`/`naturalistic`/`all-counterfactual` policies. Static validation rejects invalid theme references/effects and unreachable explicit-event activation cycles; every generated world is causally replayed and rejected if its saved transitions or policy are inconsistent. Both renderers receive an explicit `chosenOutcome` for v2 canonical as well as counterfactual steps. `docs/causal-v2/` remains an eight-event design fixture, not a folder under `themes/`, so the application still exposes only the two legacy themes. `npm test` covers all policies and locks exact legacy output signatures for representative seeds of both themes. Batch-level causal diagnostics, a full 15–20-event active pilot, and a `single`-divergence strategy that varies the divergence point (the current implementation uses the first reachable branch) remain open. The worked causal claims and numerical weights are provisional design hypotheses derived from existing milestone prose, not newly source-audited research.
 
 - **`vr-immersion` is a partial port** (17 of the source project's ~32 milestones) — good enough to validate the engine, not a finished theme. A test batch surfaced a real diversity problem worth knowing about: too few milestones/branch points after ~2012 causes worlds to converge heavily on the same terminal milestone. Fix is adding more late-era branch points, not a code bug — `engine/validate.js`'s `repeatedEndingFlag` correctly caught this. (Originally measured at ~83% converging on Apple Vision Pro 2024; after the selector fix below, a 100-seed re-run measures 94% converging on `horizon-worlds-reversal-2026` instead — worse by the raw percentage, but for a different, more defensible reason: worlds now actually reach the pool's chronological end via realistic pacing rather than skipping to it. Still worth the same fix — more late-era branch points.)
 - **`engine/selector.js`'s scoring had no notion of time, fixed 2026-07-13.** Reported symptom: `vr-immersion` worlds routinely jumped straight from an 1860s milestone to 2012 or 2024, skipping almost the entire 19th/early-20th-century pool. Root cause was two compounding gaps, both theme-agnostic (so this affected every theme, not just `vr-immersion`): (1) `_score()` was a pure trajectory-vector dot product with zero penalty for how many years away a candidate sat, and the cumulative (non-decaying) trajectory vector let a thematically-reinforcing cluster of milestones — `vr-immersion`'s 2012-2024 consumer-VR run, whose `trajectory_contribution` vectors all point the same direction — dominate scoring over decades of closer, more modestly-aligned candidates once the trajectory leaned that way even slightly; (2) `selectNext()`'s final pick among the top-N shortlist was a **uniform** random draw, not weighted by score at all, so a candidate that only barely made the shortlist had identical odds to the top-ranked one — meaning even a correctly time-penalized distant milestone would still win exactly as often as the nearby favorite, as long as it stayed in the top N.
