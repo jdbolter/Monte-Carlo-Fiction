@@ -9,7 +9,7 @@
 // render-verbal.js (Layer 2) turns any one world into prose.
 // =========================================
 
-import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync } from 'fs';
+import { mkdirSync, writeFileSync, readdirSync, readFileSync, existsSync, unlinkSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { MilestoneSelector, makeRng } from './selector.js';
@@ -121,4 +121,14 @@ export function loadWorld(themeId, worldId) {
   const path = join(DATA_ROOT, themeId, `${worldId}.json`);
   if (!existsSync(path)) return null;
   return JSON.parse(readFileSync(path, 'utf8'));
+}
+
+// Deletes every generated world for a theme. Leaves .gitkeep alone so the
+// folder structure survives in git. Returns the number of worlds deleted.
+export function clearWorlds(themeId) {
+  const dir = join(DATA_ROOT, themeId);
+  if (!existsSync(dir)) return 0;
+  const files = readdirSync(dir).filter(f => f.endsWith('.json'));
+  files.forEach(f => unlinkSync(join(dir, f)));
+  return files.length;
 }

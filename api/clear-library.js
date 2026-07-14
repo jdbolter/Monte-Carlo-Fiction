@@ -1,7 +1,7 @@
 // POST /api/clear-library  { themeId }
-// Deletes every rendered story and scene script for a theme. Does not
-// touch data/worlds/ — the worlds themselves are untouched and can be
-// re-rendered from scratch.
+// Deletes every generated world, rendered story, and scene script for a
+// theme, resetting that theme's workspace completely.
+import { clearWorlds } from '../engine/worldgen.js';
 import { clearStories } from '../engine/render-verbal.js';
 import { clearSceneScripts } from '../engine/render-visual.js';
 
@@ -16,9 +16,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    const worldsDeleted = clearWorlds(themeId);
     const storiesDeleted = clearStories(themeId);
     const scenesDeleted = clearSceneScripts(themeId);
-    return res.status(200).json({ storiesDeleted, scenesDeleted });
+    return res.status(200).json({ worldsDeleted, storiesDeleted, scenesDeleted });
   } catch (err) {
     console.error('[clear-library] error:', err);
     return res.status(500).json({ error: err.message });

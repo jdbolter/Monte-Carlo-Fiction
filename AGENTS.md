@@ -93,6 +93,8 @@ World generation works immediately with no setup — it's the free, deterministi
 
 `npm run render-scenes -- --theme <id> --limit <n>` renders scene scripts from the CLI. The web UI (`npm run dev`) also has per-world "Render story" and "Render scenes" buttons on the Generate screen, and separate "Read story" / "View scenes" actions in the Library — both formats render independently per world.
 
+The Library's "Clear everything" action is a full per-theme reset: it deletes that theme's saved worlds, rendered stories, and rendered scene scripts together. It leaves `.gitkeep` files and the directory structure intact.
+
 ---
 
 ## Theme schema (see `themes/_template/README.md` for the authoritative version)

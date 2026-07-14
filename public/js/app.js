@@ -345,9 +345,8 @@ document.getElementById('btn-clear-library').addEventListener('click', async () 
 
   const themeName = state.themes.find(t => t.id === themeId)?.name || themeId;
   const ok = confirm(
-    `Delete ALL rendered stories and scene scripts for "${themeName}"?\n\n` +
-    `This does not touch the generated worlds — only rendered prose/scenes, ` +
-    `which cost API calls to regenerate. This cannot be undone.`
+    `Delete ALL generated worlds, rendered stories, and scene scripts for "${themeName}"?\n\n` +
+    `Rendered prose and scenes cost API calls to regenerate. This cannot be undone.`
   );
   if (!ok) return;
 
@@ -358,11 +357,28 @@ document.getElementById('btn-clear-library').addEventListener('click', async () 
   statusEl.textContent = 'Clearing…';
 
   try {
-    const { storiesDeleted, scenesDeleted } = await api('/api/clear-library', {
+    const { worldsDeleted, storiesDeleted, scenesDeleted } = await api('/api/clear-library', {
       method: 'POST',
       body: JSON.stringify({ themeId })
     });
-    statusEl.textContent = `Deleted ${storiesDeleted} stor${storiesDeleted === 1 ? 'y' : 'ies'} and ${scenesDeleted} scene script${scenesDeleted === 1 ? '' : 's'}.`;
+    statusEl.textContent = `Deleted ${worldsDeleted} world${worldsDeleted === 1 ? '' : 's'}, ${storiesDeleted} stor${storiesDeleted === 1 ? 'y' : 'ies'}, and ${scenesDeleted} scene script${scenesDeleted === 1 ? '' : 's'}.`;
+
+    // The Generate screen is intentionally session-local: it keeps the last
+    // generated batch in memory instead of refetching it on every tab switch.
+    // A full reset must invalidate that cached batch too, or deleted worlds
+    // (and their rendered-status tags/buttons) remain visible until reload.
+    if (state.currentTheme?.id === themeId) {
+      state.lastWorlds = [];
+      document.getElementById('worlds-grid').innerHTML = '<p class="muted">No worlds generated yet for this theme.</p>';
+      const reportEl = document.getElementById('diversity-report');
+      reportEl.innerHTML = '';
+      reportEl.classList.add('hidden');
+      document.getElementById('gen-start-seed').value = 1;
+      const genStatus = document.getElementById('gen-status');
+      genStatus.className = 'status';
+      genStatus.textContent = `Cleared all saved worlds and renders for ${themeName}.`;
+    }
+    reader.classList.add('hidden');
     loadLibrary();
   } catch (err) {
     statusEl.className = 'status error';
