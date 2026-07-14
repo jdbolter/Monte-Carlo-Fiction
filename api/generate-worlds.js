@@ -20,7 +20,7 @@ export default async function handler(req, res) {
     const worlds = generateWorldBatch(theme, Number(count), Number(startSeed) || 1);
     worlds.forEach(saveWorld);
 
-    const report = diversityReport(worlds, theme.config.axes);
+    const report = diversityReport(worlds, theme.config.axes, theme);
 
     return res.status(200).json({ worlds, report });
   } catch (err) {

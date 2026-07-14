@@ -1,0 +1,1310 @@
+{
+  "schemaVersion": 2,
+  "themeId": "vr-immersion-causal-pilot",
+  "events": [
+    {
+      "id": "holmes-stereoscope-1861",
+      "label": "Holmes's Handheld Stereoscope",
+      "description": "Oliver Wendell Holmes designs a cheap simplified handheld stereoscope. The fork concerns whether he leaves the design open or patents and licenses it.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1861",
+        "earliest": "1861-01-01",
+        "latest": "1861-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "stereoscope.design_available": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "unpatented-mass-diffusion",
+          "label": "Holmes leaves the design open",
+          "canonical": true,
+          "weight": 3,
+          "description": "Holmes deliberately leaves the simplified design unpatented, allowing inexpensive manufacture and rapid domestic adoption.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The milestone's canonical description directly documents the open design and resulting mass adoption.",
+          "effects": {
+            "sets": {
+              "stereoscope.ip_model": "open",
+              "stereoscope.market_access": "mass"
+            },
+            "trajectoryDelta": {
+              "sociality": -2,
+              "accessibility": 4,
+              "openness": 4,
+              "institutionalization": -1
+            },
+            "enables": ["stereoview-mass-culture-1860s"]
+          },
+          "narrativeConsequences": [
+            "Stereoview cards become familiar middle-class domestic media.",
+            "The medium establishes an early precedent for diffusion through openness rather than licensing."
+          ]
+        },
+        {
+          "id": "holmes-patents-instead",
+          "label": "Holmes patents and licenses the design",
+          "canonical": false,
+          "weight": 2,
+          "description": "Holmes patents the simplified stereoscope and licenses it for a fee, prioritizing commercial return over rapid diffusion.",
+          "requirement": "Holmes or Joseph Bates decides the design's commercial value outweighs popular-science advocacy.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Patent ownership is a direct effect; slower mass culture is modeled as reduced probability rather than an absolute prohibition.",
+          "effects": {
+            "sets": {
+              "stereoscope.ip_model": "licensed",
+              "stereoscope.market_access": "elite"
+            },
+            "trajectoryDelta": {
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": -4,
+              "institutionalization": 1
+            },
+            "enables": ["stereoview-mass-culture-1860s"],
+            "influences": [
+              {
+                "eventId": "stereoview-mass-culture-1860s",
+                "weightMultiplier": 0.35,
+                "rationale": "Licensing and higher prices delay broad adoption without making it impossible."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Stereoscopic viewing remains an upper-middle-class practice for longer.",
+            "A licensing model becomes a visible precedent for later immersive-media ownership."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+    },
+    {
+      "id": "stereoview-mass-culture-1860s",
+      "label": "Stereoview Mass Culture Forms",
+      "description": "Manufacturing, card publishing, and domestic adoption make stereoscopic viewing a normalized mass-market medium.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1862-1880",
+        "earliest": "1862-01-01",
+        "latest": "1880-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "stereoscope.design_available",
+            "operator": "equals",
+            "value": true
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "mass-culture-forms",
+          "label": "Mass stereoview culture forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Stereoview production and circulation become broad enough to establish a durable domestic medium.",
+          "requirement": "Sufficient manufacturing and publishing capacity develops before the event window closes.",
+          "confidence": "medium-high",
+          "evidenceType": "historical-inference",
+          "rationale": "This derived event makes delayed-but-still-possible adoption representable after either Holmes outcome.",
+          "effects": {
+            "sets": {
+              "stereoscope.market_access": "mass",
+              "stereoview.mass_culture": true
+            },
+            "trajectoryDelta": {
+              "accessibility": 2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "A shared visual vocabulary of travel, news, and domestic scenes develops around stereoview cards."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+    },
+    {
+      "id": "lumiere-cinematographe-1895",
+      "label": "Lumière Cinématographe Exhibition Fork",
+      "description": "Projected moving pictures become technically practical; the fork determines whether collective projection or Edison's private peephole model becomes commercially dominant.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "December 1895",
+        "earliest": "1895-12-01",
+        "latest": "1895-12-31",
+        "resolution": "month"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "cinema.projection_available": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "shared-projection-prevails",
+          "label": "Collective theatrical projection prevails",
+          "canonical": true,
+          "weight": 3,
+          "description": "The Lumières secure paying audiences and cinema develops around projection to a shared public in darkened rooms.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The collective exhibition model is the canonical historical outcome described by the milestone.",
+          "effects": {
+            "sets": {
+              "cinema.exhibition_model": "collective",
+              "cinema.dominant_venue": "theater"
+            },
+            "trajectoryDelta": {
+              "sociality": 4,
+              "accessibility": 2,
+              "institutionalization": 2
+            },
+            "enables": ["movie-palace-system-1905"],
+            "disables": ["kinetoscope-parlor-system-1896"]
+          },
+          "narrativeConsequences": [
+            "Cinema becomes a shared public ritual rather than an individual cabinet experience."
+          ]
+        },
+        {
+          "id": "kinetoscope-model-prevails",
+          "label": "Private peephole exhibition prevails",
+          "canonical": false,
+          "weight": 2,
+          "description": "Patent enforcement or exhibition failure leaves the solitary coin-operated peephole model commercially dominant.",
+          "requirement": "Stronger Edison patent enforcement in Europe, or failure of the Lumières' Paris exhibition to draw paying crowds.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The dominant social and venue forms are direct effects; the eventual cultural meaning remains narrative rather than hard state.",
+          "effects": {
+            "sets": {
+              "cinema.exhibition_model": "private",
+              "cinema.dominant_venue": "peep_parlor"
+            },
+            "trajectoryDelta": {
+              "sociality": -4,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 1
+            },
+            "enables": ["kinetoscope-parlor-system-1896"],
+            "disables": ["movie-palace-system-1905"]
+          },
+          "narrativeConsequences": [
+            "Moving images develop socially like arcade cabinets or later headsets rather than theatrical cinema.",
+            "Any later collective cinema must emerge through a different event rather than being silently assumed."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "kinetoscope-parlor-system-1896",
+      "label": "Kinetoscope Parlors Become the Dominant Industry",
+      "description": "Private coin-operated cabinets develop into the durable commercial system for moving-image exhibition.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1896-1910",
+        "earliest": "1896-01-01",
+        "latest": "1910-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "cinema.exhibition_model",
+            "operator": "equals",
+            "value": "private"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "parlor-industry-forms",
+          "label": "The parlor industry forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Investment and distribution consolidate around private cabinet venues.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "This event exists to make the Lumière counterfactual's immediate successor explicit and testable.",
+          "effects": {
+            "sets": {
+              "cinema.kinetoscope_parlor_system": true
+            },
+            "trajectoryDelta": {
+              "sociality": -1,
+              "accessibility": 1,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "Commercial moving-image culture standardizes around short, private, coin-operated encounters."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "movie-palace-system-1905",
+      "label": "Shared Theatrical Cinema Consolidates",
+      "description": "Projection, distribution, and purpose-built theaters consolidate collective cinema into a durable institution.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1905-1920",
+        "earliest": "1905-01-01",
+        "latest": "1920-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "cinema.exhibition_model",
+            "operator": "equals",
+            "value": "collective"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "theater-industry-forms",
+          "label": "The theater industry forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Shared projection becomes embedded in a durable theater and distribution system.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "This is a compact derived representation of the canonical collective-cinema lineage.",
+          "effects": {
+            "sets": {
+              "cinema.movie_palace_system": true
+            },
+            "trajectoryDelta": {
+              "sociality": 3,
+              "accessibility": 2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Cinema architecture and distribution assume a shared audience as their default unit."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "sensorama-1962",
+      "label": "Sensorama Funding Fork",
+      "description": "Morton Heilig completes a functioning multisensory cabinet combining stereo film, sound, vibration, wind, and smell; the fork determines whether any institution carries it beyond a prototype.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1962",
+        "earliest": "1962-01-01",
+        "latest": "1962-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "sensorama.prototype_exists": true,
+          "somatic_vr.development_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "no-patron-emerges",
+          "label": "No patron carries Sensorama forward",
+          "canonical": true,
+          "weight": 3,
+          "description": "Heilig fails to secure institutional or commercial backing, leaving Sensorama as an isolated prototype.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Institutional failure despite a working prototype is the canonical milestone outcome.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "none",
+              "somatic_vr.institutional_home": "none"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 1,
+              "accessibility": -3,
+              "institutionalization": -4
+            },
+            "disables": [
+              "sensorama-arcade-network-1963",
+              "darpa-somatic-interface-program-1963"
+            ]
+          },
+          "narrativeConsequences": [
+            "The somatic lineage survives as an idea without a durable organization or market."
+          ]
+        },
+        {
+          "id": "sensorama-arcade-chain",
+          "label": "Private investors build a Sensorama arcade chain",
+          "canonical": false,
+          "weight": 2,
+          "description": "Private investors treat Sensorama as a premium amusement and fund a small network of commercial installations.",
+          "requirement": "An amusement or exhibition investor accepts the machine's maintenance costs and funds repeatable content production.",
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Commercial backing is direct; eventual mass adoption remains unasserted.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "private_arcade",
+              "somatic_vr.institutional_home": "commercial"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 2,
+              "accessibility": 1,
+              "institutionalization": 2
+            },
+            "enables": ["sensorama-arcade-network-1963"],
+            "disables": ["darpa-somatic-interface-program-1963"]
+          },
+          "narrativeConsequences": [
+            "Somatic immersion develops through amusement economics and repeat customers rather than research procurement."
+          ]
+        },
+        {
+          "id": "sensorama-darpa-funding",
+          "label": "DARPA funds somatic interface research",
+          "canonical": false,
+          "weight": 1,
+          "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training.",
+          "requirement": "A defense research sponsor treats wind, vibration, and smell as useful simulation channels rather than theatrical embellishments.",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "The institutional home and research program are direct within the counterfactual; downstream consumer adoption is not encoded as certain.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "defense",
+              "somatic_vr.institutional_home": "military"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 3,
+              "accessibility": -2,
+              "openness": -4,
+              "institutionalization": 4
+            },
+            "enables": ["darpa-somatic-interface-program-1963"],
+            "disables": ["sensorama-arcade-network-1963"]
+          },
+          "narrativeConsequences": [
+            "Somatic VR gains durable laboratories and procurement but develops under secrecy and training requirements.",
+            "Consumer uses may arrive later through technology transfer rather than direct entertainment investment."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    },
+    {
+      "id": "sensorama-arcade-network-1963",
+      "label": "Sensorama Arcade Network Forms",
+      "description": "Commercial operators standardize Sensorama installations, maintenance, and repeatable content across multiple venues.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "private_arcade"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "arcade-network-forms",
+          "label": "The arcade network forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "A small but durable commercial network establishes Sensorama as a repeatable paid experience.",
+          "requirement": null,
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "This is the direct successor implied by the authored arcade-chain alternative.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "accessibility": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Full-body sensory installations become a known commercial category rather than a single inventor's artifact."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    },
+    {
+      "id": "darpa-somatic-interface-program-1963",
+      "label": "Defense-Funded Somatic Interface Program",
+      "description": "A durable research program develops multisensory simulation interfaces for training and mission rehearsal.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "any": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "defense"
+          },
+          {
+            "kind": "outcomeChosen",
+            "eventId": "sword-of-damocles-1968",
+            "outcomeId": "parallel-somatic-track"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "defense-program-forms",
+          "label": "The defense research program forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Funding, laboratories, and personnel establish multisensory interfaces as an ongoing defense research field.",
+          "requirement": null,
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "This is the immediate institutional consequence of the authored DARPA alternative, not a claim that consumer success follows.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "research",
+              "somatic_vr.defense_program": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 2,
+              "openness": -2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "A generation of researchers treats bodily sensation as a technical simulation problem.",
+            "Somatic interfaces gain continuity at the cost of secrecy and limited civilian access."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    },
+    {
+      "id": "cinerama-1952",
+      "label": "Cinerama Exhibition Fork",
+      "description": "Cinerama combines a curved 146-degree image with synchronized projection and stereo sound; the fork determines whether theaters pursue visual scale alone or install repeatable multisensory effects.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1952",
+        "earliest": "1952-01-01",
+        "latest": "1952-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "visual-surround-standard",
+          "label": "Visual scale and surround sound remain the standard",
+          "canonical": true,
+          "weight": 3,
+          "description": "Cinerama succeeds as a large-screen, surround-sound spectacle without standardizing wind, vibration, or scent.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The canonical system expanded image and sound but did not establish durable nonvisual theater infrastructure.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "room_scale"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 1,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Commercial immersion continues to mean a larger image and richer sound rather than an environment addressing the whole body."
+          ]
+        },
+        {
+          "id": "cinerama-adds-haptics",
+          "label": "Cinerama standardizes multisensory theaters",
+          "canonical": false,
+          "weight": 2,
+          "description": "Cinerama venues add wind, vibration, and scent and make those systems part of repeatable theater construction.",
+          "requirement": "Exhibitors fund multisensory infrastructure to differentiate theaters from television.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The installation directly changes venue infrastructure; later Sensorama success is made likelier, not guaranteed.",
+          "effects": {
+            "sets": {
+              "cinema.multisensory_infrastructure": true,
+              "vr.display_paradigm": "room_scale",
+              "somatic_vr.institutional_home": "commercial",
+              "somatic_vr.development_stage": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 1,
+              "sociality": 3,
+              "accessibility": 1,
+              "institutionalization": 3
+            },
+            "influences": [
+              {
+                "eventId": "sensorama-1962",
+                "weightMultiplier": 1.8,
+                "rationale": "A multisensory theater market makes Heilig's system easier for investors to recognize."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Sensorama enters a market that already understands bodily effects as cinema infrastructure rather than novelty machinery."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#cinerama-1952"]
+    },
+    {
+      "id": "sword-of-damocles-1968",
+      "label": "Sword of Damocles Research Fork",
+      "description": "Ivan Sutherland's ceiling-mounted, head-tracked display establishes computer-generated head-mounted VR; the fork determines whether funding remains visual-first or supports a parallel somatic program.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1968",
+        "earliest": "1968-01-01",
+        "latest": "1968-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.display_paradigm": "head_mounted"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "visual-hmd-track-dominates",
+          "label": "The visual HMD track dominates",
+          "canonical": true,
+          "weight": 3,
+          "description": "Research treats head tracking and computer graphics as VR's central problems while bodily feedback remains peripheral.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The milestone directly establishes the visual-first HMD paradigm followed by later VR programs.",
+          "effects": {
+            "sets": {
+              "vr.institutional_base": "defense"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -4,
+              "embodied_agency": 2,
+              "accessibility": -3,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "For decades, progress in VR is measured primarily through display fidelity, tracking, and graphics."
+          ]
+        },
+        {
+          "id": "parallel-somatic-track",
+          "label": "A parallel somatic track receives equal funding",
+          "canonical": false,
+          "weight": 2,
+          "description": "Defense research funds haptic and bodily simulation alongside Sutherland's visual display work as one coordinated immersive-environment program.",
+          "requirement": "Training sponsors treat touch and bodily cues as core simulation requirements rather than optional theatrical effects.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The branch is adapted directly from the legacy milestone; it establishes research capacity but not consumer adoption.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "plural",
+              "interaction.haptics_stage": "research",
+              "somatic_vr.institutional_home": "military",
+              "somatic_vr.development_stage": "research",
+              "vr.institutional_base": "defense"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 3,
+              "embodied_agency": 4,
+              "accessibility": -3,
+              "openness": -2,
+              "institutionalization": 4
+            },
+            "enables": ["darpa-somatic-interface-program-1963"],
+            "influences": [
+              {
+                "eventId": "vpl-research-1987",
+                "weightMultiplier": 1.5,
+                "rationale": "A continuous somatic research community makes commercial glove work easier to sustain."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The headset and the haptic interface develop as coequal definitions of VR rather than as core device and accessory."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sword-of-damocles-1968"]
+    },
+    {
+      "id": "videoplace-1974",
+      "label": "Videoplace Commercialization Fork",
+      "description": "Myron Krueger's camera-based Videoplace puts unencumbered bodies into a shared responsive graphic space; the fork determines whether it remains arts research or becomes an entertainment interface.",
+      "category": "vr",
+      "lineage": "bridge",
+      "time": {
+        "display": "1974-1975",
+        "earliest": "1974-01-01",
+        "latest": "1975-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "interaction.motion_stage": "research"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "arts-research-lineage",
+          "label": "Videoplace remains an arts-research lineage",
+          "canonical": true,
+          "weight": 3,
+          "description": "Museums and arts grants sustain Videoplace as influential research without creating a mass commercial interface.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The canonical event was publicly demonstrated and institutionally supported through arts funding, but not mass-commercialized.",
+          "effects": {
+            "sets": {
+              "vr.institutional_base": "arts",
+              "vr.display_paradigm": "plural"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": 5,
+              "sociality": 3,
+              "openness": 2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "Room-based bodily interaction remains a powerful alternative idea without displacing the headset in the commercial imagination."
+          ]
+        },
+        {
+          "id": "videoplace-commercializes",
+          "label": "Videoplace becomes a commercial entertainment platform",
+          "canonical": false,
+          "weight": 2,
+          "description": "An arcade or toy company licenses Videoplace and makes camera-based full-body interaction a familiar public interface.",
+          "requirement": "A commercial investor accepts the processing and installation costs of Krueger's prototype.",
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The branch is adapted from the legacy milestone and records commercial interface adoption without assuming universal dominance.",
+          "effects": {
+            "sets": {
+              "interaction.motion_stage": "niche",
+              "vr.institutional_base": "mixed",
+              "vr.display_paradigm": "plural"
+            },
+            "trajectoryDelta": {
+              "embodied_agency": 5,
+              "sociality": 4,
+              "accessibility": 2,
+              "openness": 1,
+              "institutionalization": 3
+            },
+            "influences": [
+              {
+                "eventId": "nintendo-wii-2006",
+                "weightMultiplier": 1.6,
+                "rationale": "A commercial full-body lineage gives later motion gaming an established market vocabulary."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Consumers encounter virtual environments first as shared rooms that read their bodies, not as images sealed inside headsets."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#videoplace-1974"]
+    },
+    {
+      "id": "vpl-research-1987",
+      "label": "VPL Product-Priority Fork",
+      "description": "VPL Research commercializes both the EyePhone HMD and DataGlove; the fork determines which becomes the company's defining product and the public emblem of VR.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1987",
+        "earliest": "1987-01-01",
+        "latest": "1987-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.institutional_base": "startup"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "eyephone-defines-vr",
+          "label": "The EyePhone HMD defines commercial VR",
+          "canonical": true,
+          "weight": 3,
+          "description": "VPL's head-mounted display becomes the recognizable image of VR while the DataGlove remains an expensive supporting interface.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The visual HMD became the durable public icon even though VPL also advanced gesture input.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "head_mounted",
+              "interaction.haptics_stage": "niche",
+              "vr.consumer_market": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 3,
+              "accessibility": -3,
+              "openness": -2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "The headset becomes visual shorthand for virtual reality in laboratories, journalism, and popular culture."
+          ]
+        },
+        {
+          "id": "vpl-somatic-pivot",
+          "label": "The DataGlove becomes VPL's defining platform",
+          "canonical": false,
+          "weight": 2,
+          "description": "VPL prioritizes gesture, touch, and the DataGlove over display fidelity and builds its markets around bodily control.",
+          "requirement": "Investors or medical and training customers value haptic precision more than a more convincing visual display.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The legacy branch changes product priority, not the existence of either device.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "plural",
+              "interaction.haptics_stage": "consumer",
+              "interaction.motion_stage": "niche",
+              "vr.consumer_market": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 5,
+              "accessibility": -2,
+              "openness": -1,
+              "institutionalization": 2
+            },
+            "influences": [
+              {
+                "eventId": "oculus-kickstarter-2012",
+                "weightMultiplier": 0.75,
+                "rationale": "A haptic-first commercial vocabulary slightly reduces the pull of a visual-first revival without preventing it."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Touch and gesture, rather than visual enclosure, become the feature by which the public judges a virtual environment."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#vpl-research-1987"]
+    },
+    {
+      "id": "nintendo-wii-2006",
+      "label": "Wii Somatic-Legacy Fork",
+      "description": "The Wii makes bodily motion a mass-market game interface; the fork determines whether Nintendo leaves that success at the television, turns it into VR hardware, or redirects research funding.",
+      "category": "gaming",
+      "lineage": "heilig",
+      "time": {
+        "display": "2006",
+        "earliest": "2006-01-01",
+        "latest": "2006-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "interaction.motion_stage": "mass"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "motion-gaming-stays-screen-based",
+          "label": "Motion gaming remains screen-based",
+          "canonical": true,
+          "weight": 3,
+          "description": "The Wii proves mass demand for bodily control but Nintendo does not turn it into an immersive headset or multisensory platform.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The console achieved mass motion interaction without becoming VR hardware.",
+          "effects": {
+            "trajectoryDelta": {
+              "embodied_agency": 4,
+              "sociality": 2,
+              "accessibility": 4,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Mass bodily interaction and headset VR remain separate product categories as Oculus approaches."
+          ]
+        },
+        {
+          "id": "wii-vr-integration",
+          "label": "Nintendo builds motion-first consumer VR",
+          "canonical": false,
+          "weight": 2,
+          "description": "Nintendo pairs Wii-scale bodily control with an affordable headset and defines consumer VR through movement before Oculus.",
+          "requirement": "Nintendo treats immersive hardware as the next use of its motion-interface advantage and accepts the display risks.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The branch is adapted from the legacy milestone and asserts an early product category, not permanent market victory.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "plural",
+              "vr.consumer_market": "niche",
+              "vr.corporate_patron": "gaming_hardware"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 1,
+              "embodied_agency": 5,
+              "sociality": 2,
+              "accessibility": 3,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Oculus enters a market where consumers already expect a virtual world to begin with movement rather than display fidelity."
+          ]
+        },
+        {
+          "id": "wii-funds-somatic-research",
+          "label": "Wii success redirects VR research toward the body",
+          "canonical": false,
+          "weight": 1,
+          "description": "Funders treat the Wii as proof of the somatic paradigm and support haptics and multisensory presence before consumer headsets return.",
+          "requirement": "Research institutions read motion gaming as evidence for immersive-interface priorities rather than only console design.",
+          "confidence": "medium-high",
+          "evidenceType": "historical-inference",
+          "rationale": "The branch follows the legacy milestone's second alternative and records research capacity rather than a finished product.",
+          "effects": {
+            "sets": {
+              "interaction.haptics_stage": "research",
+              "somatic_vr.development_stage": "research",
+              "vr.institutional_base": "mixed"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 3,
+              "embodied_agency": 5,
+              "accessibility": 2,
+              "openness": 2,
+              "institutionalization": 4
+            }
+          },
+          "narrativeConsequences": [
+            "The haptic suit, not merely the headset display, becomes the consumer-VR research problem of the following decade."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#nintendo-wii-2006"]
+    },
+    {
+      "id": "oculus-kickstarter-2012",
+      "label": "Oculus Consumer-VR Fork",
+      "description": "Cheap smartphone displays and inertial sensors make consumer headsets plausible again; the fork determines whether visual VR returns alone or beside a funded haptic platform.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2012",
+        "earliest": "2012-01-01",
+        "latest": "2012-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.consumer_market": "niche",
+          "vr.institutional_base": "startup",
+          "vr.corporate_patron": "independent"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "visual-rift-leads-revival",
+          "label": "The visual Rift leads the revival",
+          "canonical": true,
+          "weight": 3,
+          "description": "Oculus makes low-latency visual presence the center of the consumer VR revival, with bodily feedback treated as a later accessory problem.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The canonical Kickstarter and product roadmap centered the headset and its visual tracking problem.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "head_mounted"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": 3,
+              "accessibility": 2,
+              "openness": 1,
+              "institutionalization": 2
+            },
+            "enables": ["facebook-acquires-oculus-2014"]
+          },
+          "narrativeConsequences": [
+            "A convincing, affordable view becomes the price of entry for the new consumer category."
+          ]
+        },
+        {
+          "id": "haptic-rift-parallel",
+          "label": "A haptic platform launches beside the Rift",
+          "canonical": false,
+          "weight": 2,
+          "description": "A parallel crowdfunding success establishes an affordable haptic platform alongside Oculus, making visual and somatic VR coequal consumer expectations.",
+          "requirement": "A credible hardware team converts post-Wii appetite for bodily play into a manufacturable haptic product.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The branch is adapted from the legacy milestone; it establishes a competing platform without assuming which wins.",
+          "effects": {
+            "sets": {
+              "vr.display_paradigm": "plural",
+              "interaction.haptics_stage": "consumer"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 3,
+              "embodied_agency": 5,
+              "accessibility": 2,
+              "openness": 2,
+              "institutionalization": 3
+            },
+            "enables": ["facebook-acquires-oculus-2014"]
+          },
+          "narrativeConsequences": [
+            "Any acquirer of Oculus must decide whether to absorb, compete with, or interoperate with an established bodily interface."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#oculus-kickstarter-2012"]
+    },
+    {
+      "id": "facebook-acquires-oculus-2014",
+      "label": "Oculus Acquisition Fork",
+      "description": "Oculus becomes valuable enough to acquire; the fork determines whether a social advertising platform or a gaming and hardware company becomes VR's principal corporate patron.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2014",
+        "earliest": "2014-01-01",
+        "latest": "2014-12-31",
+        "resolution": "year"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "eventOccurred",
+            "eventId": "oculus-kickstarter-2012"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "facebook-acquisition",
+          "label": "Facebook acquires Oculus",
+          "canonical": true,
+          "weight": 3,
+          "description": "Facebook buys Oculus and makes social connection, platform scale, and engagement central to its institutional future.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The acquisition and purchaser are canonical documented history.",
+          "effects": {
+            "sets": {
+              "vr.corporate_patron": "social_platform",
+              "vr.institutional_base": "platform",
+              "vr.metaverse_bet": "product_line"
+            },
+            "trajectoryDelta": {
+              "sociality": 3,
+              "accessibility": 2,
+              "openness": -4,
+              "institutionalization": 5
+            },
+            "enables": ["facebook-rebrands-meta-2021"]
+          },
+          "narrativeConsequences": [
+            "Consumer VR is pulled toward social-platform scale and away from the priorities of an independent gaming startup."
+          ]
+        },
+        {
+          "id": "gaming-hardware-acquirer",
+          "label": "A gaming or hardware company acquires Oculus",
+          "canonical": false,
+          "weight": 2,
+          "description": "Sony, Valve, Samsung, or a comparable hardware firm outbids Facebook and centers Oculus on games, devices, and hardware quality.",
+          "requirement": "A hardware company accepts the acquisition price or Facebook's board declines the purchase.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The legacy branch identifies plausible alternative purchasers and directly changes institutional control.",
+          "effects": {
+            "sets": {
+              "vr.corporate_patron": "gaming_hardware",
+              "vr.institutional_base": "platform",
+              "vr.metaverse_bet": "product_line"
+            },
+            "trajectoryDelta": {
+              "sociality": 1,
+              "accessibility": 2,
+              "openness": -2,
+              "institutionalization": 4
+            },
+            "disables": ["facebook-rebrands-meta-2021"]
+          },
+          "narrativeConsequences": [
+            "There is no Facebook VR division around which to build a company-wide metaverse identity in 2021."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#facebook-acquires-oculus-2014"]
+    },
+    {
+      "id": "facebook-rebrands-meta-2021",
+      "label": "Meta Rebrand Fork",
+      "description": "Facebook must decide whether social VR remains one product line or becomes the identity and capital-allocation thesis of the whole company.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2021",
+        "earliest": "2021-01-01",
+        "latest": "2021-12-31",
+        "resolution": "year"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "vr.corporate_patron",
+            "operator": "equals",
+            "value": "social_platform"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "meta-corporate-identity",
+          "label": "Facebook becomes Meta",
+          "canonical": true,
+          "weight": 3,
+          "description": "The company renames itself Meta and makes the metaverse a company-defining investment thesis.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The rebrand and strategic commitment are canonical documented history.",
+          "effects": {
+            "sets": {
+              "vr.metaverse_bet": "corporate_identity",
+              "vr.consumer_market": "mass"
+            },
+            "trajectoryDelta": {
+              "sociality": 3,
+              "accessibility": 2,
+              "openness": -4,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": [
+            "The entire technology industry receives a highly visible signal that social VR is a platform-scale future."
+          ]
+        },
+        {
+          "id": "no-meta-rebrand",
+          "label": "VR remains a bounded Facebook product line",
+          "canonical": false,
+          "weight": 2,
+          "description": "Facebook keeps its name and limits VR spending to a product division rather than staking its identity on the metaverse.",
+          "requirement": "Leadership or the board treats the metaverse thesis as too speculative for a company-wide commitment.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The legacy alternative directly changes corporate commitment without asserting that VR disappears.",
+          "effects": {
+            "sets": {
+              "vr.metaverse_bet": "product_line",
+              "vr.consumer_market": "niche"
+            },
+            "trajectoryDelta": {
+              "sociality": 1,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "No singular metaverse-craze moment gives the wider industry a shared object of imitation and backlash."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#facebook-rebrands-meta-2021"]
+    },
+    {
+      "id": "genie-world-models-2024",
+      "label": "Generative World-Model Fork",
+      "description": "Genie-class systems generate interactive environments from prompts and images; the fork determines whether they remain research demonstrations or become a consumer VR content engine.",
+      "category": "computer-graphics",
+      "lineage": "bridge",
+      "time": {
+        "display": "2024-2025",
+        "earliest": "2024-01-01",
+        "latest": "2025-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "world-models-remain-research",
+          "label": "World models remain research systems",
+          "canonical": true,
+          "weight": 3,
+          "description": "Generative interactive environments advance rapidly but remain research platforms rather than the primary way consumer VR content is made.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Within the pilot's 2025 endpoint, the documented systems remain research demonstrations rather than deployed consumer VR engines.",
+          "effects": {
+            "sets": {
+              "generative.world_model_stage": "research"
+            },
+            "trajectoryDelta": {
+              "embodied_agency": 3,
+              "accessibility": 1,
+              "openness": -1,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "The environment becomes generative in the laboratory while consumer virtual worlds remain largely hand-authored."
+          ]
+        },
+        {
+          "id": "genie-consumer-vr-engine",
+          "label": "World models become a consumer VR engine",
+          "canonical": false,
+          "weight": 2,
+          "description": "A headset maker integrates a Genie-class model and lets users prompt responsive virtual environments instead of relying on hand-built 3D scenes.",
+          "requirement": "A hardware partner solves the latency and consistency problems well enough for an embodied consumer product.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The legacy branch defines a direct product integration while leaving its ultimate adoption open.",
+          "effects": {
+            "sets": {
+              "generative.world_model_stage": "consumer_vr"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 1,
+              "embodied_agency": 5,
+              "accessibility": 4,
+              "openness": 2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Authorship shifts from specialist 3D production toward prompting, and virtual worlds respond to users by being regenerated around them."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#genie-world-models-2024"]
+    }
+  ]
+}

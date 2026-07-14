@@ -148,7 +148,7 @@ function renderDiversityReport(report) {
   el.innerHTML = `
     <div class="stat-row">
       <div class="stat"><strong>${report.total}</strong>worlds generated</div>
-      <div class="stat"><strong>${chainPct}%</strong>unique milestone chains</div>
+      <div class="stat"><strong>${chainPct}%</strong>unique world paths</div>
       <div class="stat"><strong>${report.uniqueTerminals}</strong>unique endings</div>
       <div class="stat"><strong>${repeatPct}%</strong>repeated-ending rate</div>
     </div>
@@ -179,14 +179,16 @@ function worldCard(world) {
   const card = document.createElement('div');
   card.className = 'card world-card';
   const branchCount = world.steps.filter(s => s.isBranchPoint).length;
+  const divergenceCount = world.generation?.divergenceCount;
   card.innerHTML = `
     <h3>${esc(world.worldId)}</h3>
     <p>${esc(world.trajectoryDescription)}</p>
     <div class="steps">
-      ${world.steps.map(s => `<span>${esc(s.date)} — ${esc(s.label)}${s.isBranchPoint ? ' ↝' : ''}</span>`).join('')}
+      ${world.steps.map(s => `<span>${esc(s.occurredAt || s.date)} — ${esc(s.label)}${s.isBranchPoint ? ` ↝ ${esc(s.chosenOutcome?.label || s.chosenAlternative?.id || 'branch')}` : ''}</span>`).join('')}
     </div>
     <div class="tag-row">
       <span class="tag branch">${branchCount} branch point${branchCount === 1 ? '' : 's'}</span>
+      ${Number.isInteger(divergenceCount) ? `<span class="tag branch">${divergenceCount} divergence${divergenceCount === 1 ? '' : 's'}</span>` : ''}
       <span class="tag rendered tag-story ${world.hasStory ? '' : 'hidden'}">story ✓</span>
       <span class="tag rendered tag-scenes ${world.hasSceneScript ? '' : 'hidden'}">scenes ✓</span>
     </div>
@@ -406,8 +408,8 @@ function openStoryReader(world, story) {
       <h4>Chosen path</h4>
       ${world.steps.map(s => `
         <div class="path-step">
-          <strong>${esc(s.date)} — ${esc(s.label)}</strong><br>
-          ${s.chosenAlternative ? esc(s.chosenAlternative.description) : esc(s.description)}
+          <strong>${esc(s.occurredAt || s.date)} — ${esc(s.label)}</strong><br>
+          ${s.chosenOutcome ? esc(s.chosenOutcome.description) : s.chosenAlternative ? esc(s.chosenAlternative.description) : esc(s.description)}
         </div>
       `).join('')}
     </div>
@@ -427,7 +429,7 @@ function openSceneReader(world, sceneScript) {
         const step = stepByMilestone[scene.milestoneId];
         return `
           <div class="scene-block">
-            <div class="scene-heading">Scene ${i + 1}${step ? ` — ${esc(step.date)} — ${esc(step.label)}` : scene.isExtrapolated ? ' — invented continuation' : ''}${scene.pacingSeconds ? ` <span class="scene-pacing">${scene.pacingSeconds}s</span>` : ''}</div>
+            <div class="scene-heading">Scene ${i + 1}${step ? ` — ${esc(step.occurredAt || step.date)} — ${esc(step.label)}` : scene.isExtrapolated ? ' — invented continuation' : ''}${scene.pacingSeconds ? ` <span class="scene-pacing">${scene.pacingSeconds}s</span>` : ''}</div>
             <div class="scene-field"><span class="scene-label">Visual</span>${esc(scene.visualDirection)}</div>
             <div class="scene-field"><span class="scene-label">Narration</span>${esc(scene.narration)}</div>
           </div>

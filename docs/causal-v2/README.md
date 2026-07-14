@@ -1,8 +1,8 @@
 # Causal theme schema v2 — pilot runtime
 
-Status: **runtime implemented and tested; pilot fixture not yet an active application theme**.
+Status: **runtime implemented and tested; the expanded pilot is active as `vr-immersion-causal-pilot`**.
 
-The files in this directory define the version-2 causal theme format and its first eight-event VR fixture. They deliberately live outside `themes/`, so the incomplete pilot is not auto-discovered in the UI. The theme loader and world generator can run this format once a completed v2 theme is placed under `themes/`.
+This directory retains the version-2 JSON Schemas and an early illustrative world trace. The runnable 17-event theme, state registry, framework, and config now live under `themes/vr-immersion-causal-pilot/`, where the CLI and web UI discover them normally.
 
 The spike answers four questions:
 
@@ -16,12 +16,12 @@ The spike answers four questions:
 - `causal-theme-config.schema.json` — JSON Schema for versioning, axes, and divergence policy.
 - `state-registry.schema.json` — JSON Schema for the controlled axis/fact vocabulary.
 - `causal-events.schema.json` — JSON Schema for a version-2 event file.
-- `pilot-theme-config.example.json` — theme-version and divergence-policy configuration used by the tests.
-- `vr-state-registry.example.json` — controlled vocabulary for the pilot's trajectory axes and typed facts.
-- `vr-events.example.json` — three worked branch points (Holmes, Lumière, Sensorama) plus the dependent events needed to demonstrate eligibility.
-- `sample-world.example.json` — an illustrative generated trace using three noncanonical outcomes.
+- `sample-world.example.json` — an illustrative trace from the original eight-event design spike; useful for reading the output shape, not a current full-pilot batch result.
+- `../../themes/vr-immersion-causal-pilot/theme.config.json` — active configuration and divergence policy.
+- `../../themes/vr-immersion-causal-pilot/state-registry.json` — controlled vocabulary for six axes and 23 typed facts.
+- `../../themes/vr-immersion-causal-pilot/events.json` — 17 active events from Holmes's stereoscope through generative world models.
 
-None of these files changes current seeded output. The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes.
+The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes. The causal pilot is a third, separate theme and does not reinterpret their saved seeds.
 
 ## Runtime compatibility
 
@@ -98,14 +98,14 @@ Each theme also names a fixed `startEventId`. That event must be a default-activ
 Canonical history is one explicit outcome at every branch point. The supported policies are:
 
 - `baseline`: always choose the canonical outcome;
-- `single`: choose a noncanonical outcome at the first reachable branch, then canonical outcomes thereafter;
+- `single`: plan one reachable branch from the seed's canonical path, choose a noncanonical outcome there, and use canonical outcomes at the other visited branches;
 - `limited`: sample a target between `minDivergences` and `maxDivergences`, diverge at reachable branches until that target is met, then use canonical outcomes;
 - `naturalistic`: sample canonical and noncanonical outcomes from their authored weights;
 - `all-counterfactual`: exclude canonical outcomes at every encountered branch, preserving the current experiment's premise as an available mode.
 
 The pilot configuration uses `limited` with one to three divergences. A comparison batch can also run `baseline`, `single`, `naturalistic`, and `all-counterfactual` so the effect of policy is visible rather than assumed.
 
-The current `single` and `limited` implementations deliberately guarantee their divergence counts by taking early reachable forks. Before treating `single` as a diversity mode, add a strategy that varies the chosen point of divergence while preserving exactly one divergence; the eight-event fixture is too small to settle that policy design.
+`single` uses a separate deterministic planning pass, so the event chain matches the same seed's baseline through the selected divergence event while the divergence point varies across the batch. `limited` currently guarantees its sampled target by taking early reachable forks until the target is met; varying the placement of multiple divergences remains a possible later refinement.
 
 ## Validation contract
 
@@ -129,10 +129,10 @@ Every generated v2 world is replayed immediately, and validation verifies:
 - divergence count obeys the configured policy;
 - the saved trajectory equals the sum of applied deltas.
 
-The automated suite also covers all five divergence modes, same-year event selection, tampered-state detection, v2 directory loading, and exact legacy seed compatibility. Batch-level causal diagnostics—unreachable events, outcomes never sampled, frequently blocked preconditions, terminal-state diversity, and distributions of divergence count and point-of-divergence date—remain a later addition.
+The automated suite also covers all five divergence modes, varied planned divergence points, same-year event selection, tampered-state detection, v2 directory loading, render-prompt integration, batch diagnostics, and exact legacy seed compatibility. Causal batch reports include event/outcome counts, unsampled events and outcomes, terminal-state diversity, divergence-count distribution, and first-divergence dates. Reporting the most frequently blocked individual preconditions remains a later addition.
 
 ## Research status of the examples
 
 The worked events are schema examples derived from the current theme's milestone descriptions, requirements, and downstream effects. They are not a newly researched or source-audited historical model. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it.
 
-The next content review should focus on whether the vocabulary and hard/soft boundary are right before expanding the pilot to a fuller event pool. Numerical weights and deltas remain provisional tuning values.
+The next content review should focus on whether the expanded vocabulary and hard/soft boundary are right, and whether the 17-event pool needs denser bridge events in any era. Numerical weights and deltas remain provisional tuning values.

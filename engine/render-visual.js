@@ -74,8 +74,13 @@ function formatWorldForPrompt(world) {
             ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
             : '')
       : '';
-    return `${i + 1}. milestoneId="${s.milestoneId}" [${s.date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${outcome}`;
+    const date = s.occurredAt ? `${s.occurredAt} (event window: ${s.date})` : s.date;
+    return `${i + 1}. milestoneId="${s.milestoneId}" [${date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${outcome}`;
   }).join('\n\n');
+}
+
+function stepOccurrenceDate(step) {
+  return step.occurredAt || step.date;
 }
 
 // Forcing a tool call (rather than asking the model to hand-format a JSON
@@ -131,7 +136,7 @@ export function buildScenePrompt(theme, world, options = {}) {
   const totalScenes = world.steps.length + (extrapolate ? 1 : 0);
 
   const taskLine = extrapolate
-    ? `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Produce one scene per given milestone, in order (isExtrapolated: false, milestoneId matching exactly), PLUS one additional final scene that you invent: a continuation roughly ${extrapolationYears} years past ${lastStep.label}. This invented scene must be disciplined, not generic science fiction: it must follow specifically from this world's overall trajectory and the named institutions, technologies, tensions, and downstream consequences already established in the path above. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion. Inventing new named characters for this final scene is fine. Set that final scene's milestoneId to exactly "${extrapolatedMilestoneId}" and isExtrapolated to true.`
+    ? `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${stepOccurrenceDate(lastStep)}). Produce one scene per given milestone, in order (isExtrapolated: false, milestoneId matching exactly), PLUS one additional final scene that you invent: a continuation roughly ${extrapolationYears} years past ${lastStep.label}. This invented scene must be disciplined, not generic science fiction: it must follow specifically from this world's overall trajectory and the named institutions, technologies, tensions, and downstream consequences already established in the path above. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion. Inventing new named characters for this final scene is fine. Set that final scene's milestoneId to exactly "${extrapolatedMilestoneId}" and isExtrapolated to true.`
     : `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Produce exactly one scene per milestone, in the same order, translating each into a visualDirection and a narration line. Set isExtrapolated to false for every scene.`;
 
   const systemPrompt = [
@@ -152,7 +157,7 @@ export function buildScenePrompt(theme, world, options = {}) {
   ].filter(Boolean).join('\n');
 
   const userPrompt = [
-    `The chosen path through this world${extrapolate ? ` (ends at "${lastStep.label}", ${lastStep.date} — add one invented extrapolation scene roughly ${extrapolationYears} years past this point)` : ''}:`,
+    `The chosen path through this world${extrapolate ? ` (ends at "${lastStep.label}", ${stepOccurrenceDate(lastStep)} — add one invented extrapolation scene roughly ${extrapolationYears} years past this point)` : ''}:`,
     '',
     formatWorldForPrompt(world),
     '',

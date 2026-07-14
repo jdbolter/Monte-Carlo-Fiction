@@ -298,9 +298,17 @@ export function validateCausalWorld(theme, world) {
   const policy = theme.config.worldgen.divergencePolicy;
   if (policy.mode === 'baseline' && divergenceCount !== 0) errors.push('Baseline policy produced a counterfactual outcome');
   if (policy.mode === 'single' && selectedBranchCount > 0 && divergenceCount !== 1) errors.push('Single policy must produce exactly one divergence when a branch is visited');
+  if (policy.mode === 'single' && divergenceCount === 1) {
+    const divergentStep = world.steps.find(step => step.isBranchPoint && !step.chosenOutcome.canonical);
+    if (!world.generation?.singleDivergenceEventId) errors.push('Single policy did not record its planned divergence event');
+    else if (divergentStep?.eventId !== world.generation.singleDivergenceEventId) errors.push('Single policy diverged at a different event than planned');
+  }
   if (policy.mode === 'limited') {
     if (divergenceCount > policy.maxDivergences) errors.push('Limited policy exceeded maxDivergences');
     if (selectedBranchCount >= policy.minDivergences && divergenceCount < policy.minDivergences) errors.push('Limited policy did not reach minDivergences');
+    const planned = new Set(world.generation?.plannedDivergenceEventIds || []);
+    const unplannedDivergence = world.steps.find(step => step.isBranchPoint && !step.chosenOutcome.canonical && !planned.has(step.eventId));
+    if (unplannedDivergence) errors.push('Limited policy diverged at an event that was not planned');
   }
   if (policy.mode === 'all-counterfactual' && divergenceCount !== selectedBranchCount) {
     errors.push('All-counterfactual policy selected a canonical branch outcome');

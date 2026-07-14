@@ -6,19 +6,20 @@ import { tmpdir } from 'os';
 import { fileURLToPath } from 'url';
 import { generateWorld } from '../engine/worldgen.js';
 import { validateCausalTheme, validateCausalWorld } from '../engine/causal-validate.js';
-import { loadThemeDirectory } from '../engine/theme-loader.js';
+import { listThemeIds, loadTheme, loadThemeDirectory } from '../engine/theme-loader.js';
 import { buildRenderPrompt } from '../engine/render-verbal.js';
 import { buildScenePrompt } from '../engine/render-visual.js';
+import { diversityReport } from '../engine/validate.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURE_DIR = join(__dirname, '..', 'docs', 'causal-v2');
+const FIXTURE_DIR = join(__dirname, '..', 'themes', 'vr-immersion-causal-pilot');
 
 function readJson(name) {
   return JSON.parse(readFileSync(join(FIXTURE_DIR, name), 'utf8'));
 }
 
 function pilotTheme(mode = 'limited', policyOverrides = {}) {
-  const config = readJson('pilot-theme-config.example.json');
+  const config = readJson('theme.config.json');
   config.worldgen.divergencePolicy = {
     ...config.worldgen.divergencePolicy,
     mode,
@@ -28,8 +29,8 @@ function pilotTheme(mode = 'limited', policyOverrides = {}) {
     id: config.id,
     schemaVersion: 2,
     config,
-    events: readJson('vr-events.example.json').events,
-    stateRegistry: readJson('vr-state-registry.example.json'),
+    events: readJson('events.json').events,
+    stateRegistry: readJson('state-registry.json'),
     framework: null
   };
 }
@@ -41,16 +42,23 @@ test('causal design fixture passes static validation', () => {
 test('theme loader reads a schema-v2 theme directory', () => {
   const dir = mkdtempSync(join(tmpdir(), 'monte-carlo-fiction-v2-'));
   try {
-    copyFileSync(join(FIXTURE_DIR, 'pilot-theme-config.example.json'), join(dir, 'theme.config.json'));
-    copyFileSync(join(FIXTURE_DIR, 'vr-events.example.json'), join(dir, 'events.json'));
-    copyFileSync(join(FIXTURE_DIR, 'vr-state-registry.example.json'), join(dir, 'state-registry.json'));
+    copyFileSync(join(FIXTURE_DIR, 'theme.config.json'), join(dir, 'theme.config.json'));
+    copyFileSync(join(FIXTURE_DIR, 'events.json'), join(dir, 'events.json'));
+    copyFileSync(join(FIXTURE_DIR, 'state-registry.json'), join(dir, 'state-registry.json'));
     const theme = loadThemeDirectory('vr-immersion-causal-pilot', dir);
     assert.equal(theme.schemaVersion, 2);
-    assert.equal(theme.events.length, 8);
-    assert.equal(Object.keys(theme.stateRegistry.facts).length, 14);
+    assert.equal(theme.events.length, 17);
+    assert.equal(Object.keys(theme.stateRegistry.facts).length, 23);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
+});
+
+test('active causal pilot is auto-discovered as a schema-v2 theme', () => {
+  assert.ok(listThemeIds().includes('vr-immersion-causal-pilot'));
+  const theme = loadTheme('vr-immersion-causal-pilot');
+  assert.equal(theme.schemaVersion, 2);
+  assert.equal(theme.events.length, 17);
 });
 
 test('schema-version dispatch generates a replay-valid causal world', () => {
@@ -68,6 +76,7 @@ test('both render prompts receive explicit canonical v2 outcomes', () => {
   const canonicalBranch = world.steps.find(step => step.isBranchPoint);
   assert.ok(canonicalBranch.chosenOutcome.canonical);
   assert.match(buildRenderPrompt(theme, world).userPrompt, /Outcome in this world \(canonical control\)/);
+  assert.match(buildRenderPrompt(theme, world).userPrompt, /event window:/);
   assert.match(buildRenderPrompt(theme, world).userPrompt, new RegExp(canonicalBranch.chosenOutcome.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
   assert.match(buildScenePrompt(theme, world).userPrompt, /Outcome in this world \(canonical control\)/);
 });
@@ -85,22 +94,38 @@ test('baseline policy chooses only canonical branch outcomes', () => {
 });
 
 test('single policy chooses exactly one counterfactual branch outcome', () => {
-  const theme = pilotTheme('single');
-  for (let seed = 1; seed <= 25; seed++) {
+  const divergenceEvents = new Set();
+  for (let seed = 1; seed <= 100; seed++) {
+    const theme = pilotTheme('single');
     const world = generateWorld(theme, seed);
+    const baseline = generateWorld(pilotTheme('baseline'), seed);
+    const targetId = world.generation.singleDivergenceEventId;
+    const targetIndex = world.steps.findIndex(step => step.eventId === targetId);
     assert.equal(world.generation.divergenceCount, 1);
+    assert.ok(targetIndex >= 0);
+    divergenceEvents.add(targetId);
+    assert.deepEqual(
+      world.steps.slice(0, targetIndex + 1).map(step => step.eventId),
+      baseline.steps.slice(0, targetIndex + 1).map(step => step.eventId)
+    );
     assert.equal(validateCausalWorld(theme, world).passed, true);
   }
+  assert.ok(divergenceEvents.size >= 3);
 });
 
 test('limited policy obeys its divergence bounds across a batch', () => {
   const theme = pilotTheme('limited', { minDivergences: 1, maxDivergences: 3 });
+  const firstDivergenceDates = new Set();
   for (let seed = 1; seed <= 100; seed++) {
     const world = generateWorld(theme, seed);
     assert.ok(world.generation.divergenceCount >= 1);
     assert.ok(world.generation.divergenceCount <= 3);
+    assert.ok(world.generation.plannedDivergenceEventIds.length >= 1);
+    const firstDivergence = world.steps.find(step => step.isBranchPoint && !step.chosenOutcome.canonical);
+    firstDivergenceDates.add(firstDivergence.occurredAt);
     assert.equal(validateCausalWorld(theme, world).passed, true);
   }
+  assert.ok(firstDivergenceDates.size >= 5);
 });
 
 test('all-counterfactual policy never chooses canonical at a visited branch', () => {
@@ -113,8 +138,8 @@ test('all-counterfactual policy never chooses canonical at a visited branch', ()
 
     const ids = new Set(world.steps.map(step => step.eventId));
     if (ids.has('kinetoscope-parlor-system-1896')) assert.ok(!ids.has('movie-palace-system-1905'));
-    if (ids.has('darpa-somatic-interface-program-1963')) assert.ok(!ids.has('sensorama-arcade-network-1963'));
-    if (ids.has('sensorama-arcade-network-1963')) assert.ok(!ids.has('darpa-somatic-interface-program-1963'));
+    const acquisition = world.steps.find(step => step.eventId === 'facebook-acquires-oculus-2014');
+    if (acquisition?.chosenOutcome.id === 'gaming-hardware-acquirer') assert.ok(!ids.has('facebook-rebrands-meta-2021'));
   }
 });
 
@@ -132,6 +157,20 @@ test('naturalistic policy samples both canonical and counterfactual outcomes', (
   }
   assert.ok(canonicalBranches > 0);
   assert.ok(counterfactualBranches > 0);
+});
+
+test('causal batch diagnostics count outcome paths and state diversity', () => {
+  const theme = pilotTheme('limited', { minDivergences: 1, maxDivergences: 3 });
+  const worlds = Array.from({ length: 100 }, (_, index) => generateWorld(theme, index + 1));
+  const report = diversityReport(worlds, theme.config.axes, theme);
+  assert.ok(report.uniqueOutcomePaths >= report.uniqueMilestoneChains);
+  assert.ok(report.causalDiagnostics.uniqueTerminalStates > 1);
+  assert.deepEqual(Object.keys(report.causalDiagnostics.divergenceCountDistribution), ['1', '2', '3']);
+  assert.ok(Object.values(report.causalDiagnostics.divergenceCountDistribution).every(count => count > 0));
+  assert.equal(
+    Object.values(report.causalDiagnostics.divergenceCountDistribution).reduce((sum, count) => sum + count, 0),
+    100
+  );
 });
 
 test('two events in the same year can both occur', () => {

@@ -43,6 +43,8 @@
       "properties": {
         "selector": { "const": "causal" },
         "topN": { "type": "integer", "minimum": 1 },
+        "timeDecayWeight": { "type": "number", "minimum": 0 },
+        "rankWeightExponent": { "type": "number", "exclusiveMinimum": 0 },
         "divergencePolicy": { "$ref": "#/$defs/divergencePolicy" }
       }
     },

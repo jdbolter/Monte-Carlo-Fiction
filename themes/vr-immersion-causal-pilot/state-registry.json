@@ -110,6 +110,59 @@
       "type": "boolean",
       "default": false,
       "description": "A durable defense-funded research program for somatic interfaces exists."
+    },
+    "cinema.multisensory_infrastructure": {
+      "type": "boolean",
+      "default": false,
+      "description": "Commercial cinema venues have repeatable infrastructure for wind, vibration, scent, or other nonvisual effects."
+    },
+    "vr.display_paradigm": {
+      "type": "enum",
+      "values": ["unknown", "room_scale", "head_mounted", "plural"],
+      "default": "unknown",
+      "description": "The dominant spatial arrangement for immersive displays."
+    },
+    "interaction.motion_stage": {
+      "type": "enum",
+      "values": ["none", "research", "niche", "mass"],
+      "default": "none",
+      "description": "The adoption stage of bodily motion as a computer interface."
+    },
+    "interaction.haptics_stage": {
+      "type": "enum",
+      "values": ["none", "research", "niche", "consumer"],
+      "default": "none",
+      "description": "The adoption stage of touch and force feedback in immersive systems."
+    },
+    "vr.institutional_base": {
+      "type": "enum",
+      "values": ["none", "arts", "defense", "startup", "platform", "mixed"],
+      "default": "none",
+      "description": "The principal durable institution supporting interactive VR development."
+    },
+    "vr.consumer_market": {
+      "type": "enum",
+      "values": ["none", "niche", "mass", "contracting"],
+      "default": "none",
+      "description": "The scale and condition of the consumer VR market."
+    },
+    "vr.corporate_patron": {
+      "type": "enum",
+      "values": ["none", "independent", "gaming_hardware", "social_platform"],
+      "default": "none",
+      "description": "The kind of organization controlling the major consumer VR platform."
+    },
+    "vr.metaverse_bet": {
+      "type": "enum",
+      "values": ["none", "product_line", "corporate_identity"],
+      "default": "none",
+      "description": "Whether social VR is absent, a bounded product line, or a company-defining strategy."
+    },
+    "generative.world_model_stage": {
+      "type": "enum",
+      "values": ["none", "research", "consumer_vr"],
+      "default": "none",
+      "description": "Whether generative interactive worlds remain research systems or have become a consumer VR content engine."
     }
   }
 }

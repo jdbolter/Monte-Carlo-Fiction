@@ -32,7 +32,7 @@ function weightedPick(items, weights, rng) {
 }
 
 export class CausalEventSelector {
-  constructor(theme, rng) {
+  constructor(theme, rng, options = {}) {
     this.theme = theme;
     this.config = theme.config;
     this.events = theme.events;
@@ -42,14 +42,19 @@ export class CausalEventSelector {
     this.divergenceCount = 0;
     this.selectionCount = 0;
 
-    const policy = this.config.worldgen?.divergencePolicy || { mode: 'naturalistic' };
+    const policy = options.policy || this.config.worldgen?.divergencePolicy || { mode: 'naturalistic' };
     this.policy = policy;
+    this.singleTargetEventId = options.singleTargetEventId || null;
+    this.limitedTargetEventIds = options.limitedTargetEventIds
+      ? new Set(options.limitedTargetEventIds)
+      : null;
     if (policy.mode === 'single') {
       this.targetDivergences = 1;
     } else if (policy.mode === 'limited') {
       const min = policy.minDivergences ?? 0;
       const max = policy.maxDivergences ?? min;
-      this.targetDivergences = min + Math.floor(this.rng() * (max - min + 1));
+      this.targetDivergences = options.targetDivergences ??
+        (min + Math.floor(this.rng() * (max - min + 1)));
     } else {
       this.targetDivergences = null;
     }
@@ -76,6 +81,10 @@ export class CausalEventSelector {
     return event.outcomes.filter(outcome => evaluateRequirements(outcome.requires, this.state));
   }
 
+  hasEligibleCounterfactual(event) {
+    return this._eligibleOutcomes(event).some(outcome => !outcome.canonical);
+  }
+
   _expectedEventVector(event) {
     const outcomes = this._eligibleOutcomes(event);
     const totalWeight = outcomes.reduce((sum, outcome) => sum + outcome.weight, 0) || 1;
@@ -100,7 +109,13 @@ export class CausalEventSelector {
     const branchBonus = event.outcomes.length > 1
       ? (this.config.worldgen?.branchPointBonus ?? 1)
       : 0;
-    return dot + branchBonus - timeWeight * excessSteps;
+    // Trajectory is cumulative, so its raw dot product grows automatically
+    // with every selected event and can eventually overpower any fixed time
+    // penalty. Normalize by path length to preserve thematic momentum without
+    // making a century-scale jump more attractive merely because the world is
+    // several steps old.
+    const normalizedAlignment = dot / Math.max(1, this.selectionCount);
+    return normalizedAlignment + branchBonus - timeWeight * excessSteps;
   }
 
   selectNext() {
@@ -152,10 +167,18 @@ export class CausalEventSelector {
         pool = canonical;
         break;
       case 'single':
-        pool = this.divergenceCount < 1 && alternatives.length ? alternatives : canonical;
+        if (this.singleTargetEventId) {
+          pool = event.id === this.singleTargetEventId && alternatives.length ? alternatives : canonical;
+        } else {
+          pool = this.divergenceCount < 1 && alternatives.length ? alternatives : canonical;
+        }
         break;
       case 'limited':
-        pool = this.divergenceCount < this.targetDivergences && alternatives.length ? alternatives : canonical;
+        if (this.limitedTargetEventIds) {
+          pool = this.limitedTargetEventIds.has(event.id) && alternatives.length ? alternatives : canonical;
+        } else {
+          pool = this.divergenceCount < this.targetDivergences && alternatives.length ? alternatives : canonical;
+        }
         break;
       case 'all-counterfactual':
         pool = alternatives.length ? alternatives : canonical;
@@ -203,6 +226,7 @@ export class CausalEventSelector {
       milestoneId: event.id,
       occurredAt,
       date: event.time.display,
+      timeWindow: { ...event.time },
       label: event.label,
       category: event.category || null,
       lineage: event.lineage || null,
@@ -210,6 +234,7 @@ export class CausalEventSelector {
       isBranchPoint,
       chosenOutcome: {
         id: outcome.id,
+        label: outcome.label,
         canonical: outcome.canonical,
         description: outcome.description,
         requirement: outcome.requirement,

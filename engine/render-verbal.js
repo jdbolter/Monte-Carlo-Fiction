@@ -85,8 +85,13 @@ function formatWorldForPrompt(world) {
             ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
             : '')
       : '';
-    return `${i + 1}. [${s.date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${outcome}`;
+    const date = s.occurredAt ? `${s.occurredAt} (event window: ${s.date})` : s.date;
+    return `${i + 1}. [${date}] ${s.label}${s.category ? ` (${s.category})` : ''}\n  ${s.description}${outcome}`;
   }).join('\n\n');
+}
+
+function stepOccurrenceDate(step) {
+  return step.occurredAt || step.date;
 }
 
 export function buildRenderPrompt(theme, world, options = {}) {
@@ -118,8 +123,8 @@ export function buildRenderPrompt(theme, world, options = {}) {
 
   const taskLines = extrapolate
     ? [
-        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${lastStep.date}). Write a short story of ${minWords}-${maxWords} words total that does three things in sequence:`,
-        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${lastStep.date}), grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered.`,
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${stepOccurrenceDate(lastStep)}). Write a short story of ${minWords}-${maxWords} words total that does three things in sequence:`,
+        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${stepOccurrenceDate(lastStep)}), grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered.`,
         `2. Near the end of that dramatization, before moving past ${lastStep.label}: ${THESIS_INSTRUCTION}`,
         `3. For the final ~${extrapolationWords} words: continue PAST that last moment, roughly ${extrapolationYears} years further, into events that are NOT in the given path — invent them yourself. This invented continuation must be disciplined, not generic science fiction: it must follow specifically from (a) this world's overall trajectory — ${world.trajectoryDescription} — and (b) the named institutions, technologies, tensions, and downstream consequences already established in the path above, especially any "downstream consequences" text attached to counterfactual choices. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion in this world. Inventing new named characters for this continuation is fine. This closing anecdote should land with the weight of the thesis just stated in step 2, not have to carry that meaning by itself — and it may return to the story's normal literary register, only the thesis sentence itself needs the plain-analytical shift.`
       ]
@@ -145,7 +150,7 @@ export function buildRenderPrompt(theme, world, options = {}) {
 
   const userPrompt = extrapolate
     ? [
-        `The chosen path through this world (ends at "${lastStep.label}", ${lastStep.date} — extrapolate past this point for the final ~${extrapolationWords} words):`,
+        `The chosen path through this world (ends at "${lastStep.label}", ${stepOccurrenceDate(lastStep)} — extrapolate past this point for the final ~${extrapolationWords} words):`,
         '',
         formatWorldForPrompt(world),
         '',

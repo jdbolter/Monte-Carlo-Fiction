@@ -2,13 +2,13 @@
   "schemaVersion": 2,
   "id": "vr-immersion-causal-pilot",
   "name": "VR & Immersive Media — Causal Pilot",
-  "description": "Version-2 causal pilot kept separate from the legacy VR theme for direct comparison.",
+  "description": "A causal alternate-history pilot tracing immersive media from stereoscopy through generative world models, with explicit outcomes that change later eligibility.",
   "eventFile": "events.json",
   "stateRegistryFile": "state-registry.json",
   "startEventId": "holmes-stereoscope-1861",
   "startDate": "1861-01-01",
-  "endDate": "1970-12-31",
-  "stepsPerWorld": 8,
+  "endDate": "2025-12-31",
+  "stepsPerWorld": 12,
   "axes": [
     "sensory_breadth",
     "embodied_agency",
@@ -19,7 +19,8 @@
   ],
   "worldgen": {
     "selector": "causal",
-    "topN": 3,
+    "topN": 5,
+    "timeDecayWeight": 20,
     "divergencePolicy": {
       "mode": "limited",
       "minDivergences": 1,
