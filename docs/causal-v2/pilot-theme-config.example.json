@@ -1,0 +1,34 @@
+{
+  "schemaVersion": 2,
+  "id": "vr-immersion-causal-pilot",
+  "name": "VR & Immersive Media — Causal Pilot",
+  "description": "Version-2 causal pilot kept separate from the legacy VR theme for direct comparison.",
+  "eventFile": "events.json",
+  "stateRegistryFile": "state-registry.json",
+  "startDate": "1861-01-01",
+  "endDate": "1970-12-31",
+  "stepsPerWorld": 8,
+  "axes": [
+    "sensory_breadth",
+    "embodied_agency",
+    "sociality",
+    "accessibility",
+    "openness",
+    "institutionalization"
+  ],
+  "worldgen": {
+    "selector": "causal",
+    "topN": 3,
+    "divergencePolicy": {
+      "mode": "limited",
+      "minDivergences": 1,
+      "maxDivergences": 3
+    }
+  },
+  "render": {
+    "model": "claude-sonnet-5",
+    "maxTokens": 1300,
+    "minWords": 400,
+    "maxWords": 500
+  }
+}

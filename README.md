@@ -6,6 +6,8 @@ Each theme is explicitly an **alternate-histories** experiment: every generated 
 
 See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
 
+An experimental version-2 causal theme schema is being designed under [`docs/causal-v2/`](docs/causal-v2/README.md). It is a design spike only: the running engine and current themes still use the legacy milestone format.
+
 ## Architecture
 
 Two layers, kept deliberately separate so new themes never require touching engine code:

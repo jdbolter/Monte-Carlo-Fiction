@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 2,
+  "themeId": "vr-immersion-causal-pilot",
+  "axes": {
+    "sensory_breadth": {
+      "negativePole": "Optical or auditory channels dominate; the rest of the body is largely unaddressed.",
+      "positivePole": "Multiple senses and full-body experience are deliberately integrated.",
+      "eventDeltaRange": [-5, 5]
+    },
+    "embodied_agency": {
+      "negativePole": "The user primarily receives a preauthored experience.",
+      "positivePole": "Bodily action, manipulation, and feedback materially change the experience.",
+      "eventDeltaRange": [-5, 5]
+    },
+    "sociality": {
+      "negativePole": "Use is solitary, private, or isolating.",
+      "positivePole": "Use is collective, public, or meaningfully co-present.",
+      "eventDeltaRange": [-5, 5]
+    },
+    "accessibility": {
+      "negativePole": "Access is expensive, elite, specialized, or geographically narrow.",
+      "positivePole": "Access is affordable, legible, and broadly distributed.",
+      "eventDeltaRange": [-5, 5]
+    },
+    "openness": {
+      "negativePole": "Ownership, standards, and production are proprietary or centrally controlled.",
+      "positivePole": "Knowledge, standards, and production are open or interoperable.",
+      "eventDeltaRange": [-5, 5]
+    },
+    "institutionalization": {
+      "negativePole": "The practice depends on isolated inventors, temporary novelty, or fragile support.",
+      "positivePole": "The practice has durable organizational funding, training, and infrastructure.",
+      "eventDeltaRange": [-5, 5]
+    }
+  },
+  "facts": {
+    "stereoscope.design_available": {
+      "type": "boolean",
+      "default": false,
+      "description": "A cheap simplified handheld stereoscope design exists."
+    },
+    "stereoscope.ip_model": {
+      "type": "enum",
+      "values": ["unknown", "open", "licensed"],
+      "default": "unknown",
+      "description": "The governing intellectual-property model for the cheap stereoscope design."
+    },
+    "stereoscope.market_access": {
+      "type": "enum",
+      "values": ["unknown", "elite", "mass"],
+      "default": "unknown",
+      "description": "The social breadth of access to stereoscopic viewing."
+    },
+    "stereoview.mass_culture": {
+      "type": "boolean",
+      "default": false,
+      "description": "Stereoview cards have become a normalized mass-market domestic medium."
+    },
+    "cinema.projection_available": {
+      "type": "boolean",
+      "default": false,
+      "description": "Practical projected moving pictures are technically available."
+    },
+    "cinema.exhibition_model": {
+      "type": "enum",
+      "values": ["unknown", "collective", "private", "mixed"],
+      "default": "unknown",
+      "description": "The dominant social form of moving-image exhibition."
+    },
+    "cinema.dominant_venue": {
+      "type": "enum",
+      "values": ["unknown", "theater", "peep_parlor", "mixed"],
+      "default": "unknown",
+      "description": "The dominant commercial venue for moving images."
+    },
+    "cinema.movie_palace_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "A durable industry of large shared movie theaters has formed."
+    },
+    "cinema.kinetoscope_parlor_system": {
+      "type": "boolean",
+      "default": false,
+      "description": "A durable private, coin-operated moving-image parlor industry has formed."
+    },
+    "sensorama.prototype_exists": {
+      "type": "boolean",
+      "default": false,
+      "description": "Heilig's functioning multisensory Sensorama prototype exists."
+    },
+    "sensorama.funding_model": {
+      "type": "enum",
+      "values": ["unknown", "none", "private_arcade", "defense"],
+      "default": "unknown",
+      "description": "The institutional funding route, if any, that carries Sensorama beyond a prototype."
+    },
+    "somatic_vr.institutional_home": {
+      "type": "enum",
+      "values": ["none", "commercial", "military"],
+      "default": "none",
+      "description": "The primary institutional home of the somatic VR lineage."
+    },
+    "somatic_vr.development_stage": {
+      "type": "enum",
+      "values": ["none", "experimental", "research", "niche", "mass"],
+      "default": "none",
+      "description": "How far multisensory full-body systems have progressed beyond prototypes, whether in research or commercial deployment."
+    },
+    "somatic_vr.defense_program": {
+      "type": "boolean",
+      "default": false,
+      "description": "A durable defense-funded research program for somatic interfaces exists."
+    }
+  }
+}

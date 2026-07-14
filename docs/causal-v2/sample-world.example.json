@@ -1,0 +1,506 @@
+{
+  "schemaVersion": 2,
+  "stateEncoding": "nonDefaultFacts",
+  "worldId": "vr-immersion-causal-pilot-0042",
+  "themeId": "vr-immersion-causal-pilot",
+  "seed": 42,
+  "createdAt": "2026-07-14T12:00:00.000Z",
+  "generation": {
+    "selector": "causal",
+    "divergencePolicy": {
+      "mode": "limited",
+      "minDivergences": 1,
+      "maxDivergences": 3
+    },
+    "divergenceCount": 3
+  },
+  "steps": [
+    {
+      "eventId": "holmes-stereoscope-1861",
+      "milestoneId": "holmes-stereoscope-1861",
+      "occurredAt": "1861-06-01",
+      "date": "1861",
+      "label": "Holmes's Handheld Stereoscope",
+      "description": "Oliver Wendell Holmes designs a cheap simplified handheld stereoscope. The fork concerns whether he leaves the design open or patents and licenses it.",
+      "isBranchPoint": true,
+      "chosenOutcome": {
+        "id": "holmes-patents-instead",
+        "canonical": false,
+        "description": "Holmes patents the simplified stereoscope and licenses it for a fee, prioritizing commercial return over rapid diffusion."
+      },
+      "chosenAlternative": {
+        "id": "holmes-patents-instead",
+        "description": "Holmes patents the simplified stereoscope and licenses it for a fee, prioritizing commercial return over rapid diffusion.",
+        "plausibility": "medium",
+        "requirement": "Holmes or Joseph Bates decides the design's commercial value outweighs popular-science advocacy.",
+        "downstreamEffects": [
+          "Stereoscopic viewing remains an upper-middle-class practice for longer.",
+          "A licensing model becomes a visible precedent for later immersive-media ownership."
+        ]
+      },
+      "eligibilityTrace": {
+        "activation": "default",
+        "withinTimeWindow": true,
+        "requirementsSatisfied": true,
+        "enabledBy": null
+      },
+      "stateBefore": {
+        "facts": {},
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": 0,
+          "accessibility": 0,
+          "openness": 0,
+          "institutionalization": 0
+        },
+        "enabledEvents": [],
+        "disabledEvents": []
+      },
+      "appliedEffects": {
+        "sets": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite"
+        },
+        "trajectoryDelta": {
+          "sociality": -2,
+          "accessibility": -3,
+          "openness": -4,
+          "institutionalization": 1
+        },
+        "enables": ["stereoview-mass-culture-1860s"],
+        "influences": [
+          {
+            "eventId": "stereoview-mass-culture-1860s",
+            "weightMultiplier": 0.35
+          }
+        ]
+      },
+      "stateAfter": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite"
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -2,
+          "accessibility": -3,
+          "openness": -4,
+          "institutionalization": 1
+        },
+        "enabledEvents": ["stereoview-mass-culture-1860s"],
+        "disabledEvents": []
+      }
+    },
+    {
+      "eventId": "lumiere-cinematographe-1895",
+      "milestoneId": "lumiere-cinematographe-1895",
+      "occurredAt": "1895-12-28",
+      "date": "December 1895",
+      "label": "Lumière Cinématographe Exhibition Fork",
+      "description": "Projected moving pictures become technically practical; the fork determines whether collective projection or Edison's private peephole model becomes commercially dominant.",
+      "isBranchPoint": true,
+      "chosenOutcome": {
+        "id": "kinetoscope-model-prevails",
+        "canonical": false,
+        "description": "Patent enforcement or exhibition failure leaves the solitary coin-operated peephole model commercially dominant."
+      },
+      "chosenAlternative": {
+        "id": "kinetoscope-model-prevails",
+        "description": "Patent enforcement or exhibition failure leaves the solitary coin-operated peephole model commercially dominant.",
+        "plausibility": "medium",
+        "requirement": "Stronger Edison patent enforcement in Europe, or failure of the Lumières' Paris exhibition to draw paying crowds.",
+        "downstreamEffects": [
+          "Moving images develop socially like arcade cabinets or later headsets rather than theatrical cinema.",
+          "Any later collective cinema must emerge through a different event rather than being silently assumed."
+        ]
+      },
+      "eligibilityTrace": {
+        "activation": "default",
+        "withinTimeWindow": true,
+        "requirementsSatisfied": true,
+        "enabledBy": null,
+        "expiredSincePreviousStep": ["stereoview-mass-culture-1860s"]
+      },
+      "stateBefore": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite"
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -2,
+          "accessibility": -3,
+          "openness": -4,
+          "institutionalization": 1
+        },
+        "enabledEvents": [],
+        "disabledEvents": []
+      },
+      "appliedEffects": {
+        "sets": {
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor"
+        },
+        "trajectoryDelta": {
+          "sociality": -4,
+          "accessibility": 1,
+          "openness": -2,
+          "institutionalization": 1
+        },
+        "enables": ["kinetoscope-parlor-system-1896"],
+        "disables": ["movie-palace-system-1905"]
+      },
+      "stateAfter": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor"
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -6,
+          "accessibility": -2,
+          "openness": -6,
+          "institutionalization": 2
+        },
+        "enabledEvents": ["kinetoscope-parlor-system-1896"],
+        "disabledEvents": ["movie-palace-system-1905"]
+      }
+    },
+    {
+      "eventId": "kinetoscope-parlor-system-1896",
+      "milestoneId": "kinetoscope-parlor-system-1896",
+      "occurredAt": "1900-05-01",
+      "date": "1896-1910",
+      "label": "Kinetoscope Parlors Become the Dominant Industry",
+      "description": "Private coin-operated cabinets develop into the durable commercial system for moving-image exhibition.",
+      "isBranchPoint": false,
+      "chosenOutcome": {
+        "id": "parlor-industry-forms",
+        "canonical": true,
+        "description": "Investment and distribution consolidate around private cabinet venues."
+      },
+      "chosenAlternative": null,
+      "eligibilityTrace": {
+        "activation": "explicit",
+        "withinTimeWindow": true,
+        "requirementsSatisfied": true,
+        "enabledBy": {
+          "eventId": "lumiere-cinematographe-1895",
+          "outcomeId": "kinetoscope-model-prevails"
+        },
+        "conditions": [
+          {
+            "fact": "cinema.exhibition_model",
+            "expected": "private",
+            "actual": "private",
+            "passed": true
+          }
+        ]
+      },
+      "stateBefore": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor"
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -6,
+          "accessibility": -2,
+          "openness": -6,
+          "institutionalization": 2
+        },
+        "enabledEvents": ["kinetoscope-parlor-system-1896"],
+        "disabledEvents": ["movie-palace-system-1905"]
+      },
+      "appliedEffects": {
+        "sets": {
+          "cinema.kinetoscope_parlor_system": true
+        },
+        "trajectoryDelta": {
+          "sociality": -1,
+          "accessibility": 1,
+          "institutionalization": 1
+        }
+      },
+      "stateAfter": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor",
+          "cinema.kinetoscope_parlor_system": true
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -7,
+          "accessibility": -1,
+          "openness": -6,
+          "institutionalization": 3
+        },
+        "enabledEvents": [],
+        "disabledEvents": ["movie-palace-system-1905"]
+      }
+    },
+    {
+      "eventId": "sensorama-1962",
+      "milestoneId": "sensorama-1962",
+      "occurredAt": "1962-06-01",
+      "date": "1962",
+      "label": "Sensorama Funding Fork",
+      "description": "Morton Heilig completes a functioning multisensory cabinet; the fork determines whether any institution carries it beyond a prototype.",
+      "isBranchPoint": true,
+      "chosenOutcome": {
+        "id": "sensorama-darpa-funding",
+        "canonical": false,
+        "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training."
+      },
+      "chosenAlternative": {
+        "id": "sensorama-darpa-funding",
+        "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training.",
+        "plausibility": "low",
+        "requirement": "A defense research sponsor treats wind, vibration, and smell as useful simulation channels rather than theatrical embellishments.",
+        "downstreamEffects": [
+          "Somatic VR gains durable laboratories and procurement but develops under secrecy and training requirements.",
+          "Consumer uses may arrive later through technology transfer rather than direct entertainment investment."
+        ]
+      },
+      "eligibilityTrace": {
+        "activation": "default",
+        "withinTimeWindow": true,
+        "requirementsSatisfied": true,
+        "enabledBy": null
+      },
+      "stateBefore": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor",
+          "cinema.kinetoscope_parlor_system": true
+        },
+        "trajectory": {
+          "sensory_breadth": 0,
+          "embodied_agency": 0,
+          "sociality": -7,
+          "accessibility": -1,
+          "openness": -6,
+          "institutionalization": 3
+        },
+        "enabledEvents": [],
+        "disabledEvents": ["movie-palace-system-1905"]
+      },
+      "appliedEffects": {
+        "sets": {
+          "sensorama.prototype_exists": true,
+          "sensorama.funding_model": "defense",
+          "somatic_vr.institutional_home": "military",
+          "somatic_vr.development_stage": "experimental"
+        },
+        "trajectoryDelta": {
+          "sensory_breadth": 4,
+          "embodied_agency": 3,
+          "accessibility": -2,
+          "openness": -4,
+          "institutionalization": 4
+        },
+        "enables": ["darpa-somatic-interface-program-1963"],
+        "disables": ["sensorama-arcade-network-1963"]
+      },
+      "stateAfter": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor",
+          "cinema.kinetoscope_parlor_system": true,
+          "sensorama.prototype_exists": true,
+          "sensorama.funding_model": "defense",
+          "somatic_vr.institutional_home": "military",
+          "somatic_vr.development_stage": "experimental"
+        },
+        "trajectory": {
+          "sensory_breadth": 4,
+          "embodied_agency": 3,
+          "sociality": -7,
+          "accessibility": -3,
+          "openness": -10,
+          "institutionalization": 7
+        },
+        "enabledEvents": ["darpa-somatic-interface-program-1963"],
+        "disabledEvents": [
+          "movie-palace-system-1905",
+          "sensorama-arcade-network-1963"
+        ]
+      }
+    },
+    {
+      "eventId": "darpa-somatic-interface-program-1963",
+      "milestoneId": "darpa-somatic-interface-program-1963",
+      "occurredAt": "1965-01-01",
+      "date": "1963-1970",
+      "label": "Defense-Funded Somatic Interface Program",
+      "description": "A durable research program develops multisensory simulation interfaces for training and mission rehearsal.",
+      "isBranchPoint": false,
+      "chosenOutcome": {
+        "id": "defense-program-forms",
+        "canonical": true,
+        "description": "Funding, laboratories, and personnel establish multisensory interfaces as an ongoing defense research field."
+      },
+      "chosenAlternative": null,
+      "eligibilityTrace": {
+        "activation": "explicit",
+        "withinTimeWindow": true,
+        "requirementsSatisfied": true,
+        "enabledBy": {
+          "eventId": "sensorama-1962",
+          "outcomeId": "sensorama-darpa-funding"
+        },
+        "conditions": [
+          {
+            "fact": "sensorama.funding_model",
+            "expected": "defense",
+            "actual": "defense",
+            "passed": true
+          }
+        ]
+      },
+      "stateBefore": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor",
+          "cinema.kinetoscope_parlor_system": true,
+          "sensorama.prototype_exists": true,
+          "sensorama.funding_model": "defense",
+          "somatic_vr.institutional_home": "military",
+          "somatic_vr.development_stage": "experimental"
+        },
+        "trajectory": {
+          "sensory_breadth": 4,
+          "embodied_agency": 3,
+          "sociality": -7,
+          "accessibility": -3,
+          "openness": -10,
+          "institutionalization": 7
+        },
+        "enabledEvents": ["darpa-somatic-interface-program-1963"],
+        "disabledEvents": [
+          "movie-palace-system-1905",
+          "sensorama-arcade-network-1963"
+        ]
+      },
+      "appliedEffects": {
+        "sets": {
+          "somatic_vr.development_stage": "research",
+          "somatic_vr.defense_program": true
+        },
+        "trajectoryDelta": {
+          "sensory_breadth": 2,
+          "embodied_agency": 2,
+          "openness": -2,
+          "institutionalization": 2
+        }
+      },
+      "stateAfter": {
+        "facts": {
+          "stereoscope.design_available": true,
+          "stereoscope.ip_model": "licensed",
+          "stereoscope.market_access": "elite",
+          "cinema.projection_available": true,
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor",
+          "cinema.kinetoscope_parlor_system": true,
+          "sensorama.prototype_exists": true,
+          "sensorama.funding_model": "defense",
+          "somatic_vr.institutional_home": "military",
+          "somatic_vr.development_stage": "research",
+          "somatic_vr.defense_program": true
+        },
+        "trajectory": {
+          "sensory_breadth": 6,
+          "embodied_agency": 5,
+          "sociality": -7,
+          "accessibility": -3,
+          "openness": -12,
+          "institutionalization": 9
+        },
+        "enabledEvents": [],
+        "disabledEvents": [
+          "movie-palace-system-1905",
+          "sensorama-arcade-network-1963"
+        ]
+      }
+    }
+  ],
+  "trajectory": {
+    "sensory_breadth": 6,
+    "embodied_agency": 5,
+    "sociality": -7,
+    "accessibility": -3,
+    "openness": -12,
+    "institutionalization": 9
+  },
+  "trajectoryDescription": "high sensory breadth, high embodied agency, low sociality, low accessibility, low openness, high institutionalization",
+  "terminalState": {
+    "facts": {
+      "stereoscope.design_available": true,
+      "stereoscope.ip_model": "licensed",
+      "stereoscope.market_access": "elite",
+      "cinema.projection_available": true,
+      "cinema.exhibition_model": "private",
+      "cinema.dominant_venue": "peep_parlor",
+      "cinema.kinetoscope_parlor_system": true,
+      "sensorama.prototype_exists": true,
+      "sensorama.funding_model": "defense",
+      "somatic_vr.institutional_home": "military",
+      "somatic_vr.development_stage": "research",
+      "somatic_vr.defense_program": true
+    },
+    "enabledEvents": [],
+    "disabledEvents": [
+      "movie-palace-system-1905",
+      "sensorama-arcade-network-1963"
+    ],
+    "expiredUnselectedEvents": ["stereoview-mass-culture-1860s"]
+  },
+  "causalValidation": {
+    "passed": true,
+    "errors": [],
+    "warnings": [],
+    "checks": {
+      "timeWindowsValid": true,
+      "requirementsSatisfiedAtSelection": true,
+      "noDisabledEventOccurred": true,
+      "explicitEventsWereEnabled": true,
+      "divergencePolicySatisfied": true,
+      "trajectorySumMatches": true
+    }
+  }
+}

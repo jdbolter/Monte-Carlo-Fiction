@@ -1,0 +1,551 @@
+{
+  "schemaVersion": 2,
+  "themeId": "vr-immersion-causal-pilot",
+  "events": [
+    {
+      "id": "holmes-stereoscope-1861",
+      "label": "Holmes's Handheld Stereoscope",
+      "description": "Oliver Wendell Holmes designs a cheap simplified handheld stereoscope. The fork concerns whether he leaves the design open or patents and licenses it.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1861",
+        "earliest": "1861-01-01",
+        "latest": "1861-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "stereoscope.design_available": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "unpatented-mass-diffusion",
+          "label": "Holmes leaves the design open",
+          "canonical": true,
+          "weight": 3,
+          "description": "Holmes deliberately leaves the simplified design unpatented, allowing inexpensive manufacture and rapid domestic adoption.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The milestone's canonical description directly documents the open design and resulting mass adoption.",
+          "effects": {
+            "sets": {
+              "stereoscope.ip_model": "open",
+              "stereoscope.market_access": "mass"
+            },
+            "trajectoryDelta": {
+              "sociality": -2,
+              "accessibility": 4,
+              "openness": 4,
+              "institutionalization": -1
+            },
+            "enables": ["stereoview-mass-culture-1860s"]
+          },
+          "narrativeConsequences": [
+            "Stereoview cards become familiar middle-class domestic media.",
+            "The medium establishes an early precedent for diffusion through openness rather than licensing."
+          ]
+        },
+        {
+          "id": "holmes-patents-instead",
+          "label": "Holmes patents and licenses the design",
+          "canonical": false,
+          "weight": 2,
+          "description": "Holmes patents the simplified stereoscope and licenses it for a fee, prioritizing commercial return over rapid diffusion.",
+          "requirement": "Holmes or Joseph Bates decides the design's commercial value outweighs popular-science advocacy.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Patent ownership is a direct effect; slower mass culture is modeled as reduced probability rather than an absolute prohibition.",
+          "effects": {
+            "sets": {
+              "stereoscope.ip_model": "licensed",
+              "stereoscope.market_access": "elite"
+            },
+            "trajectoryDelta": {
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": -4,
+              "institutionalization": 1
+            },
+            "enables": ["stereoview-mass-culture-1860s"],
+            "influences": [
+              {
+                "eventId": "stereoview-mass-culture-1860s",
+                "weightMultiplier": 0.35,
+                "rationale": "Licensing and higher prices delay broad adoption without making it impossible."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Stereoscopic viewing remains an upper-middle-class practice for longer.",
+            "A licensing model becomes a visible precedent for later immersive-media ownership."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+    },
+    {
+      "id": "stereoview-mass-culture-1860s",
+      "label": "Stereoview Mass Culture Forms",
+      "description": "Manufacturing, card publishing, and domestic adoption make stereoscopic viewing a normalized mass-market medium.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1862-1880",
+        "earliest": "1862-01-01",
+        "latest": "1880-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "stereoscope.design_available",
+            "operator": "equals",
+            "value": true
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "mass-culture-forms",
+          "label": "Mass stereoview culture forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Stereoview production and circulation become broad enough to establish a durable domestic medium.",
+          "requirement": "Sufficient manufacturing and publishing capacity develops before the event window closes.",
+          "confidence": "medium-high",
+          "evidenceType": "historical-inference",
+          "rationale": "This derived event makes delayed-but-still-possible adoption representable after either Holmes outcome.",
+          "effects": {
+            "sets": {
+              "stereoscope.market_access": "mass",
+              "stereoview.mass_culture": true
+            },
+            "trajectoryDelta": {
+              "accessibility": 2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "A shared visual vocabulary of travel, news, and domestic scenes develops around stereoview cards."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+    },
+    {
+      "id": "lumiere-cinematographe-1895",
+      "label": "Lumière Cinématographe Exhibition Fork",
+      "description": "Projected moving pictures become technically practical; the fork determines whether collective projection or Edison's private peephole model becomes commercially dominant.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "December 1895",
+        "earliest": "1895-12-01",
+        "latest": "1895-12-31",
+        "resolution": "month"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "cinema.projection_available": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "shared-projection-prevails",
+          "label": "Collective theatrical projection prevails",
+          "canonical": true,
+          "weight": 3,
+          "description": "The Lumières secure paying audiences and cinema develops around projection to a shared public in darkened rooms.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "The collective exhibition model is the canonical historical outcome described by the milestone.",
+          "effects": {
+            "sets": {
+              "cinema.exhibition_model": "collective",
+              "cinema.dominant_venue": "theater"
+            },
+            "trajectoryDelta": {
+              "sociality": 4,
+              "accessibility": 2,
+              "institutionalization": 2
+            },
+            "enables": ["movie-palace-system-1905"],
+            "disables": ["kinetoscope-parlor-system-1896"]
+          },
+          "narrativeConsequences": [
+            "Cinema becomes a shared public ritual rather than an individual cabinet experience."
+          ]
+        },
+        {
+          "id": "kinetoscope-model-prevails",
+          "label": "Private peephole exhibition prevails",
+          "canonical": false,
+          "weight": 2,
+          "description": "Patent enforcement or exhibition failure leaves the solitary coin-operated peephole model commercially dominant.",
+          "requirement": "Stronger Edison patent enforcement in Europe, or failure of the Lumières' Paris exhibition to draw paying crowds.",
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "The dominant social and venue forms are direct effects; the eventual cultural meaning remains narrative rather than hard state.",
+          "effects": {
+            "sets": {
+              "cinema.exhibition_model": "private",
+              "cinema.dominant_venue": "peep_parlor"
+            },
+            "trajectoryDelta": {
+              "sociality": -4,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 1
+            },
+            "enables": ["kinetoscope-parlor-system-1896"],
+            "disables": ["movie-palace-system-1905"]
+          },
+          "narrativeConsequences": [
+            "Moving images develop socially like arcade cabinets or later headsets rather than theatrical cinema.",
+            "Any later collective cinema must emerge through a different event rather than being silently assumed."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "kinetoscope-parlor-system-1896",
+      "label": "Kinetoscope Parlors Become the Dominant Industry",
+      "description": "Private coin-operated cabinets develop into the durable commercial system for moving-image exhibition.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1896-1910",
+        "earliest": "1896-01-01",
+        "latest": "1910-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "cinema.exhibition_model",
+            "operator": "equals",
+            "value": "private"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "parlor-industry-forms",
+          "label": "The parlor industry forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Investment and distribution consolidate around private cabinet venues.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "This event exists to make the Lumière counterfactual's immediate successor explicit and testable.",
+          "effects": {
+            "sets": {
+              "cinema.kinetoscope_parlor_system": true
+            },
+            "trajectoryDelta": {
+              "sociality": -1,
+              "accessibility": 1,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": [
+            "Commercial moving-image culture standardizes around short, private, coin-operated encounters."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "movie-palace-system-1905",
+      "label": "Shared Theatrical Cinema Consolidates",
+      "description": "Projection, distribution, and purpose-built theaters consolidate collective cinema into a durable institution.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1905-1920",
+        "earliest": "1905-01-01",
+        "latest": "1920-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "cinema.exhibition_model",
+            "operator": "equals",
+            "value": "collective"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "theater-industry-forms",
+          "label": "The theater industry forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Shared projection becomes embedded in a durable theater and distribution system.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "This is a compact derived representation of the canonical collective-cinema lineage.",
+          "effects": {
+            "sets": {
+              "cinema.movie_palace_system": true
+            },
+            "trajectoryDelta": {
+              "sociality": 3,
+              "accessibility": 2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Cinema architecture and distribution assume a shared audience as their default unit."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+    },
+    {
+      "id": "sensorama-1962",
+      "label": "Sensorama Funding Fork",
+      "description": "Morton Heilig completes a functioning multisensory cabinet combining stereo film, sound, vibration, wind, and smell; the fork determines whether any institution carries it beyond a prototype.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1962",
+        "earliest": "1962-01-01",
+        "latest": "1962-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "sensorama.prototype_exists": true,
+          "somatic_vr.development_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "no-patron-emerges",
+          "label": "No patron carries Sensorama forward",
+          "canonical": true,
+          "weight": 3,
+          "description": "Heilig fails to secure institutional or commercial backing, leaving Sensorama as an isolated prototype.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Institutional failure despite a working prototype is the canonical milestone outcome.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "none",
+              "somatic_vr.institutional_home": "none"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 1,
+              "accessibility": -3,
+              "institutionalization": -4
+            },
+            "disables": [
+              "sensorama-arcade-network-1963",
+              "darpa-somatic-interface-program-1963"
+            ]
+          },
+          "narrativeConsequences": [
+            "The somatic lineage survives as an idea without a durable organization or market."
+          ]
+        },
+        {
+          "id": "sensorama-arcade-chain",
+          "label": "Private investors build a Sensorama arcade chain",
+          "canonical": false,
+          "weight": 2,
+          "description": "Private investors treat Sensorama as a premium amusement and fund a small network of commercial installations.",
+          "requirement": "An amusement or exhibition investor accepts the machine's maintenance costs and funds repeatable content production.",
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Commercial backing is direct; eventual mass adoption remains unasserted.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "private_arcade",
+              "somatic_vr.institutional_home": "commercial"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 2,
+              "accessibility": 1,
+              "institutionalization": 2
+            },
+            "enables": ["sensorama-arcade-network-1963"],
+            "disables": ["darpa-somatic-interface-program-1963"]
+          },
+          "narrativeConsequences": [
+            "Somatic immersion develops through amusement economics and repeat customers rather than research procurement."
+          ]
+        },
+        {
+          "id": "sensorama-darpa-funding",
+          "label": "DARPA funds somatic interface research",
+          "canonical": false,
+          "weight": 1,
+          "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training.",
+          "requirement": "A defense research sponsor treats wind, vibration, and smell as useful simulation channels rather than theatrical embellishments.",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "The institutional home and research program are direct within the counterfactual; downstream consumer adoption is not encoded as certain.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "defense",
+              "somatic_vr.institutional_home": "military"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 3,
+              "accessibility": -2,
+              "openness": -4,
+              "institutionalization": 4
+            },
+            "enables": ["darpa-somatic-interface-program-1963"],
+            "disables": ["sensorama-arcade-network-1963"]
+          },
+          "narrativeConsequences": [
+            "Somatic VR gains durable laboratories and procurement but develops under secrecy and training requirements.",
+            "Consumer uses may arrive later through technology transfer rather than direct entertainment investment."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    },
+    {
+      "id": "sensorama-arcade-network-1963",
+      "label": "Sensorama Arcade Network Forms",
+      "description": "Commercial operators standardize Sensorama installations, maintenance, and repeatable content across multiple venues.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "private_arcade"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "arcade-network-forms",
+          "label": "The arcade network forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "A small but durable commercial network establishes Sensorama as a repeatable paid experience.",
+          "requirement": null,
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "This is the direct successor implied by the authored arcade-chain alternative.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "accessibility": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Full-body sensory installations become a known commercial category rather than a single inventor's artifact."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    },
+    {
+      "id": "darpa-somatic-interface-program-1963",
+      "label": "Defense-Funded Somatic Interface Program",
+      "description": "A durable research program develops multisensory simulation interfaces for training and mission rehearsal.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "defense"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "defense-program-forms",
+          "label": "The defense research program forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Funding, laboratories, and personnel establish multisensory interfaces as an ongoing defense research field.",
+          "requirement": null,
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "This is the immediate institutional consequence of the authored DARPA alternative, not a claim that consumer success follows.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "research",
+              "somatic_vr.defense_program": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 2,
+              "openness": -2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "A generation of researchers treats bodily sensation as a technical simulation problem.",
+            "Somatic interfaces gain continuity at the cost of secrecy and limited civilian access."
+          ]
+        }
+      ],
+      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+    }
+  ]
+}
