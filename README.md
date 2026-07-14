@@ -2,6 +2,8 @@
 
 This is a testbed for the idea of generating a run of x (>99) narratives consisting of variation on a theme. The narratives might be speculative (design) fictions or more traditional narratives with character development and interaction. The resulting narrative would then be read and analyzed by an LLM.
 
+Each theme is explicitly an **alternate-histories** experiment: every generated world diverges from the real historical record at every branch point it passes through — the engine never lets a world stay on the real/canonical outcome once it reaches a branch point. The goal is a batch of plausible counterfactuals to compare, not a dramatization of what actually happened.
+
 See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
 
 ## Architecture

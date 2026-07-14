@@ -59,6 +59,9 @@ function formatWorldForPrompt(world) {
   return world.steps.map((s, i) => {
     const branch = s.chosenAlternative
       ? `\n  In this world, the path taken here: ${s.chosenAlternative.description}` +
+        (s.chosenAlternative.requirement
+          ? `\n  What made this plausible: ${s.chosenAlternative.requirement}`
+          : '') +
         (s.chosenAlternative.downstreamEffects?.length
           ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
           : '')
@@ -177,54 +180,90 @@ export async function renderSceneScript(theme, world, options = {}) {
   // mismatch even though the tool_use JSON itself was well-formed.
   const maxTokens  = render.visualMaxTokens || (1500 + totalScenes * 700);
 
-  const response = await fetch('https://api.anthropic.com/v1/messages', {
-    method:  'POST',
-    headers: {
-      'Content-Type':      'application/json',
-      'x-api-key':         apiKey,
-      'anthropic-version': '2023-06-01'
-    },
-    body: JSON.stringify({
+  // Retry loop, fixed 2026-07-14. Despite input_schema declaring "scenes" as
+  // an array, the model sometimes emits it as a JSON-encoded string instead
+  // of a nested structure (tool_choice forces the overall tool_use call to
+  // be well-formed, but doesn't force every field to stay unstringified) —
+  // the likely real explanation for earlier "expected 6, got 60+"-shaped
+  // reports, since scenes.length on a string measures characters, not scene
+  // count. Worse: when the model does this, it's effectively hand-typing
+  // JSON into that string the same way the pre-tool-use approach did, and
+  // reintroduces that exact class of typo (observed live: a stray `;` where
+  // a `,` was needed, and a full-width `：` in place of `:`), producing a
+  // string that doesn't even parse. Measured live across 9 calls for the
+  // same world: 4 clean arrays, 2 parseable strings, 3 unparseable strings —
+  // roughly 1-in-3 raw failure rate. A retry is justified because this is
+  // per-call model stochasticity, not a deterministic prompt/schema defect:
+  // the failure probability compounds across attempts (~33% chance all 3
+  // fail if each attempt is independent).
+  const maxAttempts = 3;
+  let lastError;
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method:  'POST',
+      headers: {
+        'Content-Type':      'application/json',
+        'x-api-key':         apiKey,
+        'anthropic-version': '2023-06-01'
+      },
+      body: JSON.stringify({
+        model,
+        max_tokens:  maxTokens,
+        system:      systemPrompt,
+        messages:    [{ role: 'user', content: userPrompt }],
+        thinking:    { type: 'disabled' },
+        tools:       [buildSceneTool(totalScenes)],
+        tool_choice: { type: 'tool', name: 'emit_scene_script' }
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Anthropic API error ${response.status}`);
+    }
+
+    const data = await response.json();
+    // Direct signal instead of inferring truncation after the fact from a
+    // scene-count mismatch — same check added to render-verbal.js for prose.
+    // Not retried: a too-tight maxTokens budget is a deterministic config
+    // problem, not stochastic model behavior, so retrying would likely just
+    // fail the same way again.
+    if (data.stop_reason === 'max_tokens') {
+      throw new Error(`Scene script was truncated (hit max_tokens=${maxTokens}) before finishing — expected ${totalScenes} scenes.`);
+    }
+    const toolUse = data.content?.find(c => c.type === 'tool_use');
+    if (!toolUse) {
+      lastError = new Error('Model did not return a tool_use block for emit_scene_script');
+      continue;
+    }
+    const { styleGuide } = toolUse.input;
+    let scenes = toolUse.input.scenes;
+    if (typeof scenes === 'string') {
+      try {
+        scenes = JSON.parse(scenes);
+      } catch {
+        lastError = new Error(`Model returned "scenes" as a string that was not valid JSON (attempt ${attempt}/${maxAttempts}).`);
+        continue;
+      }
+    }
+    if (!Array.isArray(scenes) || scenes.length !== totalScenes) {
+      lastError = new Error(`Expected ${totalScenes} scenes, got ${scenes?.length ?? 0} (attempt ${attempt}/${maxAttempts}).`);
+      continue;
+    }
+
+    return {
+      worldId:    world.worldId,
+      themeId:    theme.id,
       model,
-      max_tokens:  maxTokens,
-      system:      systemPrompt,
-      messages:    [{ role: 'user', content: userPrompt }],
-      thinking:    { type: 'disabled' },
-      tools:       [buildSceneTool(totalScenes)],
-      tool_choice: { type: 'tool', name: 'emit_scene_script' }
-    })
-  });
-
-  if (!response.ok) {
-    const err = await response.json().catch(() => ({}));
-    throw new Error(err.error?.message || `Anthropic API error ${response.status}`);
+      styleGuide,
+      scenes,
+      extrapolated: extrapolate,
+      extrapolationYears: extrapolate ? extrapolationYears : undefined,
+      renderedAt: new Date().toISOString()
+    };
   }
 
-  const data = await response.json();
-  // Direct signal instead of inferring truncation after the fact from a
-  // scene-count mismatch — same check added to render-verbal.js for prose.
-  if (data.stop_reason === 'max_tokens') {
-    throw new Error(`Scene script was truncated (hit max_tokens=${maxTokens}) before finishing — expected ${totalScenes} scenes.`);
-  }
-  const toolUse = data.content?.find(c => c.type === 'tool_use');
-  if (!toolUse) {
-    throw new Error('Model did not return a tool_use block for emit_scene_script');
-  }
-  const { styleGuide, scenes } = toolUse.input;
-  if (!Array.isArray(scenes) || scenes.length !== totalScenes) {
-    throw new Error(`Expected ${totalScenes} scenes, got ${scenes?.length ?? 0}`);
-  }
-
-  return {
-    worldId:    world.worldId,
-    themeId:    theme.id,
-    model,
-    styleGuide,
-    scenes,
-    extrapolated: extrapolate,
-    extrapolationYears: extrapolate ? extrapolationYears : undefined,
-    renderedAt: new Date().toISOString()
-  };
+  throw lastError;
 }
 
 // --- Persistence ---

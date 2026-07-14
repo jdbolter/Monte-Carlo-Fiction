@@ -70,6 +70,9 @@ function formatWorldForPrompt(world) {
   return world.steps.map((s, i) => {
     const branch = s.chosenAlternative
       ? `\n  In this world, the path taken here: ${s.chosenAlternative.description}` +
+        (s.chosenAlternative.requirement
+          ? `\n  What made this plausible: ${s.chosenAlternative.requirement}`
+          : '') +
         (s.chosenAlternative.downstreamEffects?.length
           ? `\n  Downstream consequences: ${s.chosenAlternative.downstreamEffects.join('; ')}`
           : '')
