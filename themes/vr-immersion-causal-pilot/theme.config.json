@@ -29,8 +29,8 @@
   },
   "render": {
     "model": "claude-sonnet-5",
-    "maxTokens": 1300,
-    "minWords": 400,
-    "maxWords": 500
+    "maxTokens": 2600,
+    "minWords": 900,
+    "maxWords": 1100
   }
 }

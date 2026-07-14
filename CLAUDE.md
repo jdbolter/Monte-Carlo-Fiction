@@ -20,7 +20,7 @@ This is a sibling project to `/Users/jaybolter/Documents/GitHub/VR_Speculation` 
 Dispatches by theme schema version. Missing/`schemaVersion: 1` themes retain the legacy milestone selector and always sample a `branch_alternative`; `schemaVersion: 2` themes use the causal selector, whose chosen outcomes mutate typed state and control later event eligibility. Both paths use seeded RNG (`engine/selector.js`, `makeRng`) so a given theme + seed reproduces the same world — this is why generated worlds are gitignored (see below).
 
 **Layer 2 — one model call per world, costs money. Two sibling renderers, same input, different output shape:**
-- `engine/render-verbal.js` renders a world as a single 400-500 word short story (continuous prose).
+- `engine/render-verbal.js` renders a world as one continuous-prose story at the active theme's configured length (400–500 words for the legacy themes; 900–1,100 for the causal pilot).
 - `engine/render-visual.js` renders a world as a scene-by-scene animation script: one scene per milestone step, each with a `visualDirection` (a terse prompt for a future image/video generation pass) and a `narration` line (a voiceover script for a future TTS pass), plus one `styleGuide` string anchoring the whole world's visual language. Still text-only output — no image/video/audio generation exists yet; this is the structured intermediate a future visual-rendering pipeline would consume. Added 2026-07-09 as a prototype; see Known state below.
 
 Both renderers send only that world's specific chosen path (not a full research-wiki dump — that was the old, much more expensive `VR_Speculation/api/fiction.js` pattern) plus a short generic style primer and the theme's optional `framework.json` primer, adapted per output format.

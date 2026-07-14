@@ -6,6 +6,8 @@ The pilot contains 17 events spanning 1861–2025, 23 typed facts, six trajector
 
 The default mode is `limited` with one to three divergences. Change `worldgen.divergencePolicy` in `theme.config.json` to run `baseline`, `single`, `naturalistic`, or `all-counterfactual` comparison batches.
 
+The prose renderer targets 900–1,100 words with a 2,600-token ceiling, giving multi-event causal paths room for explanation and sustained narrative development. The legacy themes retain their existing 400–500 word setting.
+
 Run a free batch with:
 
 ```sh
