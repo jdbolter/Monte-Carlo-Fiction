@@ -1,20 +1,36 @@
 {
+  "schemaVersion": 2,
   "id": "vr-immersion",
   "name": "VR & Immersive Media",
-  "description": "Counterfactual history of virtual reality and immersive technology, ported from the VR_Speculation pastcasting milestone pool as the first working test theme for the Monte Carlo engine. Two structurally complementary paradigms: Sutherland (visual/computational) and Heilig (somatic/multisensory).",
-  "axes": ["sensory", "interaction", "institutional", "scale"],
-  "categoryField": "category",
-  "startMilestoneId": "barker-panorama-1787",
-  "stepsPerWorld": 10,
+  "description": "Alternate histories of immersive media from panoramic spectacle through generative world models, with explicit consequences whose outcomes change later eligibility.",
+  "eventFile": "events.json",
+  "stateRegistryFile": "state-registry.json",
+  "startEventId": "barker-panorama-1787",
+  "startDate": "1787-01-01",
+  "endDate": "2026-12-31",
+  "stepsPerWorld": 14,
+  "axes": [
+    "sensory_breadth",
+    "embodied_agency",
+    "sociality",
+    "accessibility",
+    "openness",
+    "institutionalization"
+  ],
   "worldgen": {
-    "topN": 6,
-    "branchPointBonus": 1.0,
-    "crossCategoryBonusEvery": 3
+    "selector": "causal",
+    "topN": 5,
+    "timeDecayWeight": 20,
+    "divergencePolicy": {
+      "mode": "limited",
+      "minDivergences": 1,
+      "maxDivergences": 3
+    }
   },
   "render": {
     "model": "claude-sonnet-5",
-    "maxTokens": 1300,
-    "minWords": 400,
-    "maxWords": 500
+    "maxTokens": 2600,
+    "minWords": 900,
+    "maxWords": 1100
   }
 }

@@ -2,11 +2,11 @@
 
 This is a testbed for the idea of generating a run of x (>99) narratives consisting of variation on a theme. The narratives might be speculative (design) fictions or more traditional narratives with character development and interaction. The resulting narrative would then be read and analyzed by an LLM.
 
-The two legacy themes are explicitly **alternate-histories** experiments: every generated legacy world diverges from the real historical record at every branch point it passes through. The schema-v2 causal themes also support canonical baseline, single-divergence, limited-divergence, naturalistic, and all-counterfactual batches so alternatives can be compared with controls.
+The two active themes are schema-v2 **causal alternate-history** experiments. They support canonical baseline, single-divergence, limited-divergence, naturalistic, and all-counterfactual batches so alternatives can be compared with controls.
 
 See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
 
-There are two active causal themes. `vr-immersion-causal-pilot` contains 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. `silicon-valley-causal` contains all 28 legacy Silicon Valley milestones, all 24 of their counterfactual alternatives, and nine explicit downstream consequence events governed by 24 typed facts. The schema and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The original `vr-immersion` and `silicon-valley` themes remain available on the unchanged legacy path.
+`vr-immersion` contains 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. `silicon-valley` contains 37 events—including all 28 converted source milestones and nine explicit downstream consequences—governed by 24 typed facts. The schema and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The former schema-v1 theme folders were removed after their causal replacements became the standard versions; their source data remains available in Git history.
 
 ## Architecture
 
@@ -18,7 +18,7 @@ Two layers, kept deliberately separate so new themes never require touching engi
 - **`public/`** — the web interface: pick a theme, generate a batch of worlds, render any of them as prose or as a scene script (or both — they're independent per world), browse the library, or clear a theme's worlds and renders together.
 - **`data/worlds/<theme>/`**, **`outputs/stories/<theme>/`**, and **`outputs/scenes/<theme>/`** — generated artifacts, one JSON file per world/story/scene-script.
 
-`vr-immersion` is the first theme, ported from the VR_Speculation repo's pastcasting milestone pool, mainly as a working test case for the engine.
+`vr-immersion` was originally ported from the VR_Speculation repo's pastcasting milestone pool; it is now the first full causal reference theme.
 
 ## Running it
 
@@ -32,13 +32,12 @@ World generation works immediately with no setup. To render stories or scene scr
 There are also CLI equivalents for batch work, in `scripts/`:
 
 ```
-npm run generate -- --theme vr-immersion --count 100         # free, no API key needed
-npm run generate -- --theme vr-immersion-causal-pilot --count 100  # active causal pilot
-npm run generate -- --theme silicon-valley-causal --count 100      # causal Silicon Valley
+npm run generate -- --theme vr-immersion --count 100          # free, no API key needed
+npm run generate -- --theme silicon-valley --count 100        # free, no API key needed
 npm run render -- --theme vr-immersion --limit 20             # renders un-rendered worlds to prose, costs real API calls
 npm run render-scenes -- --theme vr-immersion --limit 20      # renders un-rendered worlds to scene scripts, costs real API calls
 ```
 
 ## Adding a theme
 
-For the legacy format, copy `themes/_template/` to `themes/<your-theme-id>/` and follow the README inside it. For schema v2, use `themes/vr-immersion-causal-pilot/` or `themes/silicon-valley-causal/` with `docs/causal-v2/` as working examples and specification. No registration step — the engine discovers every folder under `themes/` automatically.
+For schema v2, use `themes/vr-immersion/` or `themes/silicon-valley/` with `docs/causal-v2/` as working examples and specification. The engine still accepts schema-v1 data for compatibility, but no active theme uses it. No registration step—the engine discovers every folder under `themes/` automatically.

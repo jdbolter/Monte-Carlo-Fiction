@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "themeId": "silicon-valley-causal",
+  "themeId": "silicon-valley",
   "axes": {
     "capital": {
       "negativePole": "Capital is scarce, patient, revenue-constrained, or unavailable to speculative startups.",

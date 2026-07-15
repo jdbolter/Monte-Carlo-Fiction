@@ -1,8 +1,8 @@
 # Causal theme schema v2 — pilot runtime
 
-Status: **runtime implemented and tested; active themes are `vr-immersion-causal-pilot` and `silicon-valley-causal`**.
+Status: **runtime implemented and tested; both active themes (`vr-immersion` and `silicon-valley`) use it**.
 
-This directory retains the version-2 JSON Schemas and an early illustrative world trace. Two runnable themes now exercise the same theme-agnostic runtime: the 47-event VR data set contains the current legacy theme's 42 historical milestones plus five explicit consequences, while the 37-event Silicon Valley data set contains all 28 legacy milestones plus nine explicit consequences.
+This directory retains the version-2 JSON Schemas and an early illustrative world trace. Two runnable themes exercise the same theme-agnostic runtime: the 47-event VR data set contains 42 converted historical milestones plus five explicit consequences, while the 37-event Silicon Valley data set contains 28 converted milestones plus nine explicit consequences.
 
 The spike answers four questions:
 
@@ -17,12 +17,12 @@ The spike answers four questions:
 - `state-registry.schema.json` — JSON Schema for the controlled axis/fact vocabulary.
 - `causal-events.schema.json` — JSON Schema for a version-2 event file.
 - `sample-world.example.json` — an illustrative trace from the original eight-event design spike; useful for reading the output shape, not a current full-pilot batch result.
-- `../../themes/vr-immersion-causal-pilot/theme.config.json` — active configuration and divergence policy.
-- `../../themes/vr-immersion-causal-pilot/state-registry.json` — controlled vocabulary for six axes and 38 typed facts.
-- `../../themes/vr-immersion-causal-pilot/events.json` — 47 active events from Barker's panorama through the 2026 Horizon Worlds reversal.
-- `../../themes/silicon-valley-causal/` — second active reference theme: 37 events, 24 typed facts, and six axes spanning 1913–2026.
+- `../../themes/vr-immersion/theme.config.json` — active VR configuration and divergence policy.
+- `../../themes/vr-immersion/state-registry.json` — controlled vocabulary for six axes and 38 typed VR facts.
+- `../../themes/vr-immersion/events.json` — 47 active events from Barker's panorama through the 2026 Horizon Worlds reversal.
+- `../../themes/silicon-valley/` — second active reference theme: 37 events, 24 typed facts, and six axes spanning 1913–2026.
 
-The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes. Each causal conversion has its own theme ID and does not reinterpret legacy saved seeds.
+The former schema-v1 versions were removed when these causal themes assumed the standard IDs. Their milestone files remain available in Git history (`ad6c18a` for VR and `98beccd` for Silicon Valley). The engine still supports schema v1 through an isolated compatibility test, but the interface now discovers only the two schema-v2 themes.
 
 ## Runtime compatibility
 
@@ -130,7 +130,7 @@ Every generated v2 world is replayed immediately, and validation verifies:
 - divergence count obeys the configured policy;
 - the saved trajectory equals the sum of applied deltas.
 
-The automated suite also covers all five divergence modes, varied planned divergence points, same-year event selection, tampered-state detection, v2 directory loading, render-prompt integration, batch diagnostics, and exact legacy seed compatibility. Causal batch reports include event/outcome counts, unsampled events and outcomes, terminal-state diversity, divergence-count distribution, and first-divergence dates. Reporting the most frequently blocked individual preconditions remains a later addition.
+The automated suite also covers all five divergence modes, varied planned divergence points, same-year event selection, tampered-state detection, v2 directory loading, render-prompt integration, batch diagnostics, the two standard theme IDs, and isolated schema-v1 dispatch compatibility. Causal batch reports include event/outcome counts, unsampled events and outcomes, terminal-state diversity, divergence-count distribution, and first-divergence dates. Reporting the most frequently blocked individual preconditions remains a later addition.
 
 ## Research status of the examples
 

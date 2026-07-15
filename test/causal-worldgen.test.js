@@ -12,13 +12,13 @@ import { buildScenePrompt } from '../engine/render-visual.js';
 import { diversityReport } from '../engine/validate.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const FIXTURE_DIR = join(__dirname, '..', 'themes', 'vr-immersion-causal-pilot');
+const FIXTURE_DIR = join(__dirname, '..', 'themes', 'vr-immersion');
 
 function readJson(name) {
   return JSON.parse(readFileSync(join(FIXTURE_DIR, name), 'utf8'));
 }
 
-function pilotTheme(mode = 'limited', policyOverrides = {}) {
+function vrTheme(mode = 'limited', policyOverrides = {}) {
   const config = readJson('theme.config.json');
   config.worldgen.divergencePolicy = {
     ...config.worldgen.divergencePolicy,
@@ -35,8 +35,8 @@ function pilotTheme(mode = 'limited', policyOverrides = {}) {
   };
 }
 
-test('causal design fixture passes static validation', () => {
-  assert.deepEqual(validateCausalTheme(pilotTheme()).errors, []);
+test('VR causal theme passes static validation', () => {
+  assert.deepEqual(validateCausalTheme(vrTheme()).errors, []);
 });
 
 test('theme loader reads a schema-v2 theme directory', () => {
@@ -45,7 +45,7 @@ test('theme loader reads a schema-v2 theme directory', () => {
     copyFileSync(join(FIXTURE_DIR, 'theme.config.json'), join(dir, 'theme.config.json'));
     copyFileSync(join(FIXTURE_DIR, 'events.json'), join(dir, 'events.json'));
     copyFileSync(join(FIXTURE_DIR, 'state-registry.json'), join(dir, 'state-registry.json'));
-    const theme = loadThemeDirectory('vr-immersion-causal-pilot', dir);
+    const theme = loadThemeDirectory('vr-immersion', dir);
     assert.equal(theme.schemaVersion, 2);
     assert.equal(theme.events.length, 47);
     assert.equal(Object.keys(theme.stateRegistry.facts).length, 38);
@@ -54,15 +54,19 @@ test('theme loader reads a schema-v2 theme directory', () => {
   }
 });
 
-test('active causal pilot is auto-discovered as a schema-v2 theme', () => {
-  assert.ok(listThemeIds().includes('vr-immersion-causal-pilot'));
-  const theme = loadTheme('vr-immersion-causal-pilot');
+test('the interface discovers only the two standard schema-v2 theme IDs', () => {
+  assert.deepEqual(listThemeIds().sort(), ['silicon-valley', 'vr-immersion']);
+  const theme = loadTheme('vr-immersion');
   assert.equal(theme.schemaVersion, 2);
   assert.equal(theme.events.length, 47);
+  assert.equal(theme.config.name, 'VR & Immersive Media');
+  assert.ok(theme.events.every(event => event.sourceRefs?.every(ref =>
+    ref.startsWith('git:ad6c18a:themes/vr-immersion/milestones.json#')
+  )));
 });
 
 test('schema-version dispatch generates a replay-valid causal world', () => {
-  const theme = pilotTheme();
+  const theme = vrTheme();
   const world = generateWorld(theme, 42);
   assert.equal(world.schemaVersion, 2);
   assert.equal(world.generation.selector, 'causal');
@@ -71,7 +75,7 @@ test('schema-version dispatch generates a replay-valid causal world', () => {
 });
 
 test('both render prompts receive explicit canonical v2 outcomes', () => {
-  const theme = pilotTheme('baseline');
+  const theme = vrTheme('baseline');
   const world = generateWorld(theme, 1);
   const canonicalBranch = world.steps.find(step => step.isBranchPoint);
   const verbalPrompt = buildRenderPrompt(theme, world);
@@ -87,7 +91,7 @@ test('both render prompts receive explicit canonical v2 outcomes', () => {
 });
 
 test('baseline policy chooses only canonical branch outcomes', () => {
-  const theme = pilotTheme('baseline');
+  const theme = vrTheme('baseline');
   for (let seed = 1; seed <= 25; seed++) {
     const world = generateWorld(theme, seed);
     const branches = world.steps.filter(step => step.isBranchPoint);
@@ -101,9 +105,9 @@ test('baseline policy chooses only canonical branch outcomes', () => {
 test('single policy chooses exactly one counterfactual branch outcome', () => {
   const divergenceEvents = new Set();
   for (let seed = 1; seed <= 100; seed++) {
-    const theme = pilotTheme('single');
+    const theme = vrTheme('single');
     const world = generateWorld(theme, seed);
-    const baseline = generateWorld(pilotTheme('baseline'), seed);
+    const baseline = generateWorld(vrTheme('baseline'), seed);
     const targetId = world.generation.singleDivergenceEventId;
     const targetIndex = world.steps.findIndex(step => step.eventId === targetId);
     assert.equal(world.generation.divergenceCount, 1);
@@ -119,7 +123,7 @@ test('single policy chooses exactly one counterfactual branch outcome', () => {
 });
 
 test('limited policy obeys its divergence bounds across a batch', () => {
-  const theme = pilotTheme('limited', { minDivergences: 1, maxDivergences: 3 });
+  const theme = vrTheme('limited', { minDivergences: 1, maxDivergences: 3 });
   const firstDivergenceDates = new Set();
   for (let seed = 1; seed <= 100; seed++) {
     const world = generateWorld(theme, seed);
@@ -134,7 +138,7 @@ test('limited policy obeys its divergence bounds across a batch', () => {
 });
 
 test('all-counterfactual policy never chooses canonical at a visited branch', () => {
-  const theme = pilotTheme('all-counterfactual');
+  const theme = vrTheme('all-counterfactual');
   for (let seed = 1; seed <= 50; seed++) {
     const world = generateWorld(theme, seed);
     const branches = world.steps.filter(step => step.isBranchPoint);
@@ -149,7 +153,7 @@ test('all-counterfactual policy never chooses canonical at a visited branch', ()
 });
 
 test('naturalistic policy samples both canonical and counterfactual outcomes', () => {
-  const theme = pilotTheme('naturalistic');
+  const theme = vrTheme('naturalistic');
   let canonicalBranches = 0;
   let counterfactualBranches = 0;
   for (let seed = 1; seed <= 100; seed++) {
@@ -165,7 +169,7 @@ test('naturalistic policy samples both canonical and counterfactual outcomes', (
 });
 
 test('causal batch diagnostics report path, milestone, and state diversity', () => {
-  const theme = pilotTheme('limited', { minDivergences: 1, maxDivergences: 3 });
+  const theme = vrTheme('limited', { minDivergences: 1, maxDivergences: 3 });
   const worlds = Array.from({ length: 100 }, (_, index) => generateWorld(theme, index + 1));
   const report = diversityReport(worlds, theme.config.axes, theme);
   assert.ok(report.uniqueOutcomePaths >= report.uniqueMilestoneChains);
@@ -235,7 +239,7 @@ test('two events in the same year can both occur', () => {
 });
 
 test('world replay validation detects a tampered state transition', () => {
-  const theme = pilotTheme();
+  const theme = vrTheme();
   const world = generateWorld(theme, 7);
   world.steps[0].stateAfter.trajectory.accessibility += 1;
   const report = validateCausalWorld(theme, world);
@@ -244,7 +248,7 @@ test('world replay validation detects a tampered state transition', () => {
 });
 
 test('static validation rejects an unknown fact assignment', () => {
-  const theme = pilotTheme();
+  const theme = vrTheme();
   theme.events[0].outcomes[0].effects.sets ||= {};
   theme.events[0].outcomes[0].effects.sets['unregistered.fact'] = true;
   const report = validateCausalTheme(theme);
@@ -253,7 +257,7 @@ test('static validation rejects an unknown fact assignment', () => {
 });
 
 test('static validation rejects an invalid fact value in a precondition', () => {
-  const theme = pilotTheme();
+  const theme = vrTheme();
   theme.events[1].requires = {
     all: [{ kind: 'fact', fact: 'stereoscope.ip_model', operator: 'equals', value: 'invented-model' }]
   };
@@ -263,7 +267,7 @@ test('static validation rejects an invalid fact value in a precondition', () => 
 });
 
 test('static validation rejects a closed explicit-event enable cycle', () => {
-  const theme = pilotTheme();
+  const theme = vrTheme();
   const first = theme.events.find(event => event.id === 'sensorama-arcade-network-1963');
   const second = theme.events.find(event => event.id === 'darpa-somatic-interface-program-1963');
   for (const event of theme.events) {

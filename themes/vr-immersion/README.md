@@ -1,10 +1,10 @@
-# VR & Immersive Media — Causal Pilot
+# VR & Immersive Media
 
-This is the first active schema-v2 theme. It is intentionally separate from `themes/vr-immersion`, which remains an unchanged schema-v1 comparison theme.
+This is the active VR theme and uses schema v2 causal generation.
 
-The expanded pilot contains 47 events spanning 1787–2026, 38 typed facts, six trajectory axes, and explicit canonical as well as counterfactual outcomes. It preserves all 42 milestones in `themes/vr-immersion/milestones.json` and retains the five explicit consequence events created for the original 17-event causal pilot.
+The theme contains 47 events spanning 1787–2026, 38 typed facts, six trajectory axes, and explicit canonical as well as counterfactual outcomes. It preserves the 42 events from the former milestone theme and retains the five explicit consequence events created for the original 17-event causal pilot. The deleted milestone source remains available in Git commit `ad6c18a`.
 
-The original 17 causal events remain unchanged. The 30 newly converted events are deliberately marked as provisional in their outcome rationales. Their source descriptions, branch alternatives, plausibility labels, requirements, and downstream consequences are inherited from the legacy theme. Their causal information was derived as a first pass:
+The original 17 causal events remain unchanged. The 30 later conversions are deliberately marked as provisional in their outcome rationales. Their source descriptions, branch alternatives, plausibility labels, requirements, and downstream consequences are inherited from the former milestone data. Their causal information was derived as a first pass:
 
 - legacy `sensory`, `interaction`, and `scale` vectors map to `sensory_breadth`, `embodied_agency`, and `sociality`;
 - `accessibility`, `openness`, and `institutionalization` values are description-based judgments;
@@ -16,12 +16,12 @@ These causal claims and numeric weights have not received a new source audit. Th
 
 The default mode is `limited` with one to three divergences. Change `worldgen.divergencePolicy` in `theme.config.json` to run `baseline`, `single`, `naturalistic`, or `all-counterfactual` comparison batches.
 
-The prose renderer targets 900–1,100 words with a 2,600-token ceiling, giving multi-event causal paths room for explanation and sustained narrative development. The legacy themes retain their existing 400–500 word setting.
+The prose renderer targets 900–1,100 words with a 2,600-token ceiling, giving multi-event causal paths room for explanation and sustained narrative development.
 
 Run a free batch with:
 
 ```sh
-npm run generate -- --theme vr-immersion-causal-pilot --count 100
+npm run generate -- --theme vr-immersion --count 100
 ```
 
 Every saved world includes its chosen outcome, state before and after each event, applied effects, eligibility trace, terminal state, and causal replay-validation result.

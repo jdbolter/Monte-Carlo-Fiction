@@ -1,6 +1,6 @@
-# Silicon Valley — Causal
+# Silicon Valley
 
-Schema-v2 causal conversion of all 28 milestones in `themes/silicon-valley`, plus nine explicit consequence events derived from the legacy branch descriptions. The legacy theme is unchanged.
+This is the active Silicon Valley theme. It uses schema v2 and contains the 28 events converted from the former milestone theme, plus nine explicit consequence events derived from its branch descriptions. The deleted milestone source remains available in Git commit `98beccd`.
 
 The conversion preserves source descriptions, alternatives, plausibility labels, requirements, and downstream consequences. Typed facts, two added axes (institutionalization and Valley concentration), outcome effects, eligibility links, and numerical weights are provisional and should be refined through later content review. Hard disables are used only for direct dependencies such as Apple failing before the iPhone or Shockley retaining the team that historically formed Fairchild; uncertain long-range effects remain soft influences.
 

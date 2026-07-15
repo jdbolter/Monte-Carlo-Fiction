@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "themeId": "vr-immersion-causal-pilot",
+  "themeId": "vr-immersion",
   "events": [
     {
       "id": "barker-panorama-1787",
@@ -83,7 +83,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#barker-panorama-1787"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#barker-panorama-1787"
       ]
     },
     {
@@ -128,7 +128,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#daguerre-diorama-1822"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#daguerre-diorama-1822"
       ]
     },
     {
@@ -175,7 +175,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#wheatstone-stereoscope-1838"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#wheatstone-stereoscope-1838"
       ]
     },
     {
@@ -267,7 +267,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
       ]
     },
     {
@@ -322,7 +322,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
       ]
     },
     {
@@ -369,7 +369,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#ducos-du-hauron-anaglyph-1891"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#ducos-du-hauron-anaglyph-1891"
       ]
     },
     {
@@ -417,7 +417,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#edison-kinetoscope-1891"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#edison-kinetoscope-1891"
       ]
     },
     {
@@ -506,7 +506,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
       ]
     },
     {
@@ -561,7 +561,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
       ]
     },
     {
@@ -658,7 +658,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#hales-tours-1905"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#hales-tours-1905"
       ]
     },
     {
@@ -713,7 +713,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
       ]
     },
     {
@@ -801,7 +801,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#power-of-love-1922"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#power-of-love-1922"
       ]
     },
     {
@@ -848,7 +848,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#vitaphone-don-juan-1926"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#vitaphone-don-juan-1926"
       ]
     },
     {
@@ -924,7 +924,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#jazz-singer-1927"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#jazz-singer-1927"
       ]
     },
     {
@@ -1007,7 +1007,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#polarized-3d-features-1936"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#polarized-3d-features-1936"
       ]
     },
     {
@@ -1054,7 +1054,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#vitarama-1939"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#vitarama-1939"
       ]
     },
     {
@@ -1137,7 +1137,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#3d-golden-era-1952"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#3d-golden-era-1952"
       ]
     },
     {
@@ -1220,7 +1220,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#cinerama-1952"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#cinerama-1952"
       ]
     },
     {
@@ -1267,7 +1267,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#heilig-manifesto-1955"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#heilig-manifesto-1955"
       ]
     },
     {
@@ -1351,7 +1351,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#heilig-telesphere-1960"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#heilig-telesphere-1960"
       ]
     },
     {
@@ -1473,7 +1473,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#sensorama-1962"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#sensorama-1962"
       ]
     },
     {
@@ -1521,7 +1521,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#spacewar-1962"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#spacewar-1962"
       ]
     },
     {
@@ -1650,7 +1650,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#beflix-bell-labs-1963"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#beflix-bell-labs-1963"
       ]
     },
     {
@@ -1713,7 +1713,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#sensorama-1962"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#sensorama-1962"
       ]
     },
     {
@@ -1768,7 +1768,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#sensorama-1962"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#sensorama-1962"
       ]
     },
     {
@@ -1898,7 +1898,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#heilig-experience-theater-1964"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#heilig-experience-theater-1964"
       ]
     },
     {
@@ -1945,7 +1945,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#sutherland-ultimate-display-1965"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#sutherland-ultimate-display-1965"
       ]
     },
     {
@@ -2035,7 +2035,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#sword-of-damocles-1968"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#sword-of-damocles-1968"
       ]
     },
     {
@@ -2122,7 +2122,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#videoplace-1974"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#videoplace-1974"
       ]
     },
     {
@@ -2205,7 +2205,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#lucasfilm-computer-division-1979"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#lucasfilm-computer-division-1979"
       ]
     },
     {
@@ -2299,7 +2299,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#nasa-view-1985"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#nasa-view-1985"
       ]
     },
     {
@@ -2388,7 +2388,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#vpl-research-1987"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#vpl-research-1987"
       ]
     },
     {
@@ -2474,7 +2474,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#power-glove-1989"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#power-glove-1989"
       ]
     },
     {
@@ -2558,7 +2558,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#osmose-char-davies-1995"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#osmose-char-davies-1995"
       ]
     },
     {
@@ -2635,7 +2635,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#toy-story-pixar-1995"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#toy-story-pixar-1995"
       ]
     },
     {
@@ -2738,7 +2738,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#nintendo-wii-2006"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#nintendo-wii-2006"
       ]
     },
     {
@@ -2824,7 +2824,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#oculus-kickstarter-2012"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#oculus-kickstarter-2012"
       ]
     },
     {
@@ -2906,7 +2906,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#carmack-oculus-cto-2013"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#carmack-oculus-cto-2013"
       ]
     },
     {
@@ -2995,7 +2995,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#facebook-acquires-oculus-2014"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#facebook-acquires-oculus-2014"
       ]
     },
     {
@@ -3044,7 +3044,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#consumer-vr-2016"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#consumer-vr-2016"
       ]
     },
     {
@@ -3125,7 +3125,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#palmer-luckey-ousted-2017"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#palmer-luckey-ousted-2017"
       ]
     },
     {
@@ -3208,7 +3208,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#facebook-rebrands-meta-2021"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#facebook-rebrands-meta-2021"
       ]
     },
     {
@@ -3254,7 +3254,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#reality-labs-losses-2022"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#reality-labs-losses-2022"
       ]
     },
     {
@@ -3302,7 +3302,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#apple-vision-pro-2024"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#apple-vision-pro-2024"
       ]
     },
     {
@@ -3374,7 +3374,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#genie-world-models-2024"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#genie-world-models-2024"
       ]
     },
     {
@@ -3452,7 +3452,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#world-labs-marble-2024"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#world-labs-marble-2024"
       ]
     },
     {
@@ -3499,7 +3499,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/vr-immersion/milestones.json#horizon-worlds-reversal-2026"
+        "git:ad6c18a:themes/vr-immersion/milestones.json#horizon-worlds-reversal-2026"
       ]
     }
   ]

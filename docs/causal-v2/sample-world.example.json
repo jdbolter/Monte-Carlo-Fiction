@@ -1,8 +1,8 @@
 {
   "schemaVersion": 2,
   "stateEncoding": "nonDefaultFacts",
-  "worldId": "vr-immersion-causal-pilot-0042",
-  "themeId": "vr-immersion-causal-pilot",
+  "worldId": "vr-immersion-0042",
+  "themeId": "vr-immersion",
   "seed": 42,
   "createdAt": "2026-07-14T12:00:00.000Z",
   "generation": {

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "themeId": "vr-immersion-causal-pilot",
+  "themeId": "vr-immersion",
   "axes": {
     "sensory_breadth": {
       "negativePole": "Optical or auditory channels dominate; the rest of the body is largely unaddressed.",

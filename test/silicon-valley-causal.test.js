@@ -1,68 +1,44 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
-import { fileURLToPath } from 'url';
 import { generateWorld } from '../engine/worldgen.js';
 import { validateCausalTheme, validateCausalWorld } from '../engine/causal-validate.js';
 import { listThemeIds, loadTheme } from '../engine/theme-loader.js';
 import { diversityReport } from '../engine/validate.js';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = join(__dirname, '..');
-
-function readJson(path) {
-  return JSON.parse(readFileSync(join(ROOT, path), 'utf8'));
-}
-
 function themeWithPolicy(mode, overrides = {}) {
-  const theme = structuredClone(loadTheme('silicon-valley-causal'));
+  const theme = structuredClone(loadTheme('silicon-valley'));
   theme.config.worldgen.divergencePolicy = { mode, ...overrides };
   return theme;
 }
 
 test('Silicon Valley causal theme is discovered and passes static validation', () => {
-  assert.ok(listThemeIds().includes('silicon-valley-causal'));
-  const theme = loadTheme('silicon-valley-causal');
+  assert.ok(listThemeIds().includes('silicon-valley'));
+  const theme = loadTheme('silicon-valley');
   assert.equal(theme.schemaVersion, 2);
+  assert.equal(theme.config.name, 'Silicon Valley');
   assert.equal(theme.events.length, 37);
   assert.equal(Object.keys(theme.stateRegistry.facts).length, 24);
   assert.equal(theme.events.filter(event => event.activation === 'explicit').length, 9);
   assert.deepEqual(validateCausalTheme(theme), { passed: true, errors: [], warnings: [] });
 });
 
-test('causal conversion preserves every legacy Silicon Valley milestone and alternative', () => {
-  const legacy = readJson('themes/silicon-valley/milestones.json').milestones;
-  const theme = loadTheme('silicon-valley-causal');
-  const events = new Map(theme.events.map(event => [event.id, event]));
+test('Silicon Valley contains the complete converted event and outcome set with archival provenance', () => {
+  const theme = loadTheme('silicon-valley');
+  const convertedEvents = theme.events.filter(event =>
+    event.sourceRefs?.some(ref => ref.startsWith('git:98beccd:themes/silicon-valley/milestones.json#'))
+  );
+  const counterfactualOutcomes = theme.events.flatMap(event => event.outcomes.filter(outcome => !outcome.canonical));
 
-  assert.equal(legacy.length, 28);
-  for (const milestone of legacy) {
-    const event = events.get(milestone.id);
-    assert.ok(event, `missing legacy milestone ${milestone.id}`);
-    assert.equal(event.label, milestone.label);
-    assert.equal(event.description, milestone.description);
-    assert.equal(event.category, milestone.category);
-    assert.equal(event.time.display, milestone.date);
-
-    const canonical = event.outcomes.find(outcome => outcome.canonical);
-    for (const [axis, delta] of Object.entries(milestone.trajectory_contribution)) {
-      assert.equal(canonical.effects.trajectoryDelta[axis] || 0, delta, `${milestone.id} changed legacy ${axis}`);
-    }
-
-    for (const alternative of milestone.branch_alternatives || []) {
-      const outcome = event.outcomes.find(candidate => candidate.id === alternative.id);
-      assert.ok(outcome, `missing legacy alternative ${milestone.id}::${alternative.id}`);
-      assert.equal(outcome.description, alternative.description);
-      assert.equal(outcome.confidence, alternative.plausibility);
-      assert.equal(outcome.requirement, alternative.requirement);
-      assert.deepEqual(outcome.narrativeConsequences, alternative.downstream_effects);
-    }
-  }
+  assert.equal(convertedEvents.length, 37);
+  assert.equal(counterfactualOutcomes.length, 24);
+  assert.ok(theme.events.some(event => event.id === 'deforest-vacuum-tube-1913'));
+  assert.ok(theme.events.some(event => event.id === 'genai-boom-2022-2024'));
+  assert.ok(counterfactualOutcomes.some(outcome => outcome.id === 'terman-stays-east-coast'));
+  assert.ok(counterfactualOutcomes.some(outcome => outcome.id === 'ai-boom-decentralizes-geography'));
 });
 
 test('default Silicon Valley causal batch is replay-valid and broadly covers the pool', () => {
-  const theme = loadTheme('silicon-valley-causal');
+  const theme = loadTheme('silicon-valley');
   const worlds = Array.from({ length: 300 }, (_, index) => generateWorld(theme, index + 1));
   const report = diversityReport(worlds, theme.config.axes, theme);
   const sampledOutcomes = new Set(worlds.flatMap(world => world.steps.map(step => step.chosenOutcome.id)));
@@ -106,7 +82,7 @@ test('Silicon Valley causal data works under every divergence policy', () => {
 });
 
 test('each explicit Silicon Valley consequence is sampled only after its enabling cause', () => {
-  const theme = loadTheme('silicon-valley-causal');
+  const theme = loadTheme('silicon-valley');
   const explicitEvents = theme.events.filter(event => event.activation === 'explicit');
   const witnessed = new Set();
 

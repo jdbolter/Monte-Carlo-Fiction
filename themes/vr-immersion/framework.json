@@ -1,14 +1,14 @@
 {
   "lineages": {
-    "sutherland": "The visual/computational lineage. Ivan Sutherland's 'The Ultimate Display' (1965) and Sword of Damocles HMD (1968) established presence through accurate rendering, head-tracked perspective, and computer graphics. Runs through NASA/DARPA research, VPL Research (1987), to Oculus (2012) and Apple Vision Pro (2024). Plays down somatic/haptic experience; emphasizes visual perspective and the stereoscope.",
-    "heilig": "The somatic/multisensory lineage. Morton Heilig's 'El Cine del Futuro' (1955) and Sensorama (1962) proposed presence through full-body sensory engagement: smell, wind, vibration, sound, plus stereo film. Institutional failure was financial, not technical — no patron appeared. Retrieves sensory theater traditions and the fairground; reverses into sensory overload rather than sensory deprivation."
+    "sutherland": "The visual/computational lineage: stereoscopy, projection, head tracking, computer graphics, head-mounted displays, Oculus, and platform-scale VR. It tends to define presence through a convincing view and responsive perspective.",
+    "heilig": "The somatic/multisensory lineage: wind, vibration, smell, bodily motion, touch, and environments that address more than eyes and ears. It tends to define presence through what the whole body can sense and do.",
+    "bridge": "Systems such as Videoplace and generative world models that cross the visual/somatic divide by making the environment responsive, shared, or produced during interaction rather than merely displayed."
   },
   "causal_principles": [
-    "Institutional funding lag: government or corporate funding in decade N tends to produce commercial dominance in decade N+2.",
-    "Technology constraint respect: alternatives must respect what was physically possible at the time (see each milestone's era_constraints).",
-    "Paradigm complementarity: elevating one lineage tends to suppress the other — institutional resources and cultural attention are finite, not independently additive.",
-    "Ambivalence required: no alternative should be purely utopian. Every gain (e.g. richer somatic presence) has a cost (e.g. cost, complexity, exclusion, or slower scalability).",
-    "Path dependence: institutions that fund a paradigm shape who works in it and what questions get asked — arts funding produces different practitioners than military/research funding."
+    "Treat each chosen outcome and its saved state effects as binding; do not restore canonical institutions or products after an outcome disabled them.",
+    "Institutional homes matter: arts, defense, startups, gaming companies, and social platforms fund different users, interfaces, and measures of success.",
+    "Use trajectory axes as summaries, but ground the story's actual causality in the selected outcomes, enabled events, and concrete facts.",
+    "Preserve ambivalence: openness, access, bodily richness, institutional durability, and scale can improve independently and often conflict."
   ],
-  "voice_guidance": "Presence in the Sutherland paradigm is optical — you are 'there' when the visual system cannot distinguish virtual from real. Presence in the Heilig paradigm is somatic — you are 'there' when your whole body is addressed, not just your eyes. Let the story's sensory register reflect whichever paradigm the chosen path leans toward."
+  "voice_guidance": "Let the sensory language reflect the path. Visual-first worlds should notice framing, optical enclosure, fidelity, and latency; somatic worlds should notice posture, touch, motion, fatigue, proximity, and shared space. Explain each real technology plainly before dramatizing its altered consequences."
 }

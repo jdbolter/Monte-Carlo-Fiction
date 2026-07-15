@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "themeId": "silicon-valley-causal",
+  "themeId": "silicon-valley",
   "events": [
     {
       "id": "deforest-vacuum-tube-1913",
@@ -47,7 +47,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#deforest-vacuum-tube-1913"
+        "git:98beccd:themes/silicon-valley/milestones.json#deforest-vacuum-tube-1913"
       ]
     },
     {
@@ -94,7 +94,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#terman-encourages-entrepreneurship-1930s"
+        "git:98beccd:themes/silicon-valley/milestones.json#terman-encourages-entrepreneurship-1930s"
       ]
     },
     {
@@ -169,7 +169,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#hp-founded-1939"
+        "git:98beccd:themes/silicon-valley/milestones.json#hp-founded-1939"
       ]
     },
     {
@@ -216,7 +216,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#harvard-radio-research-lab-1942"
+        "git:98beccd:themes/silicon-valley/milestones.json#harvard-radio-research-lab-1942"
       ]
     },
     {
@@ -307,7 +307,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#terman-returns-stanford-1946"
+        "git:98beccd:themes/silicon-valley/milestones.json#terman-returns-stanford-1946"
       ]
     },
     {
@@ -367,8 +367,8 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#terman-returns-stanford-1946",
-        "themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
+        "git:98beccd:themes/silicon-valley/milestones.json#terman-returns-stanford-1946",
+        "git:98beccd:themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
       ]
     },
     {
@@ -448,7 +448,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
+        "git:98beccd:themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
       ]
     },
     {
@@ -527,7 +527,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
+        "git:98beccd:themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
       ]
     },
     {
@@ -581,7 +581,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
+        "git:98beccd:themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
       ]
     },
     {
@@ -636,7 +636,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
+        "git:98beccd:themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
       ]
     },
     {
@@ -710,7 +710,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#systems-engineering-lab-merge-1955"
+        "git:98beccd:themes/silicon-valley/milestones.json#systems-engineering-lab-merge-1955"
       ]
     },
     {
@@ -795,7 +795,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
+        "git:98beccd:themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
       ]
     },
     {
@@ -842,7 +842,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#arthur-rock-power-law-1957"
+        "git:98beccd:themes/silicon-valley/milestones.json#arthur-rock-power-law-1957"
       ]
     },
     {
@@ -930,7 +930,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+        "git:98beccd:themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
       ]
     },
     {
@@ -987,7 +987,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+        "git:98beccd:themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
       ]
     },
     {
@@ -1043,7 +1043,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+        "git:98beccd:themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
       ]
     },
     {
@@ -1090,7 +1090,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#arpanet-1969"
+        "git:98beccd:themes/silicon-valley/milestones.json#arpanet-1969"
       ]
     },
     {
@@ -1137,7 +1137,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#silicon-valley-named-1971"
+        "git:98beccd:themes/silicon-valley/milestones.json#silicon-valley-named-1971"
       ]
     },
     {
@@ -1231,7 +1231,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#sequoia-kleiner-1972"
+        "git:98beccd:themes/silicon-valley/milestones.json#sequoia-kleiner-1972"
       ]
     },
     {
@@ -1278,7 +1278,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#tcp-ip-1974"
+        "git:98beccd:themes/silicon-valley/milestones.json#tcp-ip-1974"
       ]
     },
     {
@@ -1355,7 +1355,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#apple-founded-1976"
+        "git:98beccd:themes/silicon-valley/milestones.json#apple-founded-1976"
       ]
     },
     {
@@ -1439,7 +1439,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#capital-gains-tax-cut-1978"
+        "git:98beccd:themes/silicon-valley/milestones.json#capital-gains-tax-cut-1978"
       ]
     },
     {
@@ -1528,7 +1528,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#www-1989"
+        "git:98beccd:themes/silicon-valley/milestones.json#www-1989"
       ]
     },
     {
@@ -1584,7 +1584,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#www-1989"
+        "git:98beccd:themes/silicon-valley/milestones.json#www-1989"
       ]
     },
     {
@@ -1666,7 +1666,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#netscape-ipo-1995"
+        "git:98beccd:themes/silicon-valley/milestones.json#netscape-ipo-1995"
       ]
     },
     {
@@ -1713,7 +1713,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#google-founded-1998"
+        "git:98beccd:themes/silicon-valley/milestones.json#google-founded-1998"
       ]
     },
     {
@@ -1787,7 +1787,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#dotcom-crash-2000"
+        "git:98beccd:themes/silicon-valley/milestones.json#dotcom-crash-2000"
       ]
     },
     {
@@ -1863,7 +1863,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#y-combinator-2005"
+        "git:98beccd:themes/silicon-valley/milestones.json#y-combinator-2005"
       ]
     },
     {
@@ -1941,7 +1941,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#iphone-app-store-2007"
+        "git:98beccd:themes/silicon-valley/milestones.json#iphone-app-store-2007"
       ]
     },
     {
@@ -1996,7 +1996,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#iphone-app-store-2007"
+        "git:98beccd:themes/silicon-valley/milestones.json#iphone-app-store-2007"
       ]
     },
     {
@@ -2071,7 +2071,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#a16z-founded-2009"
+        "git:98beccd:themes/silicon-valley/milestones.json#a16z-founded-2009"
       ]
     },
     {
@@ -2181,7 +2181,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#zirp-global-spread-2010s"
+        "git:98beccd:themes/silicon-valley/milestones.json#zirp-global-spread-2010s"
       ]
     },
     {
@@ -2299,7 +2299,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#openai-founded-2015"
+        "git:98beccd:themes/silicon-valley/milestones.json#openai-founded-2015"
       ]
     },
     {
@@ -2401,7 +2401,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#kalanick-neumann-ousters-2017"
+        "git:98beccd:themes/silicon-valley/milestones.json#kalanick-neumann-ousters-2017"
       ]
     },
     {
@@ -2515,7 +2515,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+        "git:98beccd:themes/silicon-valley/milestones.json#genai-boom-2022-2024"
       ]
     },
     {
@@ -2571,7 +2571,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+        "git:98beccd:themes/silicon-valley/milestones.json#genai-boom-2022-2024"
       ]
     },
     {
@@ -2626,7 +2626,7 @@
         }
       ],
       "sourceRefs": [
-        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+        "git:98beccd:themes/silicon-valley/milestones.json#genai-boom-2022-2024"
       ]
     }
   ]
