@@ -144,13 +144,14 @@ function renderDiversityReport(report) {
   const el = document.getElementById('diversity-report');
   el.classList.remove('hidden');
   const chainPct = (report.chainDiversityRatio * 100).toFixed(0);
-  const repeatPct = (report.repeatedEndingRate * 100).toFixed(0);
+  const coverage = report.milestoneCoverage || { sampled: 0, total: 0 };
+  const finalMilestone = report.mostCommonFinalMilestone;
   el.innerHTML = `
     <div class="stat-row">
       <div class="stat"><strong>${report.total}</strong>worlds generated</div>
       <div class="stat"><strong>${chainPct}%</strong>unique world paths</div>
-      <div class="stat"><strong>${report.uniqueTerminals}</strong>unique endings</div>
-      <div class="stat"><strong>${repeatPct}%</strong>repeated-ending rate</div>
+      <div class="stat"><strong>${coverage.sampled}/${coverage.total}</strong>milestones sampled</div>
+      <div class="stat"><strong>${finalMilestone ? `${finalMilestone.count}/${report.total}` : '—'}</strong>${finalMilestone ? `end at ${esc(finalMilestone.label)}` : 'most common final milestone'}</div>
     </div>
     <div class="flags">${(report.flags || []).map(f => `<div class="flag">⚠ ${esc(f)}</div>`).join('')}</div>
   `;

@@ -164,11 +164,24 @@ test('naturalistic policy samples both canonical and counterfactual outcomes', (
   assert.ok(counterfactualBranches > 0);
 });
 
-test('causal batch diagnostics count outcome paths and state diversity', () => {
+test('causal batch diagnostics report path, milestone, and state diversity', () => {
   const theme = pilotTheme('limited', { minDivergences: 1, maxDivergences: 3 });
   const worlds = Array.from({ length: 100 }, (_, index) => generateWorld(theme, index + 1));
   const report = diversityReport(worlds, theme.config.axes, theme);
   assert.ok(report.uniqueOutcomePaths >= report.uniqueMilestoneChains);
+  assert.deepEqual(report.milestoneCoverage, {
+    sampled: 17,
+    total: 17,
+    ratio: 1,
+    unsampledMilestoneIds: []
+  });
+  assert.ok(report.mostCommonFinalMilestone.count > 0);
+  assert.equal(
+    report.finalMilestoneDistribution.reduce((sum, milestone) => sum + milestone.count, 0),
+    100
+  );
+  assert.equal('uniqueTerminals' in report, false);
+  assert.equal('repeatedEndingRate' in report, false);
   assert.ok(report.causalDiagnostics.uniqueTerminalStates > 1);
   assert.deepEqual(Object.keys(report.causalDiagnostics.divergenceCountDistribution), ['1', '2', '3']);
   assert.ok(Object.values(report.causalDiagnostics.divergenceCountDistribution).every(count => count > 0));

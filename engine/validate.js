@@ -2,9 +2,8 @@
 // engine/validate.js — Phase 4 quality checks on a batch of worlds.
 //
 // Cheap, deterministic, no AI calls. Run this after generating a batch
-// and before spending money rendering prose, to catch path collapse
-// (Phase 3/4 risk in MONTE_CARLO_STRATEGY.md: too many worlds
-// converging on the same ending).
+// and before spending money rendering prose, to catch path collapse,
+// narrow milestone coverage, and convergence on one final milestone.
 // =========================================
 
 function mean(nums) {
@@ -36,20 +35,44 @@ export function diversityReport(worlds, axes = [], theme = null) {
   const uniqueOutcomePaths = new Set(outcomePathKeys).size;
   const uniqueChains = isCausal ? uniqueOutcomePaths : uniqueMilestoneChains;
 
-  // --- Terminal diversity ---
-  // Keyed by milestoneId + chosenAlternative.id (when the terminal step is a
-  // branch point) so two worlds that reach the same milestone but diverge
-  // into different branch alternatives count as different endings.
-  const terminalKeys = worlds.map(w => {
-    if (w.schemaVersion === 2) return JSON.stringify(w.terminalState || {});
-    const last = w.steps[w.steps.length - 1];
-    if (last.chosenOutcome) return `${last.milestoneId}::${last.chosenOutcome.id}`;
-    return last.chosenAlternative ? `${last.milestoneId}::${last.chosenAlternative.id}` : last.milestoneId;
-  });
-  const uniqueTerminals = new Set(terminalKeys).size;
-  const terminalCounts = {};
-  terminalKeys.forEach(k => { terminalCounts[k] = (terminalCounts[k] || 0) + 1; });
-  const repeatedEndingRate = 1 - (uniqueTerminals / total);
+  // --- Milestone-pool coverage ---
+  // "Milestone" is the shared report term: schema-v2 themes call their
+  // source records events, but generated steps retain milestoneId for
+  // renderer compatibility. Fall back to the sampled set when no theme was
+  // supplied so diversityReport remains useful as a standalone helper.
+  const configuredMilestones = isCausal ? (theme?.events || []) : (theme?.milestones || []);
+  const configuredMilestoneIds = new Set(configuredMilestones.map(item => item.id));
+  const sampledMilestoneIds = new Set(worlds.flatMap(world => world.steps.map(step => step.milestoneId)));
+  const milestoneTotal = configuredMilestoneIds.size || sampledMilestoneIds.size;
+  const unsampledMilestoneIds = [...configuredMilestoneIds].filter(id => !sampledMilestoneIds.has(id));
+  const milestoneCoverage = {
+    sampled: sampledMilestoneIds.size,
+    total: milestoneTotal,
+    ratio: milestoneTotal ? sampledMilestoneIds.size / milestoneTotal : 0,
+    unsampledMilestoneIds
+  };
+
+  // --- Final-milestone convergence ---
+  // This deliberately ignores the chosen outcome and accumulated causal
+  // state. It answers the literal UI question: which named milestone do
+  // these worlds end on, and how many worlds end there?
+  const finalMilestonesById = new Map();
+  for (const world of worlds) {
+    const last = world.steps.at(-1);
+    if (!last) continue;
+    const existing = finalMilestonesById.get(last.milestoneId);
+    if (existing) existing.count += 1;
+    else {
+      finalMilestonesById.set(last.milestoneId, {
+        milestoneId: last.milestoneId,
+        label: last.label || last.milestoneId,
+        count: 1
+      });
+    }
+  }
+  const finalMilestoneDistribution = [...finalMilestonesById.values()]
+    .sort((a, b) => b.count - a.count || a.label.localeCompare(b.label));
+  const mostCommonFinalMilestone = finalMilestoneDistribution[0] || null;
 
   // --- Branch alternative choice distribution ---
   const branchChoices = {}; // milestoneId -> { alternativeId: count }
@@ -76,14 +99,13 @@ export function diversityReport(worlds, axes = [], theme = null) {
     uniqueMilestoneChains,
     uniqueOutcomePaths,
     chainDiversityRatio: uniqueChains / total,
-    uniqueTerminals,
-    repeatedEndingRate,
-    terminalCounts,
+    milestoneCoverage,
+    mostCommonFinalMilestone,
+    finalMilestoneDistribution,
     branchChoices,
     axisStats,
     flags: [
-      chainDiversityFlag(uniqueChains, total),
-      repeatedEndingFlag(repeatedEndingRate)
+      chainDiversityFlag(uniqueChains, total)
     ].filter(Boolean)
   };
 
@@ -143,13 +165,6 @@ function chainDiversityFlag(uniqueChains, total) {
   const ratio = uniqueChains / total;
   if (ratio < 0.7) {
     return `Low chain diversity (${(ratio * 100).toFixed(0)}% unique). Consider increasing branch density, topN, or adding more milestones.`;
-  }
-  return null;
-}
-
-function repeatedEndingFlag(rate) {
-  if (rate > 0.5) {
-    return `High repeated-ending rate (${(rate * 100).toFixed(0)}%). Many worlds converge on the same terminal milestone — consider more branch points near the end of the timeline.`;
   }
   return null;
 }

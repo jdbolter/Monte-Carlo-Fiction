@@ -45,11 +45,12 @@ const report = diversityReport(worlds, theme.config.axes, theme);
 console.log(`Generated ${worlds.length} worlds for theme "${themeId}" (seeds ${startSeed}-${startSeed + count - 1}).`);
 console.log(`Saved to data/worlds/${themeId}/`);
 console.log('');
-console.log(`Chain diversity:    ${(report.chainDiversityRatio * 100).toFixed(0)}% unique milestone chains`);
-console.log(`Unique endings:     ${report.uniqueTerminals}`);
-console.log(`Repeated-ending rate: ${(report.repeatedEndingRate * 100).toFixed(0)}%`);
+console.log(`Unique world paths: ${(report.chainDiversityRatio * 100).toFixed(0)}%`);
+console.log(`Milestones sampled: ${report.milestoneCoverage.sampled}/${report.milestoneCoverage.total}`);
+if (report.mostCommonFinalMilestone) {
+  console.log(`Most common final milestone: ${report.mostCommonFinalMilestone.label} (${report.mostCommonFinalMilestone.count}/${report.total} worlds)`);
+}
 if (report.causalDiagnostics) {
-  console.log(`Unique terminal states: ${report.causalDiagnostics.uniqueTerminalStates}`);
   console.log(`Unsampled events:     ${report.causalDiagnostics.unsampledEvents.length}`);
   console.log(`Unsampled outcomes:   ${report.causalDiagnostics.unsampledOutcomes.length}`);
   console.log(`Divergence counts:    ${JSON.stringify(report.causalDiagnostics.divergenceCountDistribution)}`);
