@@ -1,0 +1,2633 @@
+{
+  "schemaVersion": 2,
+  "themeId": "silicon-valley-causal",
+  "events": [
+    {
+      "id": "deforest-vacuum-tube-1913",
+      "label": "De Forest's Vacuum Tube Amplifier",
+      "description": "Lee de Forest, working at the Federal Telegraph Company in Palo Alto, invents the vacuum tube amplifier, making weak electrical signals loud enough to enable long-distance telephony and radio broadcasting. De Forest has no idea he has set in motion a chain of events that will lead to trillions of dollars of value creation in the same valley. The starting point of the standard timeline.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "1913",
+        "earliest": "1913-01-01",
+        "latest": "1913-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "electronics.amplification_available": true,
+          "cluster.location": "bay_area"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "deforest-vacuum-tube-1913-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": -3,
+              "founder_power": 2,
+              "openness": 1,
+              "scale": -3,
+              "institutionalization": 1,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#deforest-vacuum-tube-1913"
+      ]
+    },
+    {
+      "id": "terman-encourages-entrepreneurship-1930s",
+      "label": "Terman Pushes Students Toward Startups",
+      "description": "Stanford engineering professor Frederick Terman begins encouraging his best students to found companies rather than go into academia, and works to connect them to funders. He has watched Stanford's research fail to reach everyday application and wants to close that gap. Two of his students, William Hewlett and David Packard, take the advice.",
+      "category": "culture",
+      "lineage": null,
+      "time": {
+        "display": "1930s",
+        "earliest": "1930-01-01",
+        "latest": "1939-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "stanford.entrepreneurship_model": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "terman-encourages-entrepreneurship-1930s-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": -2,
+              "founder_power": 3,
+              "openness": 1,
+              "scale": -2,
+              "institutionalization": 2,
+              "valley_concentration": 4
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#terman-encourages-entrepreneurship-1930s"
+      ]
+    },
+    {
+      "id": "hp-founded-1939",
+      "label": "Hewlett-Packard Founded in a Garage",
+      "description": "Hewlett and Packard found HP in a Palo Alto garage on Terman's encouragement, later worth tens of billions and mythologized as the origin story of the garage-startup model.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "1939",
+        "earliest": "1939-01-01",
+        "latest": "1939-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "hp-founded-1939-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "hp.status": "independent"
+            },
+            "trajectoryDelta": {
+              "capital": -3,
+              "founder_power": 3,
+              "openness": 2,
+              "scale": -3,
+              "institutionalization": 2,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "hp-acquired-early",
+          "label": "Hp Acquired Early",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "A larger East Coast electronics firm acquires HP's early oscillator technology outright rather than letting Hewlett and Packard build an independent company.",
+          "requirement": "An established manufacturer recognizes the oscillator's value before Hewlett and Packard secure independent customers (their first sale was to Walt Disney Studios)",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "hp.status": "acquired"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": -4,
+              "openness": -2,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": -2
+            }
+          },
+          "narrativeConsequences": [
+            "The garage-startup mythology that anchors later Valley self-image has no founding example to point to",
+            "Terman's model of steering students toward founding rather than joining loses its flagship proof point, weakening his later pitch to other students and to Stanford administration",
+            "HP-derived engineering culture (the 'HP Way') never forms as an independent influence on later Valley management norms"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#hp-founded-1939"
+      ]
+    },
+    {
+      "id": "harvard-radio-research-lab-1942",
+      "label": "Harvard Radio Research Lab / Electronic Warfare",
+      "description": "The US builds a top-secret 800-person electronic-warfare lab, spun out of the MIT Radiation Lab, to gather signals intelligence on German radar and build jammers to blind it. By 1944-45 every Allied bomber stream flies with an integrated electronic defensive system: chaff, jamming, dedicated jammer aircraft. Terman, recruited by his old PhD adviser Vannevar Bush, runs the lab after Stanford receives a comparatively token $50,000 in wartime research funding and he leaves in frustration.",
+      "category": "military-research",
+      "lineage": null,
+      "time": {
+        "display": "1942",
+        "earliest": "1942-01-01",
+        "latest": "1942-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "stanford.research_model": "classified"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "harvard-radio-research-lab-1942-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": -3,
+              "openness": -4,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": -3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#harvard-radio-research-lab-1942"
+      ]
+    },
+    {
+      "id": "terman-returns-stanford-1946",
+      "label": "Terman Rebuilds Stanford on the Military-University Model",
+      "description": "Terman returns to Stanford determined it will never again be shut out of federal research money. He recruits eleven of his best Harvard Radio Research Lab colleagues as Stanford faculty, sets up the Electronic Research Laboratory, and wins Stanford's first Office of Naval Research contract. By 1950 Stanford's electronics department is being called the MIT of the West.",
+      "category": "military-research",
+      "lineage": null,
+      "time": {
+        "display": "1946",
+        "earliest": "1946-01-01",
+        "latest": "1946-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "terman-returns-stanford-1946-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "stanford.terman_location": "stanford",
+              "stanford.research_model": "civilian"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -1,
+              "openness": -2,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "terman-stays-east-coast",
+          "label": "Terman Stays East Coast",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "Terman accepts a permanent post at Harvard or MIT after the war instead of returning to Stanford, taking his eleven recruited colleagues east with him.",
+          "requirement": "A sufficiently attractive East Coast offer, or continued Stanford underfunding hardening into open conflict with Terman before the war ends",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "stanford.terman_location": "east_coast",
+              "cluster.location": "east_coast"
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": -3,
+              "openness": -3,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": -5
+            },
+            "enables": [
+              "east-coast-electronics-cluster-1947"
+            ],
+            "disables": [
+              "stanford-applied-electronics-korea-1951",
+              "systems-engineering-lab-merge-1955"
+            ],
+            "influences": [
+              {
+                "eventId": "stanford-industrial-park-1951",
+                "weightMultiplier": 0.5,
+                "rationale": "Without Terman’s postwar Stanford program, an industry-focused land park is less likely to anchor an electronics cluster."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Elite microwave and electronics talent concentrates around Boston/Cambridge instead of Palo Alto",
+            "Stanford never builds the classified research infrastructure that later attracts Sylvania, Lockheed, and other defense contractors to the peninsula",
+            "The geographic 'valley' that eventually forms, if it forms at all, clusters around a different university"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#terman-returns-stanford-1946"
+      ]
+    },
+    {
+      "id": "east-coast-electronics-cluster-1947",
+      "label": "East Coast Electronics Cluster Consolidates",
+      "description": "Postwar microwave, electronics, and semiconductor talent consolidates around Boston, Cambridge, and New Jersey rather than Stanford and Palo Alto, giving the East Coast the dense university-industry labor market later associated with Silicon Valley.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1947-1965",
+        "earliest": "1947-01-01",
+        "latest": "1965-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "any": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "terman-returns-stanford-1946",
+            "outcomeId": "terman-stays-east-coast"
+          },
+          {
+            "kind": "outcomeChosen",
+            "eventId": "shockley-semiconductor-1956",
+            "outcomeId": "shockley-locates-elsewhere"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "east-coast-electronics-cluster-1947-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "cluster.location": "east_coast"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -2,
+              "openness": -2,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": -5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#terman-returns-stanford-1946",
+        "themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
+      ]
+    },
+    {
+      "id": "stanford-applied-electronics-korea-1951",
+      "label": "Korean War Triggers Classified Research at Stanford",
+      "description": "North Korea invades South Korea and Cold War paranoia hardens. Terman sets up a classified Applied Electronics Laboratory alongside the unclassified Electronic Research Laboratory, doubling the size of Stanford's electronics program and making the university a full partner in Cold War signals-intelligence work for the NSA, CIA, and military.",
+      "category": "military-research",
+      "lineage": null,
+      "time": {
+        "display": "1951",
+        "earliest": "1951-01-01",
+        "latest": "1951-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "stanford-applied-electronics-korea-1951-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "stanford.research_model": "classified"
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": -3,
+              "openness": -4,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "korea-deescalates-1951",
+          "label": "Korea Deescalates 1951",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "Korean War tensions ease and de-escalate faster than they did historically, and the perceived need for a dedicated classified research arm at Stanford never solidifies into a standing lab.",
+          "requirement": "Faster armistice negotiations or reduced perception of imminent Soviet threat in 1951",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "stanford.research_model": "civilian"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "openness": 4,
+              "scale": -1,
+              "institutionalization": 3,
+              "valley_concentration": 3
+            },
+            "enables": [
+              "civilian-stanford-electronics-network-1952"
+            ],
+            "disables": [
+              "systems-engineering-lab-merge-1955"
+            ]
+          },
+          "narrativeConsequences": [
+            "Stanford's electronics program stays unclassified and academic rather than becoming a full defense-intelligence partner",
+            "The pipeline of classified-research veterans who later found companies like ESL never forms",
+            "Federal research dollars into the region grow more slowly through the 1950s"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
+      ]
+    },
+    {
+      "id": "stanford-industrial-park-1951",
+      "label": "Stanford Industrial Park",
+      "description": "Stanford launches the Stanford Industrial Park, leasing university land to technology companies including HP and Varian Associates. One of the first university-industry real estate partnerships in the country, and the physical decision that clusters companies geographically around the university rather than scattering them across the region.",
+      "category": "culture",
+      "lineage": null,
+      "time": {
+        "display": "1951",
+        "earliest": "1951-01-01",
+        "latest": "1951-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "stanford-industrial-park-1951-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "stanford.industrial_park": true,
+              "cluster.location": "bay_area"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 1,
+              "openness": 2,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "stanford-declines-leasing",
+          "label": "Stanford Declines Leasing",
+          "canonical": false,
+          "weight": 1,
+          "description": "Stanford's trustees decide against leasing university land to private companies, preferring to reserve it for academic expansion, and no industrial park is built.",
+          "requirement": "Trustee resistance to commercial use of endowment land, or a more conservative university president than Wallace Sterling",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "stanford.industrial_park": false,
+              "cluster.location": "distributed"
+            },
+            "trajectoryDelta": {
+              "founder_power": 1,
+              "openness": 2,
+              "scale": -1,
+              "institutionalization": 1,
+              "valley_concentration": -5
+            },
+            "enables": [
+              "dispersed-bay-area-tech-corridor-1952"
+            ]
+          },
+          "narrativeConsequences": [
+            "Companies that would have clustered at the Industrial Park locate scattered across the wider Bay Area or in other states entirely",
+            "The tight geographic density that makes informal knowledge-sharing and job-hopping between neighboring firms so easy in the historical Valley never develops",
+            "A 'Silicon Valley' identity, if it emerges at all, is diffuse and slower to cohere as a recognizable place"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
+      ]
+    },
+    {
+      "id": "civilian-stanford-electronics-network-1952",
+      "label": "Civilian Stanford Electronics Network Deepens",
+      "description": "Without a permanent classified Korean-War laboratory, Stanford electronics grows through publishable academic research and civilian industry relationships rather than a merged intelligence facility.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1952-1965",
+        "earliest": "1952-01-01",
+        "latest": "1965-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "stanford-applied-electronics-korea-1951",
+            "outcomeId": "korea-deescalates-1951"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "civilian-stanford-electronics-network-1952-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "stanford.research_model": "civilian"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "openness": 4,
+              "scale": 1,
+              "institutionalization": 4,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#stanford-applied-electronics-korea-1951"
+      ]
+    },
+    {
+      "id": "dispersed-bay-area-tech-corridor-1952",
+      "label": "Bay Area Technology Firms Disperse",
+      "description": "Without Stanford Industrial Park, electronics firms occupy scattered sites around the Bay Area and beyond, weakening the dense job-hopping and informal knowledge exchange of the historical Valley.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1952-1970",
+        "earliest": "1952-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "stanford-industrial-park-1951",
+            "outcomeId": "stanford-declines-leasing"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "dispersed-bay-area-tech-corridor-1952-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "cluster.location": "distributed",
+              "geography.startup_model": "distributed"
+            },
+            "trajectoryDelta": {
+              "founder_power": 1,
+              "openness": 2,
+              "scale": 1,
+              "institutionalization": 2,
+              "valley_concentration": -5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#stanford-industrial-park-1951"
+      ]
+    },
+    {
+      "id": "systems-engineering-lab-merge-1955",
+      "label": "Stanford Merges Classified and Unclassified Electronics Labs",
+      "description": "Terman merges the unclassified Electronic Research Laboratory and the classified Applied Electronics Laboratory into a single Systems Engineering Laboratory, becoming one of the most advanced signals- and telemetry-intelligence facilities serving the NSA, CIA, and Strategic Air Command through the height of the Cold War.",
+      "category": "military-research",
+      "lineage": null,
+      "time": {
+        "display": "1955",
+        "earliest": "1955-01-01",
+        "latest": "1955-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "systems-engineering-lab-merge-1955-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "stanford.research_model": "mixed"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": -2,
+              "openness": -4,
+              "scale": 1,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "labs-stay-separate",
+          "label": "Labs Stay Separate",
+          "canonical": false,
+          "weight": 1,
+          "description": "Stanford's administration insists the classified and unclassified electronics work remain organizationally and physically separate, with classified work eventually spun off entirely to an off-campus contractor.",
+          "requirement": "Faculty or administrative resistance to blending academic and intelligence-community work on campus",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "stanford.research_model": "off_campus_defense"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": -1,
+              "openness": 3,
+              "institutionalization": 4,
+              "valley_concentration": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Stanford's academic electronics program keeps a cleaner separation from defense work, shaping a different (more publication-oriented) faculty culture",
+            "The specific pipeline of Stanford-trained engineers moving directly into classified defense contractors like ESL is weaker",
+            "Off-campus intelligence contractors form earlier and more independently of the university"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#systems-engineering-lab-merge-1955"
+      ]
+    },
+    {
+      "id": "shockley-semiconductor-1956",
+      "label": "Shockley Semiconductor Laboratory Founded",
+      "description": "William Shockley, WWII veteran of radar-bombing training and Nobel laureate co-inventor of the transistor, founds Shockley Semiconductor Laboratory in Mountain View, near his ailing mother, to commercialize the transistor. He recruits an extraordinary team of young engineers but proves, by most accounts, one of the worst managers in the industry's history.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "1956",
+        "earliest": "1956-01-01",
+        "latest": "1956-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "shockley-semiconductor-1956-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "semiconductor.shockley_location": "valley",
+              "cluster.location": "bay_area"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": 2,
+              "openness": -1,
+              "scale": 2,
+              "institutionalization": 3,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "shockley-locates-elsewhere",
+          "label": "Shockley Locates Elsewhere",
+          "canonical": false,
+          "weight": 1,
+          "description": "Shockley locates his semiconductor lab near Bell Labs in New Jersey or another East Coast research hub instead of Mountain View, prioritizing proximity to existing semiconductor infrastructure over proximity to family.",
+          "requirement": "A different personal circumstance, or an East Coast institution making Shockley a more attractive offer",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "semiconductor.shockley_location": "east_coast",
+              "cluster.location": "east_coast"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 1,
+              "openness": -1,
+              "scale": 2,
+              "institutionalization": 4,
+              "valley_concentration": -5
+            },
+            "enables": [
+              "east-coast-electronics-cluster-1947"
+            ],
+            "disables": [
+              "fairchild-traitorous-eight-1957",
+              "arthur-rock-power-law-1957",
+              "silicon-valley-named-1971"
+            ]
+          },
+          "narrativeConsequences": [
+            "The critical mass of transistor expertise that seeds Fairchild and its descendants concentrates on the East Coast instead",
+            "Silicon-based semiconductor manufacturing expertise develops in a different regional cluster entirely",
+            "The peninsula's identity as a hardware/semiconductor hub is delayed by a decade or more, or never forms"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#shockley-semiconductor-1956"
+      ]
+    },
+    {
+      "id": "arthur-rock-power-law-1957",
+      "label": "Arthur Rock's Power-Law Thesis",
+      "description": "In backing the Traitorous Eight with no product and no established business, Arthur Rock acts on an insight the rest of the investing world hasn't yet absorbed: venture returns follow a power-law distribution, dominated by a small number of extreme outlier successes, not a normal distribution of modest wins and losses. His strategy becomes the foundational logic of venture investing.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "1957",
+        "earliest": "1957-01-01",
+        "latest": "1957-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "venture.power_law_demonstrated": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "arthur-rock-power-law-1957-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 2,
+              "openness": 1,
+              "scale": 1,
+              "institutionalization": 3,
+              "valley_concentration": 4
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#arthur-rock-power-law-1957"
+      ]
+    },
+    {
+      "id": "fairchild-traitorous-eight-1957",
+      "label": "The Traitorous Eight Found Fairchild Semiconductor",
+      "description": "Eight of Shockley's best engineers, including Robert Noyce and Gordon Moore, walk out over his management style and found Fairchild Semiconductor with $1.5 million from investor Arthur Rock. Rock names them the Traitorous Eight. Arguably the first true venture-capital deal: an investment in a team and an idea, with no product and no established business. Fairchild later spins off Intel, AMD, and dozens of other firms.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "October 1, 1957",
+        "earliest": "1957-10-01",
+        "latest": "1957-10-01",
+        "resolution": "day"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "fairchild-traitorous-eight-1957-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "semiconductor.team_structure": "fairchild",
+              "venture.power_law_demonstrated": true
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 4,
+              "openness": 2,
+              "scale": 2,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            },
+            "enables": [
+              "fairchild-diaspora-1960"
+            ]
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "shockley-retains-team",
+          "label": "Shockley Retains Team",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "Shockley takes his engineers' complaints seriously, brings in a professional operations manager to buffer his own management style, and retains the team rather than losing them to a walkout.",
+          "requirement": "Shockley accepting outside management help, which he historically refused, or investor pressure forcing a management change instead of tolerating an exodus",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "semiconductor.team_structure": "shockley_intact",
+              "semiconductor.diaspora": "suppressed"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": -3,
+              "openness": -2,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": 4
+            },
+            "enables": [
+              "integrated-semiconductor-incumbent-1960"
+            ],
+            "disables": [
+              "fairchild-traitorous-eight-1957",
+              "arthur-rock-power-law-1957",
+              "silicon-valley-named-1971"
+            ]
+          },
+          "narrativeConsequences": [
+            "Semiconductor talent stays concentrated inside one difficult company rather than seeding a diaspora of spinoffs",
+            "Neither Fairchild, Intel, nor AMD exist as independent firms in their historical form",
+            "Arthur Rock never makes the deal that establishes his power-law thesis, delaying the professionalization of venture capital"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+      ]
+    },
+    {
+      "id": "fairchild-diaspora-1960",
+      "label": "Fairchild Diaspora Multiplies",
+      "description": "Fairchild alumni create a multiplying network of semiconductor firms, investors, suppliers, and experienced founders, turning one walkout into a repeatable regional company-formation system.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1960-1975",
+        "earliest": "1960-01-01",
+        "latest": "1975-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "fairchild-traitorous-eight-1957",
+            "outcomeId": "fairchild-traitorous-eight-1957-documented"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "fairchild-diaspora-1960-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "semiconductor.diaspora": "active",
+              "cluster.location": "bay_area",
+              "venture.power_law_demonstrated": true
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": 4,
+              "openness": 2,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+      ]
+    },
+    {
+      "id": "integrated-semiconductor-incumbent-1960",
+      "label": "Shockley Becomes an Integrated Semiconductor Incumbent",
+      "description": "A professionally managed Shockley laboratory retains its exceptional team inside one vertically integrated company, suppressing the spinoff diaspora while building a powerful incumbent.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1960-1975",
+        "earliest": "1960-01-01",
+        "latest": "1975-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "fairchild-traitorous-eight-1957",
+            "outcomeId": "shockley-retains-team"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "integrated-semiconductor-incumbent-1960-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "semiconductor.team_structure": "shockley_intact",
+              "semiconductor.diaspora": "suppressed"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -4,
+              "openness": -3,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 4
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#fairchild-traitorous-eight-1957"
+      ]
+    },
+    {
+      "id": "arpanet-1969",
+      "label": "ARPANET Launches",
+      "description": "DARPA launches ARPANET, connecting Stanford, UCLA, and two other universities via packet switching, a fundamental break from circuit-switched telephone networks. Quietly running in parallel to the semiconductor and PC stories, largely unnoticed by early VCs, who remain focused on hardware.",
+      "category": "networks",
+      "lineage": null,
+      "time": {
+        "display": "1969",
+        "earliest": "1969-01-01",
+        "latest": "1969-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "network.arpanet_available": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "arpanet-1969-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -3,
+              "openness": 1,
+              "scale": 1,
+              "institutionalization": 5,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#arpanet-1969"
+      ]
+    },
+    {
+      "id": "silicon-valley-named-1971",
+      "label": "Fairchild's Descendants and the Name 'Silicon Valley'",
+      "description": "Fairchild's alumni network ('Fairchildren') spins off Intel, AMD, and many more firms; the integrated circuit becomes the basis of all computer chips; journalist Don Hoefler coins the name 'Silicon Valley' in Electronic News.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "1971",
+        "earliest": "1971-01-01",
+        "latest": "1971-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "silicon-valley-named-1971-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "semiconductor.diaspora": "active",
+              "cluster.location": "bay_area"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 2,
+              "openness": 2,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#silicon-valley-named-1971"
+      ]
+    },
+    {
+      "id": "sequoia-kleiner-1972",
+      "label": "Sequoia Capital and Kleiner Perkins Founded",
+      "description": "Don Valentine founds Sequoia Capital and Eugene Kleiner founds Kleiner Perkins, institutionalizing Arthur Rock's power-law logic into professional venture firms rather than individual angel deals. Kleiner Perkins pioneers pairing a technical founder with an experienced business co-founder as a condition of funding, birthing a dynamic still common decades later.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "1972",
+        "earliest": "1972-01-01",
+        "latest": "1972-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "sequoia-kleiner-1972-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.model": "institutional",
+              "venture.capital_regime": "growing"
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": -1,
+              "openness": 1,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "institutional-vc-fails-to-form",
+          "label": "Institutional Vc Fails To Form",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "Institutional venture capital fails to professionalize in the early 1970s; startup funding stays with individual angels and corporate R&D budgets rather than dedicated firms raising from limited partners.",
+          "requirement": "Regulatory or market conditions that discourage pooled venture funds, or Rock's power-law thesis failing to attract institutional limited-partner capital",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.model": "angel",
+              "venture.capital_regime": "scarce"
+            },
+            "trajectoryDelta": {
+              "capital": -3,
+              "founder_power": 1,
+              "openness": 1,
+              "scale": -2,
+              "institutionalization": -1,
+              "valley_concentration": 2
+            },
+            "influences": [
+              {
+                "eventId": "apple-founded-1976",
+                "weightMultiplier": 0.65,
+                "rationale": "An angel- and corporate-R&D system funds fewer independent PC startups."
+              },
+              {
+                "eventId": "netscape-ipo-1995",
+                "weightMultiplier": 0.6,
+                "rationale": "Without professional venture firms, an internet startup reaches public markets less easily."
+              },
+              {
+                "eventId": "y-combinator-2005",
+                "weightMultiplier": 0.7,
+                "rationale": "A weaker venture profession provides a smaller investor network for an accelerator to reorganize."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Startup funding remains slower and more relationship-dependent through the PC and internet eras",
+            "No professional class of full-time venture investors forms to evaluate deal flow at scale",
+            "Fewer, larger, more conservative bets are placed on new companies, and fewer new companies get funded overall"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#sequoia-kleiner-1972"
+      ]
+    },
+    {
+      "id": "tcp-ip-1974",
+      "label": "TCP/IP",
+      "description": "Vinton Cerf and Bob Kahn develop TCP/IP, the protocol suite that will let independent networks interoperate as a single internet. Still a research-community concern, not yet a commercial or venture-capital story.",
+      "category": "networks",
+      "lineage": null,
+      "time": {
+        "display": "1974",
+        "earliest": "1974-01-01",
+        "latest": "1974-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "network.tcp_ip_open": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "tcp-ip-1974-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": -1,
+              "openness": 3,
+              "scale": 2,
+              "institutionalization": 4,
+              "valley_concentration": 1
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#tcp-ip-1974"
+      ]
+    },
+    {
+      "id": "apple-founded-1976",
+      "label": "Apple Computer Founded",
+      "description": "Steve Jobs, Steve Wozniak, and Ronald Wayne found Apple Computer, emerging from the Homebrew Computer Club's hobbyist culture. Intel's microprocessors, a Fairchild spinoff technology, make the personal computer commercially viable for the first time.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "April 1, 1976",
+        "earliest": "1976-04-01",
+        "latest": "1976-04-01",
+        "resolution": "day"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "apple-founded-1976-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "apple.status": "independent"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": 4,
+              "openness": 3,
+              "scale": 2,
+              "institutionalization": 3,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "apple-fails-to-find-early-investment",
+          "label": "Apple Fails To Find Early Investment",
+          "canonical": false,
+          "weight": 1,
+          "description": "Apple fails to secure Mike Markkula's early investment and operational guidance, and the company either dissolves within its first two years or is absorbed by a larger, more established computing firm.",
+          "requirement": "Markkula, or an equivalent early angel/operator, declines to invest or is never introduced to Jobs and Wozniak",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "apple.status": "absorbed"
+            },
+            "trajectoryDelta": {
+              "capital": -2,
+              "founder_power": -3,
+              "scale": -2,
+              "institutionalization": 4,
+              "valley_concentration": 1
+            },
+            "disables": [
+              "iphone-app-store-2007"
+            ]
+          },
+          "narrativeConsequences": [
+            "The homebrew hobbyist scene stays hobbyist longer, without a company scaling it into a mass consumer product",
+            "IBM or another established computing firm defines the personal-computer form factor and business model instead of Apple",
+            "The founder-celebrity culture that later surrounds Jobs never has this origin story to draw on"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#apple-founded-1976"
+      ]
+    },
+    {
+      "id": "capital-gains-tax-cut-1978",
+      "label": "US Capital Gains Tax Cut",
+      "description": "The US capital gains tax rate drops from 49 percent to 20 percent, dramatically increasing the amount of capital flowing into venture funds just as Intel's microprocessors are powering the first wave of home computers and Apple and Microsoft are forming.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "1978",
+        "earliest": "1978-01-01",
+        "latest": "1978-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "capital-gains-tax-cut-1978-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "abundant"
+            },
+            "trajectoryDelta": {
+              "capital": 5,
+              "founder_power": 1,
+              "scale": 2,
+              "institutionalization": 2,
+              "valley_concentration": 2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "tax-cut-fails",
+          "label": "Tax Cut Fails",
+          "canonical": false,
+          "weight": 1,
+          "description": "The capital gains tax cut fails to pass Congress, or passes in much smaller form, leaving venture fundraising constrained through the personal-computer boom.",
+          "requirement": "Different Congressional coalition or political priorities in the late Carter administration",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "scarce"
+            },
+            "trajectoryDelta": {
+              "capital": -4,
+              "scale": -2,
+              "institutionalization": 2,
+              "valley_concentration": 2
+            },
+            "influences": [
+              {
+                "eventId": "apple-founded-1976",
+                "weightMultiplier": 0.75,
+                "rationale": "Scarcer risk capital slows independent PC-company growth."
+              },
+              {
+                "eventId": "netscape-ipo-1995",
+                "weightMultiplier": 0.75,
+                "rationale": "A smaller venture industry reduces the pipeline of internet companies reaching IPO scale."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "VC fundraising stays constrained through the PC era, and fewer PC-era startups get funded",
+            "Apple and Microsoft's growth is slower and more bootstrapped, dependent on revenue rather than venture capital",
+            "The 1980s venture boom that funds the first wave of Silicon Valley IPOs is muted or delayed several years"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#capital-gains-tax-cut-1978"
+      ]
+    },
+    {
+      "id": "www-1989",
+      "label": "Tim Berners-Lee Invents the World Wide Web",
+      "description": "British CERN researcher Tim Berners-Lee invents the World Wide Web: readable addresses, HTML pages, and a way to navigate the TCP/IP network by name rather than raw address. Before this, there is no such thing as a website, a URL, or a browser. Released without patent or licensing fee.",
+      "category": "networks",
+      "lineage": null,
+      "time": {
+        "display": "1989",
+        "earliest": "1989-01-01",
+        "latest": "1989-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "www-1989-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "web.model": "open"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "openness": 4,
+              "scale": 3,
+              "institutionalization": 4,
+              "valley_concentration": -3
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "proprietary-hypertext-wins",
+          "label": "Proprietary Hypertext Wins",
+          "canonical": false,
+          "weight": 1,
+          "description": "A commercial hypertext or online-service system (in the mold of AOL's or Compuserve's walled gardens) becomes the dominant way people navigate networked information, rather than Berners-Lee's open, patent-free web standard.",
+          "requirement": "A well-funded commercial online service achieves critical mass and interoperability before an open standard does",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "web.model": "proprietary"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -3,
+              "openness": -5,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 1
+            },
+            "enables": [
+              "walled-garden-network-economy-1991"
+            ],
+            "influences": [
+              {
+                "eventId": "netscape-ipo-1995",
+                "weightMultiplier": 0.3,
+                "rationale": "A proprietary navigation standard sharply reduces the opportunity for an independent open-web browser company."
+              },
+              {
+                "eventId": "google-founded-1998",
+                "weightMultiplier": 0.6,
+                "rationale": "A fragmented licensed network makes universal web search less straightforward."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The internet's commercial layer is walled and licensed from the start rather than open and freely implementable",
+            "Netscape-style browser companies either don't exist or exist as licensees of a proprietary protocol rather than implementers of an open one",
+            "The open-source, permissionless-innovation culture that later defines much of Valley software development has a much weaker founding precedent"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#www-1989"
+      ]
+    },
+    {
+      "id": "walled-garden-network-economy-1991",
+      "label": "A Licensed Walled-Garden Network Economy Forms",
+      "description": "Commercial online services turn networked information into licensed, mutually incompatible destinations. Software companies negotiate distribution and protocol access rather than freely implementing a common web.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "1991-2000",
+        "earliest": "1991-01-01",
+        "latest": "2000-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "www-1989",
+            "outcomeId": "proprietary-hypertext-wins"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "walled-garden-network-economy-1991-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "web.model": "proprietary",
+              "internet.capital_wave": "muted"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -3,
+              "openness": -5,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 1
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#www-1989"
+      ]
+    },
+    {
+      "id": "netscape-ipo-1995",
+      "label": "Netscape's IPO",
+      "description": "Kleiner Perkins-backed Netscape, built by Marc Andreessen, IPOs and its shares rocket from $28 to $75 in a single day. Demonstrates to investors from Palo Alto to Wall Street just how large the internet's commercial opportunity could be, and triggers a wave of VC money shifting from hardware toward software and internet ventures.",
+      "category": "networks",
+      "lineage": null,
+      "time": {
+        "display": "1995",
+        "earliest": "1995-01-01",
+        "latest": "1995-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "netscape-ipo-1995-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "internet.capital_wave": "boom"
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": 2,
+              "openness": 1,
+              "scale": 3,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "netscape-ipo-underwhelms",
+          "label": "Netscape Ipo Underwhelms",
+          "canonical": false,
+          "weight": 1,
+          "description": "Netscape's IPO underperforms, or is delayed by Microsoft's aggressive browser-bundling strategy reaching the market first and dominating browser share before Netscape can establish itself commercially.",
+          "requirement": "Microsoft ships and bundles Internet Explorer earlier or more effectively, or public market conditions sour before Netscape's IPO window",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "internet.capital_wave": "muted"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "founder_power": -2,
+              "openness": -1,
+              "scale": -2,
+              "institutionalization": 3,
+              "valley_concentration": 3
+            },
+            "influences": [
+              {
+                "eventId": "dotcom-crash-2000",
+                "weightMultiplier": 0.6,
+                "rationale": "A muted internet IPO wave makes a later market-wide internet crash less likely to reach the same scale."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Investors stay skeptical of internet-native companies for several additional years",
+            "The mid-1990s VC rush into internet startups is muted or delayed, changing the timing and cast of dot-com-era winners",
+            "Microsoft's dominance in web browsing is established even more decisively and earlier than it was historically"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#netscape-ipo-1995"
+      ]
+    },
+    {
+      "id": "google-founded-1998",
+      "label": "Google Incorporated",
+      "description": "Stanford graduate students Larry Page and Sergey Brin formally incorporate Google. Its search technology rapidly becomes one of the most influential businesses to emerge from the second wave of internet companies.",
+      "category": "networks",
+      "lineage": null,
+      "time": {
+        "display": "September 4, 1998",
+        "earliest": "1998-09-04",
+        "latest": "1998-09-04",
+        "resolution": "day"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "internet.capital_wave": "boom"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "google-founded-1998-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": 2,
+              "openness": 1,
+              "scale": 3,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#google-founded-1998"
+      ]
+    },
+    {
+      "id": "dotcom-crash-2000",
+      "label": "Dot-Com Boom and Bust",
+      "description": "Speculative internet investing peaks and collapses: the NASDAQ loses 78 percent of its value between March 2000 and October 2002. Pets.com spends $4 million on a single Super Bowl commercial and is out of business nine months later. Trillions are lost. Amazon, Google, PayPal, and eBay survive through revenue discipline and restructuring. Investors get scarred and, for roughly two decades, refocus on business fundamentals over pure hype.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "2000-2002",
+        "earliest": "2000-01-01",
+        "latest": "2002-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 6,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "dotcom-crash-2000-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "disciplined"
+            },
+            "trajectoryDelta": {
+              "capital": -5,
+              "founder_power": -2,
+              "openness": -1,
+              "scale": -2,
+              "institutionalization": -3,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "gradual-deflation",
+          "label": "Gradual Deflation",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "The speculative bubble deflates gradually rather than collapsing sharply, either because regulators tighten IPO standards earlier or because a few high-profile failures trigger caution before the broader market overextends.",
+          "requirement": "Earlier regulatory intervention on speculative IPOs, or an earlier high-profile failure serving as a widely-heeded warning",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "disciplined"
+            },
+            "trajectoryDelta": {
+              "capital": -2,
+              "founder_power": -1,
+              "scale": -1,
+              "institutionalization": 2,
+              "valley_concentration": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Fewer catastrophic single-company failures, but also a slower, less decisive 'flight to fundamentals'",
+            "The two-decade-long VC discipline shift toward revenue and unit economics is weaker and less culturally embedded",
+            "Some companies that historically died in the crash survive in weakened form instead, muddying the field for the survivors that historically thrived (Amazon, Google, eBay)"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#dotcom-crash-2000"
+      ]
+    },
+    {
+      "id": "y-combinator-2005",
+      "label": "Y Combinator Founded",
+      "description": "Paul Graham, Jessica Livingston, Robert Morris, and Trevor Blackwell launch Y Combinator: small amounts of capital for small equity stakes, extremely early, across many startups funded together in a mentored 'batch,' without requiring operational control. Y Combinator pioneers Demo Day, where every startup in a batch pitches to many investors simultaneously, shifting negotiating leverage from investors toward founders for the first time.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "2005",
+        "earliest": "2005-01-01",
+        "latest": "2005-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "y-combinator-2005-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.model": "accelerator",
+              "founder.governance": "founder_dominant"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": 4,
+              "openness": 2,
+              "scale": 1,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "accelerator-model-fails",
+          "label": "Accelerator Model Fails",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "The batch-accelerator model fails to attract enough quality applicants or enough investor interest at Demo Day to prove itself, and traditional VCs successfully resist the shift toward more founder-friendly terms.",
+          "requirement": "Insufficient early success stories in Y Combinator's first few batches, or established VCs coordinating to avoid bidding wars at Demo Day",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.model": "institutional",
+              "founder.governance": "balanced"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": -3,
+              "scale": -1,
+              "institutionalization": 4,
+              "valley_concentration": 4
+            }
+          },
+          "narrativeConsequences": [
+            "Capital concentration and deal control stay with a small number of established VC partners for another decade or more",
+            "Founder equity retention across the industry stays systematically lower into the 2010s and 2020s",
+            "No comparable low-cost, high-volume pipeline exists to surface founders outside existing venture networks"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#y-combinator-2005"
+      ]
+    },
+    {
+      "id": "iphone-app-store-2007",
+      "label": "iPhone and App Store",
+      "description": "Steve Jobs, back at Apple, launches the iPhone and, soon after, the App Store. Triggers the biggest shift in consumer technology behavior since the internet itself, opening the door to Uber, Instagram, WhatsApp, and an entire generation of mobile-first startups. Tech proves largely immune to the Great Recession the following year as investors judge the opportunity too large to ignore.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "2007",
+        "earliest": "2007-01-01",
+        "latest": "2007-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "iphone-app-store-2007-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "platform.mobile_model": "app_store"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 1,
+              "openness": -2,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "iphone-stays-closed",
+          "label": "Iphone Stays Closed",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "Apple keeps the iPhone a closed device with no third-party App Store, as was initially the plan, treating it purely as a consumer hardware and services product rather than a developer platform.",
+          "requirement": "Apple leadership prioritizing control and a curated built-in experience over the additional revenue and platform lock-in of an open developer marketplace",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "platform.mobile_model": "closed"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -3,
+              "openness": -5,
+              "scale": 3,
+              "institutionalization": 5,
+              "valley_concentration": 4
+            },
+            "enables": [
+              "incumbent-mobile-ecosystem-2008"
+            ]
+          },
+          "narrativeConsequences": [
+            "Mobile-native startups can't distribute directly to consumers via Apple's device, concentrating mobile innovation inside large companies with their own distribution",
+            "The 2008-2012 wave of mobile-first venture investment is delayed, redirected, or muted significantly",
+            "A third-party platform (Android, or a later entrant) becomes the primary venue for mobile startup innovation instead"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#iphone-app-store-2007"
+      ]
+    },
+    {
+      "id": "incumbent-mobile-ecosystem-2008",
+      "label": "Mobile Innovation Consolidates Inside Incumbents",
+      "description": "Without a third-party iPhone App Store, mobile services are built mainly by Apple, carriers, and large software firms until another platform eventually opens a distribution channel.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "2008-2015",
+        "earliest": "2008-01-01",
+        "latest": "2015-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "iphone-app-store-2007",
+            "outcomeId": "iphone-stays-closed"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "incumbent-mobile-ecosystem-2008-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "platform.mobile_model": "closed"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": -4,
+              "openness": -5,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#iphone-app-store-2007"
+      ]
+    },
+    {
+      "id": "a16z-founded-2009",
+      "label": "Andreessen Horowitz Founded",
+      "description": "Netscape's Marc Andreessen and Ben Horowitz found the venture firm a16z on the thesis that 'software is eating the world.' Modeled explicitly on a Hollywood talent agency, offering founders a full-stack support system (PR, recruiting, and more), not just capital, without demanding operational control.",
+      "category": "finance",
+      "lineage": null,
+      "time": {
+        "display": "2009",
+        "earliest": "2009-01-01",
+        "latest": "2009-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "a16z-founded-2009-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.model": "platform",
+              "founder.governance": "founder_dominant"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 3,
+              "openness": 1,
+              "scale": 1,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "platform-model-fails",
+          "label": "Platform Model Fails",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "a16z's talent-agency-style platform services fail to meaningfully differentiate the firm from purely transactional venture capital, and founders don't come to expect non-capital support as standard.",
+          "requirement": "Founders and the market judging in-house PR/recruiting services as low-value relative to their cost, or a16z's specific bets underperforming enough to undercut the thesis",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.model": "institutional"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": -1,
+              "scale": 1,
+              "institutionalization": 4,
+              "valley_concentration": 4
+            }
+          },
+          "narrativeConsequences": [
+            "Venture capital stays a more purely transactional relationship (capital for equity) through the 2010s",
+            "The 'founder-as-public-personality' culture of the 2010s, which a16z's media and PR machine helped cultivate, is weaker",
+            "Later firms don't imitate the full-service platform model as widely"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#a16z-founded-2009"
+      ]
+    },
+    {
+      "id": "zirp-global-spread-2010s",
+      "label": "ZIRP Capital and Global Spread of Valley Culture",
+      "description": "Near-zero interest rates make investors far more willing to deploy capital into high-risk, high-growth, unprofitable startups, driving valuations to unprecedented levels. International capital, including SoftBank, competes aggressively for deals. Silicon Valley's 'move fast and break things' culture spreads to startup hubs in China, India, Europe, Latin America, and elsewhere in the US, decoupling the culture from the specific geography that produced it.",
+      "category": "culture",
+      "lineage": null,
+      "time": {
+        "display": "2010s",
+        "earliest": "2010-01-01",
+        "latest": "2019-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "zirp-global-spread-2010s-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "abundant",
+              "geography.startup_model": "global_valley_copy"
+            },
+            "trajectoryDelta": {
+              "capital": 5,
+              "founder_power": 2,
+              "openness": 2,
+              "scale": 4,
+              "institutionalization": 4,
+              "valley_concentration": -2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "rates-normalize-early",
+          "label": "Rates Normalize Early",
+          "canonical": false,
+          "weight": 1,
+          "description": "Interest rates normalize earlier than they did historically, and mega-funds like SoftBank's Vision Fund don't pursue the same scale of aggressive, growth-at-all-costs late-stage bets.",
+          "requirement": "Different central bank policy in the wake of the 2008 financial crisis, or SoftBank and comparable funds choosing a more conservative deployment strategy",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "venture.capital_regime": "disciplined",
+              "geography.startup_model": "valley"
+            },
+            "trajectoryDelta": {
+              "capital": -2,
+              "scale": 1,
+              "institutionalization": 3,
+              "valley_concentration": 3
+            },
+            "influences": [
+              {
+                "eventId": "kalanick-neumann-ousters-2017",
+                "weightMultiplier": 0.65,
+                "rationale": "Less growth-at-all-costs capital makes fewer governance excesses reach historic scale."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Startup valuations stay more disciplined through the 2010s, with fewer extreme up-rounds and down-rounds",
+            "'Growth at all costs' does not dominate the decade's startup culture to the same degree",
+            "Fewer WeWork-scale overreaches occur, but also less capital reaches ambitious, capital-intensive bets that later prove foundational"
+          ]
+        },
+        {
+          "id": "capital-stays-domestic",
+          "label": "Capital Stays Domestic",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "International capital, including SoftBank's Vision Fund, doesn't compete as aggressively for Silicon Valley deals, and the decade's growth-at-all-costs culture stays more contained to the US instead of exporting rapidly to Beijing, Bangalore, London, and São Paulo.",
+          "requirement": "Capital controls, a weaker yen, or SoftBank and comparable sovereign-linked funds choosing not to pursue the Vision Fund's scale of foreign deployment",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "geography.startup_model": "valley"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 1,
+              "scale": 2,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": [
+            "Fewer non-US mega-rounds get funded, and Silicon Valley's playbook stays a domestic export rather than a globally replicated template",
+            "Valuations climb more slowly through the decade with less foreign capital bidding up late-stage rounds",
+            "Startup hubs outside the US develop more locally distinct cultures instead of converging on the Valley's 'move fast and break things' norms"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#zirp-global-spread-2010s"
+      ]
+    },
+    {
+      "id": "openai-founded-2015",
+      "label": "OpenAI Founded",
+      "description": "Elon Musk, Sam Altman (Y Combinator's former president), and others found OpenAI as a nonprofit AI research lab. It later restructures toward a capped-profit, product-led model, eventually releasing ChatGPT in 2022 and ushering in the largest venture-capital shift since mobile.",
+      "category": "hardware",
+      "lineage": null,
+      "time": {
+        "display": "2015",
+        "earliest": "2015-01-01",
+        "latest": "2015-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "openai-founded-2015-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "openai.structure": "capped_profit"
+            },
+            "trajectoryDelta": {
+              "capital": 2,
+              "founder_power": 1,
+              "openness": -2,
+              "scale": 3,
+              "institutionalization": 4,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "openai-stays-nonprofit",
+          "label": "Openai Stays Nonprofit",
+          "canonical": false,
+          "weight": 1,
+          "description": "OpenAI stays a pure nonprofit research lab, declining the capped-profit restructuring and the product-led commercial pivot that produced ChatGPT as a mass-market consumer product.",
+          "requirement": "Founding leadership prioritizing research mission over commercial scale, or failing to secure the compute-scale capital (Microsoft's investment) that the restructuring enabled",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "openai.structure": "nonprofit"
+            },
+            "trajectoryDelta": {
+              "capital": 1,
+              "founder_power": -2,
+              "openness": 2,
+              "scale": 2,
+              "institutionalization": 5,
+              "valley_concentration": 2
+            },
+            "influences": [
+              {
+                "eventId": "genai-boom-2022-2024",
+                "weightMultiplier": 0.7,
+                "rationale": "Without a product-led commercial pivot, the AI investment wave is less likely to crystallize around one consumer launch."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The 2022-2026 AI investment surge doesn't center on a single product-led company's consumer launch, and is more diffuse across research labs and incumbents",
+            "AI capital and talent concentrate differently, plausibly more inside existing large companies (Google, Microsoft) than around new AI-native startups",
+            "Y Combinator's founder-first, product-led playbook doesn't get its most visible 2020s proof point"
+          ]
+        },
+        {
+          "id": "openai-never-founded",
+          "label": "Openai Never Founded",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "Musk, Altman, and their prospective co-founders don't coalesce around a shared nonprofit lab in 2015, pursuing separate ventures instead. No single well-capitalized, safety-branded AI lab anchors the eventual boom.",
+          "requirement": "Diverging priorities among the founding group, or failure to secure the initial nonprofit funding commitments that let OpenAI launch as a credible, well-capitalized lab from day one",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "openai.structure": "none"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "founder_power": -1,
+              "openness": 1,
+              "scale": 1,
+              "institutionalization": 3,
+              "valley_concentration": 1
+            },
+            "influences": [
+              {
+                "eventId": "genai-boom-2022-2024",
+                "weightMultiplier": 0.4,
+                "rationale": "Without OpenAI, an AI boom may still originate from incumbents but is less likely to take the documented startup-centered form."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "If a generative-AI wave still occurs later, it originates from an existing incumbent lab (Google, DeepMind) or academia rather than a venture-legible startup",
+            "The 2020s' defining nonprofit-to-capped-profit governance drama, and the talent/capital playbook it set, never happens in that form",
+            "The moment when a single consumer product crystallizes public AI investment is delayed and less concentrated in one company's narrative"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#openai-founded-2015"
+      ]
+    },
+    {
+      "id": "kalanick-neumann-ousters-2017",
+      "label": "Kalanick and Neumann Ousted",
+      "description": "High-profile founder ousters — Travis Kalanick removed from Uber's CEO role in 2017, Adam Neumann forced out of WeWork ahead of its collapsed 2019 IPO attempt — signal investor pushback against the unchecked founder leverage the 2010s had built up. Investors begin openly questioning whether founder-friendly governance had gone too far.",
+      "category": "culture",
+      "lineage": null,
+      "time": {
+        "display": "2017-2019",
+        "earliest": "2017-01-01",
+        "latest": "2019-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "kalanick-neumann-ousters-2017-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "founder.governance": "investor_reasserted"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "founder_power": -4,
+              "openness": -1,
+              "institutionalization": 4,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "boards-defer-to-founders",
+          "label": "Boards Defer To Founders",
+          "canonical": false,
+          "weight": 1,
+          "description": "Boards at Uber and WeWork continue to defer to founder control despite mounting governance concerns, and no comparable high-profile ouster occurs to serve as an industry-wide warning.",
+          "requirement": "Board composition or dual-class share structures giving founders enough voting control to resist removal even amid scandal",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "founder.governance": "founder_dominant"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 5,
+              "openness": -2,
+              "scale": 2,
+              "institutionalization": 3,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Founder-friendly governance norms (dual-class shares, minimal board oversight, founder-controlled boards) continue unchecked into the 2020s",
+            "Later founder scandals, if they occur, arrive with less institutional memory of consequence to draw on",
+            "Institutional investors develop less appetite for pre-IPO governance protections, changing how late-stage rounds are structured"
+          ]
+        },
+        {
+          "id": "earlier-reckoning",
+          "label": "Earlier Reckoning",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "A founder ouster of comparable scale happens earlier in the decade, front-loading investor pushback against unchecked founder leverage well before Uber and WeWork reach their historical scale.",
+          "requirement": "An earlier-decade scandal serious enough to prompt board action despite the founder-friendly governance norms still dominant at the time",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "founder.governance": "investor_reasserted"
+            },
+            "trajectoryDelta": {
+              "capital": -1,
+              "founder_power": -4,
+              "openness": -1,
+              "institutionalization": 4,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Founder-friendly governance (dual-class shares, minimal board oversight) gets checked earlier, changing how mid-2010s late-stage rounds get structured",
+            "WeWork-style overreach is plausibly prevented outright rather than merely punished after the fact, since the warning shot lands before Neumann-scale excess accumulates",
+            "Founder power declines gradually across the decade instead of dropping sharply at one visible 2017-2019 inflection"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#kalanick-neumann-ousters-2017"
+      ]
+    },
+    {
+      "id": "genai-boom-2022-2024",
+      "label": "ZIRP Ends, AI Boom Begins",
+      "description": "Rising interest rates end the ZIRP era in 2022 and VC funding volume drops overall, but AI investment accelerates sharply after ChatGPT's late-2022 release, becoming the largest shift in startup investment since the mobile revolution. Despite remote work having proven viable, AI-era talent concentrates physically back in the Bay Area. The end-point of the standard timeline — alternative histories converge toward or diverge from this present.",
+      "category": "culture",
+      "lineage": null,
+      "time": {
+        "display": "2022-2024",
+        "earliest": "2022-01-01",
+        "latest": "2024-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "genai-boom-2022-2024-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control copied from the legacy milestone. Its institutionalization and Valley-concentration values are provisional additions to the four legacy trajectory axes.",
+          "effects": {
+            "sets": {
+              "ai.capital_model": "startup_wave",
+              "ai.geography": "bay_area"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 1,
+              "openness": -1,
+              "scale": 4,
+              "institutionalization": 5,
+              "valley_concentration": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "incumbents-absorb-ai-boom",
+          "label": "Incumbents Absorb Ai Boom",
+          "canonical": false,
+          "weight": 1,
+          "description": "AI capital concentrates inside large incumbents (Google, Microsoft, Meta) through internal R&D and acquihires rather than flowing to new venture-backed startups. ChatGPT's moment doesn't produce a comparable wave of new AI-native unicorns.",
+          "requirement": "Frontier-model compute costs staying high enough that only incumbents can operate at the leading edge, or regulatory scrutiny not constraining incumbent AI acquisitions the way it constrained prior platform-era consolidation",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "ai.capital_model": "incumbent_concentration",
+              "ai.geography": "bay_area"
+            },
+            "trajectoryDelta": {
+              "capital": 4,
+              "founder_power": -4,
+              "openness": -4,
+              "scale": 5,
+              "institutionalization": 5,
+              "valley_concentration": 3
+            },
+            "enables": [
+              "incumbent-ai-consolidation-2023"
+            ]
+          },
+          "narrativeConsequences": [
+            "AI-era capital concentrates in fewer, larger players instead of spreading across a new generation of startups",
+            "Founder power stays comparatively low, since top talent joins incumbent labs rather than founding independent companies",
+            "Late-stage venture capital shifts toward fewer, larger checks into a small set of AI-native survivors rather than broad early-stage bets"
+          ]
+        },
+        {
+          "id": "ai-boom-decentralizes-geography",
+          "label": "Ai Boom Decentralizes Geography",
+          "canonical": false,
+          "weight": 1,
+          "description": "Post-pandemic remote-work norms hold through the AI boom, and AI-era talent and company formation spread across distributed hubs (Austin, New York, international) instead of reconcentrating in the Bay Area.",
+          "requirement": "Compute and cloud infrastructure access remaining geography-agnostic, or a critical mass of AI labs committing to distributed-first operating models",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy alternative. The premise and consequences are inherited; typed state, six-axis values, and soft or hard links are initial judgments for later review.",
+          "effects": {
+            "sets": {
+              "ai.capital_model": "startup_wave",
+              "ai.geography": "distributed",
+              "geography.startup_model": "distributed"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 2,
+              "openness": 1,
+              "scale": 5,
+              "institutionalization": 3,
+              "valley_concentration": -5
+            },
+            "enables": [
+              "distributed-ai-hubs-2023"
+            ]
+          },
+          "narrativeConsequences": [
+            "Silicon Valley's physical concentration advantage — unbroken since the Stanford Industrial Park anchored it in 1951 — erodes for the first time",
+            "The region's continued relevance rests more on brand and network effects than on geographic necessity",
+            "Other regions capture a meaningfully larger share of the AI capital surge than they did historically"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+      ]
+    },
+    {
+      "id": "distributed-ai-hubs-2023",
+      "label": "Distributed AI Hubs Persist",
+      "description": "Remote-first laboratories and cloud access allow Austin, New York, international cities, and smaller research centers to retain a larger share of AI talent and startup formation.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "2023-2026",
+        "earliest": "2023-01-01",
+        "latest": "2026-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "genai-boom-2022-2024",
+            "outcomeId": "ai-boom-decentralizes-geography"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "distributed-ai-hubs-2023-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "ai.geography": "distributed",
+              "geography.startup_model": "distributed"
+            },
+            "trajectoryDelta": {
+              "capital": 3,
+              "founder_power": 2,
+              "openness": 2,
+              "scale": 5,
+              "institutionalization": 3,
+              "valley_concentration": -5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+      ]
+    },
+    {
+      "id": "incumbent-ai-consolidation-2023",
+      "label": "Incumbents Consolidate Frontier AI",
+      "description": "Compute costs, internal research organizations, and acquisition power keep frontier AI inside a few platform companies, with fewer independent laboratories and founder-led AI firms.",
+      "category": "consequence",
+      "lineage": null,
+      "time": {
+        "display": "2023-2026",
+        "earliest": "2023-01-01",
+        "latest": "2026-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1.5,
+      "requires": {
+        "all": [
+          {
+            "kind": "outcomeChosen",
+            "eventId": "genai-boom-2022-2024",
+            "outcomeId": "incumbents-absorb-ai-boom"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "incumbent-ai-consolidation-2023-forms",
+          "label": "Consequence takes institutional form",
+          "canonical": true,
+          "weight": 1,
+          "description": "The enabled downstream institution or industry described by the prior choice takes durable form.",
+          "requirement": null,
+          "confidence": "medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Explicit consequence event derived from downstream-effects prose in the legacy alternative; timing and typed effects are provisional.",
+          "effects": {
+            "sets": {
+              "ai.capital_model": "incumbent_concentration"
+            },
+            "trajectoryDelta": {
+              "capital": 5,
+              "founder_power": -5,
+              "openness": -4,
+              "scale": 5,
+              "institutionalization": 5,
+              "valley_concentration": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/silicon-valley/milestones.json#genai-boom-2022-2024"
+      ]
+    }
+  ]
+}

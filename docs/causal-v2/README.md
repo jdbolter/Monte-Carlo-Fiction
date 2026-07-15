@@ -1,8 +1,8 @@
 # Causal theme schema v2 — pilot runtime
 
-Status: **runtime implemented and tested; the expanded pilot is active as `vr-immersion-causal-pilot`**.
+Status: **runtime implemented and tested; active themes are `vr-immersion-causal-pilot` and `silicon-valley-causal`**.
 
-This directory retains the version-2 JSON Schemas and an early illustrative world trace. The runnable 47-event theme, state registry, framework, and config now live under `themes/vr-immersion-causal-pilot/`, where the CLI and web UI discover them normally. The active data set contains the current legacy theme's 42 historical milestones plus five explicit consequence events created for the causal pilot.
+This directory retains the version-2 JSON Schemas and an early illustrative world trace. Two runnable themes now exercise the same theme-agnostic runtime: the 47-event VR data set contains the current legacy theme's 42 historical milestones plus five explicit consequences, while the 37-event Silicon Valley data set contains all 28 legacy milestones plus nine explicit consequences.
 
 The spike answers four questions:
 
@@ -20,8 +20,9 @@ The spike answers four questions:
 - `../../themes/vr-immersion-causal-pilot/theme.config.json` — active configuration and divergence policy.
 - `../../themes/vr-immersion-causal-pilot/state-registry.json` — controlled vocabulary for six axes and 38 typed facts.
 - `../../themes/vr-immersion-causal-pilot/events.json` — 47 active events from Barker's panorama through the 2026 Horizon Worlds reversal.
+- `../../themes/silicon-valley-causal/` — second active reference theme: 37 events, 24 typed facts, and six axes spanning 1913–2026.
 
-The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes. The causal pilot is a third, separate theme and does not reinterpret their saved seeds.
+The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes. Each causal conversion has its own theme ID and does not reinterpret legacy saved seeds.
 
 ## Runtime compatibility
 
@@ -103,7 +104,7 @@ Canonical history is one explicit outcome at every branch point. The supported p
 - `naturalistic`: sample canonical and noncanonical outcomes from their authored weights;
 - `all-counterfactual`: exclude canonical outcomes at every encountered branch, preserving the current experiment's premise as an available mode.
 
-The pilot configuration uses `limited` with one to three divergences. A comparison batch can also run `baseline`, `single`, `naturalistic`, and `all-counterfactual` so the effect of policy is visible rather than assumed.
+Both active causal configurations use `limited` with one to three divergences. A comparison batch can also run `baseline`, `single`, `naturalistic`, and `all-counterfactual` so the effect of policy is visible rather than assumed.
 
 `single` uses a separate deterministic planning pass, so the event chain matches the same seed's baseline through the selected divergence event while the divergence point varies across the batch. `limited` currently guarantees its sampled target by taking early reachable forks until the target is met; varying the placement of multiple divergences remains a possible later refinement.
 
@@ -133,6 +134,6 @@ The automated suite also covers all five divergence modes, varied planned diverg
 
 ## Research status of the examples
 
-The worked events are schema examples derived from the current theme's milestone descriptions, requirements, and downstream effects. They are not a newly researched or source-audited historical model. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it. The 30 events imported on 2026-07-15 explicitly identify their translated causal values as provisional in the canonical and counterfactual rationales; the original 17 authored causal events were retained unchanged.
+The worked events are schema examples derived from the current themes' milestone descriptions, requirements, and downstream effects. They are not newly researched or source-audited historical models. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it. Both conversions explicitly identify translated causal values as provisional while preserving the legacy prose used as evidence.
 
-The next content review should focus on whether the expanded vocabulary, six-axis translations, and hard/soft boundary are right. Numerical weights, deltas, and soft influences remain provisional tuning values. The current import boundary is the 42-milestone `themes/vr-immersion` file; the 15 additional points found only in the older sibling `VR_Speculation` source were not silently added to this pass.
+The next content review should focus on whether each vocabulary, six-axis translation, and hard/soft boundary is right. Numerical weights, deltas, and soft influences remain provisional tuning values. The VR import boundary is the 42-milestone `themes/vr-immersion` file; the Silicon Valley boundary is the complete 28-milestone `themes/silicon-valley` file. No outside events were silently imported.

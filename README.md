@@ -2,11 +2,11 @@
 
 This is a testbed for the idea of generating a run of x (>99) narratives consisting of variation on a theme. The narratives might be speculative (design) fictions or more traditional narratives with character development and interaction. The resulting narrative would then be read and analyzed by an LLM.
 
-The two legacy themes are explicitly **alternate-histories** experiments: every generated legacy world diverges from the real historical record at every branch point it passes through. The active schema-v2 causal pilot also supports canonical baseline, single-divergence, limited-divergence, naturalistic, and all-counterfactual batches so alternatives can be compared with controls.
+The two legacy themes are explicitly **alternate-histories** experiments: every generated legacy world diverges from the real historical record at every branch point it passes through. The schema-v2 causal themes also support canonical baseline, single-divergence, limited-divergence, naturalistic, and all-counterfactual batches so alternatives can be compared with controls.
 
 See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
 
-The first active causal theme is `vr-immersion-causal-pilot`: 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. It preserves all 42 milestones in the current legacy `vr-immersion` theme and retains five explicit causal consequence events introduced by the original pilot. Its schemas and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The original `vr-immersion` and `silicon-valley` themes remain on the unchanged legacy path.
+There are two active causal themes. `vr-immersion-causal-pilot` contains 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. `silicon-valley-causal` contains all 28 legacy Silicon Valley milestones, all 24 of their counterfactual alternatives, and nine explicit downstream consequence events governed by 24 typed facts. The schema and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The original `vr-immersion` and `silicon-valley` themes remain available on the unchanged legacy path.
 
 ## Architecture
 
@@ -34,10 +34,11 @@ There are also CLI equivalents for batch work, in `scripts/`:
 ```
 npm run generate -- --theme vr-immersion --count 100         # free, no API key needed
 npm run generate -- --theme vr-immersion-causal-pilot --count 100  # active causal pilot
+npm run generate -- --theme silicon-valley-causal --count 100      # causal Silicon Valley
 npm run render -- --theme vr-immersion --limit 20             # renders un-rendered worlds to prose, costs real API calls
 npm run render-scenes -- --theme vr-immersion --limit 20      # renders un-rendered worlds to scene scripts, costs real API calls
 ```
 
 ## Adding a theme
 
-For the legacy format, copy `themes/_template/` to `themes/<your-theme-id>/` and follow the README inside it. For schema v2, use `themes/vr-immersion-causal-pilot/` with `docs/causal-v2/` as the working example and specification. No registration step — the engine discovers every folder under `themes/` automatically.
+For the legacy format, copy `themes/_template/` to `themes/<your-theme-id>/` and follow the README inside it. For schema v2, use `themes/vr-immersion-causal-pilot/` or `themes/silicon-valley-causal/` with `docs/causal-v2/` as working examples and specification. No registration step — the engine discovers every folder under `themes/` automatically.
