@@ -41,3 +41,16 @@ npm run render-scenes -- --theme vr-immersion --limit 20      # renders un-rende
 ## Adding a theme
 
 For schema v2, use `themes/vr-immersion/` or `themes/silicon-valley/` with `docs/causal-v2/` as working examples and specification. The engine still accepts schema-v1 data for compatibility, but no active theme uses it. No registration step—the engine discovers every folder under `themes/` automatically.
+
+## Future applications
+
+The same approach could support many subjects besides technological history:
+
+- **Alternative biographies** — follow a well-known figure through different mentors, education, employment, relationships, geographic moves, successes, and failures. State would describe changing resources, affiliations, reputation, commitments, and opportunities rather than treating personality as fixed destiny.
+- **Political turning points** — explore elections, reforms, revolutions, diplomatic crises, social movements, or wars through choices that change coalitions, legitimacy, institutional capacity, public opinion, and later event eligibility.
+- **Histories of science** — model a discovery as the product of competing theories, instruments, laboratories, funding systems, communication networks, and priority disputes. This could show alternatives in which a result arrives elsewhere, later, under another interpretation, or not at all, without reducing scientific change to a single “great person.”
+- **Institutions and places** — generate alternate histories of a university, laboratory, company, city, region, museum, or government agency as leadership decisions, funding, migration, regulation, and external shocks alter its development.
+- **Cultural and intellectual movements** — examine how artistic schools, literary genres, philosophical traditions, or media forms change through patronage, censorship, translation, new production tools, critical reception, and encounters among particular people and institutions.
+- **Other technological systems** — apply the existing model to fields such as computing, biotechnology, energy, transportation, spaceflight, or communications, especially where standards, regulation, capital, and institutional ownership create several plausible paths.
+
+A subject is especially suitable when it has documented inflection points, multiple defensible outcomes, a manageable set of state variables, and consequences that can be expressed as later requirements, enables, disables, or softer influences. Each new theme should distinguish documented history from historical inference and speculation, preserve sources for its causal claims, and begin with preliminary values that can be revised after batch testing and expert review.
