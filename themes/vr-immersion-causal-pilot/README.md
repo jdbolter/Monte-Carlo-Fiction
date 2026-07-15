@@ -2,7 +2,17 @@
 
 This is the first active schema-v2 theme. It is intentionally separate from `themes/vr-immersion`, which remains an unchanged schema-v1 comparison theme.
 
-The pilot contains 17 events spanning 1861–2025, 23 typed facts, six trajectory axes, and explicit canonical as well as counterfactual outcomes. Its causal claims and numeric weights are provisional adaptations of the research already recorded in `themes/vr-immersion/milestones.json`; they have not received a new source audit.
+The expanded pilot contains 47 events spanning 1787–2026, 38 typed facts, six trajectory axes, and explicit canonical as well as counterfactual outcomes. It preserves all 42 milestones in `themes/vr-immersion/milestones.json` and retains the five explicit consequence events created for the original 17-event causal pilot.
+
+The original 17 causal events remain unchanged. The 30 newly converted events are deliberately marked as provisional in their outcome rationales. Their source descriptions, branch alternatives, plausibility labels, requirements, and downstream consequences are inherited from the legacy theme. Their causal information was derived as a first pass:
+
+- legacy `sensory`, `interaction`, and `scale` vectors map to `sensory_breadth`, `embodied_agency`, and `sociality`;
+- `accessibility`, `openness`, and `institutionalization` values are description-based judgments;
+- 15 additional typed facts record the state of panoramic spectacle, stereoscopic and multisensory cinema, synchronized sound, computer graphics, bodily game interfaces, Heilig's program, arts VR, founder control, and professional generative tools;
+- branch alternatives use the existing requirement and downstream-effects prose, with typed state changes and 19 provisional six-axis vectors;
+- long-range consequences use soft `influences` where the legacy evidence suggests increased or decreased likelihood; no new hard `disables` were inferred for the imported events.
+
+These causal claims and numeric weights have not received a new source audit. They can be refined event by event without changing the engine or the stable event/outcome IDs.
 
 The default mode is `limited` with one to three divergences. Change `worldgen.divergencePolicy` in `theme.config.json` to run `baseline`, `single`, `naturalistic`, or `all-counterfactual` comparison batches.
 

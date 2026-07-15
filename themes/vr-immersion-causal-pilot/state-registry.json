@@ -5,32 +5,50 @@
     "sensory_breadth": {
       "negativePole": "Optical or auditory channels dominate; the rest of the body is largely unaddressed.",
       "positivePole": "Multiple senses and full-body experience are deliberately integrated.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     },
     "embodied_agency": {
       "negativePole": "The user primarily receives a preauthored experience.",
       "positivePole": "Bodily action, manipulation, and feedback materially change the experience.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     },
     "sociality": {
       "negativePole": "Use is solitary, private, or isolating.",
       "positivePole": "Use is collective, public, or meaningfully co-present.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     },
     "accessibility": {
       "negativePole": "Access is expensive, elite, specialized, or geographically narrow.",
       "positivePole": "Access is affordable, legible, and broadly distributed.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     },
     "openness": {
       "negativePole": "Ownership, standards, and production are proprietary or centrally controlled.",
       "positivePole": "Knowledge, standards, and production are open or interoperable.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     },
     "institutionalization": {
       "negativePole": "The practice depends on isolated inventors, temporary novelty, or fragile support.",
       "positivePole": "The practice has durable organizational funding, training, and infrastructure.",
-      "eventDeltaRange": [-5, 5]
+      "eventDeltaRange": [
+        -5,
+        5
+      ]
     }
   },
   "facts": {
@@ -41,13 +59,21 @@
     },
     "stereoscope.ip_model": {
       "type": "enum",
-      "values": ["unknown", "open", "licensed"],
+      "values": [
+        "unknown",
+        "open",
+        "licensed"
+      ],
       "default": "unknown",
       "description": "The governing intellectual-property model for the cheap stereoscope design."
     },
     "stereoscope.market_access": {
       "type": "enum",
-      "values": ["unknown", "elite", "mass"],
+      "values": [
+        "unknown",
+        "elite",
+        "mass"
+      ],
       "default": "unknown",
       "description": "The social breadth of access to stereoscopic viewing."
     },
@@ -63,13 +89,23 @@
     },
     "cinema.exhibition_model": {
       "type": "enum",
-      "values": ["unknown", "collective", "private", "mixed"],
+      "values": [
+        "unknown",
+        "collective",
+        "private",
+        "mixed"
+      ],
       "default": "unknown",
       "description": "The dominant social form of moving-image exhibition."
     },
     "cinema.dominant_venue": {
       "type": "enum",
-      "values": ["unknown", "theater", "peep_parlor", "mixed"],
+      "values": [
+        "unknown",
+        "theater",
+        "peep_parlor",
+        "mixed"
+      ],
       "default": "unknown",
       "description": "The dominant commercial venue for moving images."
     },
@@ -90,19 +126,35 @@
     },
     "sensorama.funding_model": {
       "type": "enum",
-      "values": ["unknown", "none", "private_arcade", "defense"],
+      "values": [
+        "unknown",
+        "none",
+        "private_arcade",
+        "defense"
+      ],
       "default": "unknown",
       "description": "The institutional funding route, if any, that carries Sensorama beyond a prototype."
     },
     "somatic_vr.institutional_home": {
       "type": "enum",
-      "values": ["none", "commercial", "military"],
+      "values": [
+        "none",
+        "commercial",
+        "military",
+        "arts"
+      ],
       "default": "none",
       "description": "The primary institutional home of the somatic VR lineage."
     },
     "somatic_vr.development_stage": {
       "type": "enum",
-      "values": ["none", "experimental", "research", "niche", "mass"],
+      "values": [
+        "none",
+        "experimental",
+        "research",
+        "niche",
+        "mass"
+      ],
       "default": "none",
       "description": "How far multisensory full-body systems have progressed beyond prototypes, whether in research or commercial deployment."
     },
@@ -118,51 +170,238 @@
     },
     "vr.display_paradigm": {
       "type": "enum",
-      "values": ["unknown", "room_scale", "head_mounted", "plural"],
+      "values": [
+        "unknown",
+        "room_scale",
+        "head_mounted",
+        "plural"
+      ],
       "default": "unknown",
       "description": "The dominant spatial arrangement for immersive displays."
     },
     "interaction.motion_stage": {
       "type": "enum",
-      "values": ["none", "research", "niche", "mass"],
+      "values": [
+        "none",
+        "research",
+        "niche",
+        "mass"
+      ],
       "default": "none",
       "description": "The adoption stage of bodily motion as a computer interface."
     },
     "interaction.haptics_stage": {
       "type": "enum",
-      "values": ["none", "research", "niche", "consumer"],
+      "values": [
+        "none",
+        "research",
+        "niche",
+        "consumer"
+      ],
       "default": "none",
       "description": "The adoption stage of touch and force feedback in immersive systems."
     },
     "vr.institutional_base": {
       "type": "enum",
-      "values": ["none", "arts", "defense", "startup", "platform", "mixed"],
+      "values": [
+        "none",
+        "arts",
+        "defense",
+        "startup",
+        "platform",
+        "mixed"
+      ],
       "default": "none",
       "description": "The principal durable institution supporting interactive VR development."
     },
     "vr.consumer_market": {
       "type": "enum",
-      "values": ["none", "niche", "mass", "contracting"],
+      "values": [
+        "none",
+        "niche",
+        "mass",
+        "contracting"
+      ],
       "default": "none",
       "description": "The scale and condition of the consumer VR market."
     },
     "vr.corporate_patron": {
       "type": "enum",
-      "values": ["none", "independent", "gaming_hardware", "social_platform"],
+      "values": [
+        "none",
+        "independent",
+        "gaming_hardware",
+        "social_platform"
+      ],
       "default": "none",
       "description": "The kind of organization controlling the major consumer VR platform."
     },
     "vr.metaverse_bet": {
       "type": "enum",
-      "values": ["none", "product_line", "corporate_identity"],
+      "values": [
+        "none",
+        "product_line",
+        "corporate_identity"
+      ],
       "default": "none",
       "description": "Whether social VR is absent, a bounded product line, or a company-defining strategy."
     },
     "generative.world_model_stage": {
       "type": "enum",
-      "values": ["none", "research", "consumer_vr"],
+      "values": [
+        "none",
+        "research",
+        "consumer_vr"
+      ],
       "default": "none",
       "description": "Whether generative interactive worlds remain research systems or have become a consumer VR content engine."
+    },
+    "spectacle.panorama_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "static",
+        "mechanized"
+      ],
+      "default": "none",
+      "description": "Whether panoramic spectacle is absent, static, or mechanically animated."
+    },
+    "spectacle.temporal_illusion": {
+      "type": "boolean",
+      "default": false,
+      "description": "Immersive spectacle can simulate temporal change through controlled light or motion."
+    },
+    "stereoscopy.principle_known": {
+      "type": "boolean",
+      "default": false,
+      "description": "The binocular-image principle that produces stereoscopic depth is established."
+    },
+    "cinema.stereoscopic_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "experimental",
+        "commercial",
+        "normalized"
+      ],
+      "default": "none",
+      "description": "The adoption stage of stereoscopic cinema."
+    },
+    "cinema.sound_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "score",
+        "dialogue",
+        "standard"
+      ],
+      "default": "none",
+      "description": "The adoption stage of synchronized cinema sound."
+    },
+    "cinema.panoramic_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "experimental",
+        "commercial"
+      ],
+      "default": "none",
+      "description": "The adoption stage of wide-field multi-projector cinema."
+    },
+    "cinema.multisensory_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "novelty",
+        "commercial",
+        "standard"
+      ],
+      "default": "none",
+      "description": "The adoption stage of cinema addressing motion, wind, vibration, scent, or other nonvisual channels."
+    },
+    "computer_graphics.stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "batch",
+        "interactive",
+        "production",
+        "generative"
+      ],
+      "default": "none",
+      "description": "The institutional and technical stage of computer-generated imagery."
+    },
+    "cinema.animation_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "hybrid",
+        "full_cg"
+      ],
+      "default": "none",
+      "description": "Whether commercial feature animation is traditional, hybrid, or fully computer generated."
+    },
+    "gaming.interface_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "keyboard",
+        "gesture",
+        "motion",
+        "immersive"
+      ],
+      "default": "none",
+      "description": "The dominant maturity stage of bodily or immersive game control."
+    },
+    "heilig.program_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "manifesto",
+        "headset",
+        "prototype",
+        "theater"
+      ],
+      "default": "none",
+      "description": "The furthest stage reached by Morton Heilig’s multisensory program."
+    },
+    "vr.research_stage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "academic",
+        "government",
+        "commercial"
+      ],
+      "default": "none",
+      "description": "The principal maturity and institutional setting of VR research."
+    },
+    "vr.artistic_lineage": {
+      "type": "enum",
+      "values": [
+        "none",
+        "niche",
+        "institutional",
+        "consumer"
+      ],
+      "default": "none",
+      "description": "The adoption stage of artistic and non-conquest-oriented VR practices."
+    },
+    "vr.founder_control": {
+      "type": "enum",
+      "values": [
+        "none",
+        "founder",
+        "shared",
+        "corporate"
+      ],
+      "default": "none",
+      "description": "Whether a major consumer VR program remains founder-led or is controlled by its corporate parent."
+    },
+    "generative.professional_tools": {
+      "type": "boolean",
+      "default": false,
+      "description": "Generative world models are integrated into mainstream professional 3D-production tools."
     }
   }
 }

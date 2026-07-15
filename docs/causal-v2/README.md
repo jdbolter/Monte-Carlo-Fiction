@@ -2,7 +2,7 @@
 
 Status: **runtime implemented and tested; the expanded pilot is active as `vr-immersion-causal-pilot`**.
 
-This directory retains the version-2 JSON Schemas and an early illustrative world trace. The runnable 17-event theme, state registry, framework, and config now live under `themes/vr-immersion-causal-pilot/`, where the CLI and web UI discover them normally.
+This directory retains the version-2 JSON Schemas and an early illustrative world trace. The runnable 47-event theme, state registry, framework, and config now live under `themes/vr-immersion-causal-pilot/`, where the CLI and web UI discover them normally. The active data set contains the current legacy theme's 42 historical milestones plus five explicit consequence events created for the causal pilot.
 
 The spike answers four questions:
 
@@ -18,8 +18,8 @@ The spike answers four questions:
 - `causal-events.schema.json` — JSON Schema for a version-2 event file.
 - `sample-world.example.json` — an illustrative trace from the original eight-event design spike; useful for reading the output shape, not a current full-pilot batch result.
 - `../../themes/vr-immersion-causal-pilot/theme.config.json` — active configuration and divergence policy.
-- `../../themes/vr-immersion-causal-pilot/state-registry.json` — controlled vocabulary for six axes and 23 typed facts.
-- `../../themes/vr-immersion-causal-pilot/events.json` — 17 active events from Holmes's stereoscope through generative world models.
+- `../../themes/vr-immersion-causal-pilot/state-registry.json` — controlled vocabulary for six axes and 38 typed facts.
+- `../../themes/vr-immersion-causal-pilot/events.json` — 47 active events from Barker's panorama through the 2026 Horizon Worlds reversal.
 
 The existing `vr-immersion` and `silicon-valley` themes remain schema version 1 and continue through the legacy selector; compatibility tests lock representative seed outputs for both themes. The causal pilot is a third, separate theme and does not reinterpret their saved seeds.
 
@@ -133,6 +133,6 @@ The automated suite also covers all five divergence modes, varied planned diverg
 
 ## Research status of the examples
 
-The worked events are schema examples derived from the current theme's milestone descriptions, requirements, and downstream effects. They are not a newly researched or source-audited historical model. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it.
+The worked events are schema examples derived from the current theme's milestone descriptions, requirements, and downstream effects. They are not a newly researched or source-audited historical model. Their `confidence`, `evidenceType`, `sourceRefs`, and `rationale` fields demonstrate how future model-assisted expansion should expose uncertainty rather than hide it. The 30 events imported on 2026-07-15 explicitly identify their translated causal values as provisional in the canonical and counterfactual rationales; the original 17 authored causal events were retained unchanged.
 
-The next content review should focus on whether the expanded vocabulary and hard/soft boundary are right, and whether the 17-event pool needs denser bridge events in any era. Numerical weights and deltas remain provisional tuning values.
+The next content review should focus on whether the expanded vocabulary, six-axis translations, and hard/soft boundary are right. Numerical weights, deltas, and soft influences remain provisional tuning values. The current import boundary is the 42-milestone `themes/vr-immersion` file; the 15 additional points found only in the older sibling `VR_Speculation` source were not silently added to this pass.

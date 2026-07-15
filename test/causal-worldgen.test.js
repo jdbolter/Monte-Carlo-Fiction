@@ -47,8 +47,8 @@ test('theme loader reads a schema-v2 theme directory', () => {
     copyFileSync(join(FIXTURE_DIR, 'state-registry.json'), join(dir, 'state-registry.json'));
     const theme = loadThemeDirectory('vr-immersion-causal-pilot', dir);
     assert.equal(theme.schemaVersion, 2);
-    assert.equal(theme.events.length, 17);
-    assert.equal(Object.keys(theme.stateRegistry.facts).length, 23);
+    assert.equal(theme.events.length, 47);
+    assert.equal(Object.keys(theme.stateRegistry.facts).length, 38);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
@@ -58,7 +58,7 @@ test('active causal pilot is auto-discovered as a schema-v2 theme', () => {
   assert.ok(listThemeIds().includes('vr-immersion-causal-pilot'));
   const theme = loadTheme('vr-immersion-causal-pilot');
   assert.equal(theme.schemaVersion, 2);
-  assert.equal(theme.events.length, 17);
+  assert.equal(theme.events.length, 47);
 });
 
 test('schema-version dispatch generates a replay-valid causal world', () => {
@@ -92,7 +92,7 @@ test('baseline policy chooses only canonical branch outcomes', () => {
     const world = generateWorld(theme, seed);
     const branches = world.steps.filter(step => step.isBranchPoint);
     assert.ok(branches.length > 0);
-    assert.equal(world.steps[0].eventId, 'holmes-stereoscope-1861');
+    assert.equal(world.steps[0].eventId, 'barker-panorama-1787');
     assert.ok(branches.every(step => step.chosenOutcome.canonical));
     assert.equal(world.generation.divergenceCount, 0);
   }
@@ -169,12 +169,12 @@ test('causal batch diagnostics report path, milestone, and state diversity', () 
   const worlds = Array.from({ length: 100 }, (_, index) => generateWorld(theme, index + 1));
   const report = diversityReport(worlds, theme.config.axes, theme);
   assert.ok(report.uniqueOutcomePaths >= report.uniqueMilestoneChains);
-  assert.deepEqual(report.milestoneCoverage, {
-    sampled: 17,
-    total: 17,
-    ratio: 1,
-    unsampledMilestoneIds: []
-  });
+  assert.equal(report.milestoneCoverage.total, 47);
+  assert.ok(report.milestoneCoverage.sampled >= 40);
+  assert.equal(
+    report.milestoneCoverage.unsampledMilestoneIds.length,
+    report.milestoneCoverage.total - report.milestoneCoverage.sampled
+  );
   assert.ok(report.mostCommonFinalMilestone.count > 0);
   assert.equal(
     report.finalMilestoneDistribution.reduce((sum, milestone) => sum + milestone.count, 0),
@@ -245,6 +245,7 @@ test('world replay validation detects a tampered state transition', () => {
 
 test('static validation rejects an unknown fact assignment', () => {
   const theme = pilotTheme();
+  theme.events[0].outcomes[0].effects.sets ||= {};
   theme.events[0].outcomes[0].effects.sets['unregistered.fact'] = true;
   const report = validateCausalTheme(theme);
   assert.equal(report.passed, false);

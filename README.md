@@ -6,7 +6,7 @@ The two legacy themes are explicitly **alternate-histories** experiments: every 
 
 See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
 
-The first active causal theme is `vr-immersion-causal-pilot`: 17 events and 23 typed facts spanning Holmes's stereoscope through generative world models. Its schemas and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The original `vr-immersion` and `silicon-valley` themes remain on the unchanged legacy path.
+The first active causal theme is `vr-immersion-causal-pilot`: 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. It preserves all 42 milestones in the current legacy `vr-immersion` theme and retains five explicit causal consequence events introduced by the original pilot. Its schemas and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The original `vr-immersion` and `silicon-valley` themes remain on the unchanged legacy path.
 
 ## Architecture
 

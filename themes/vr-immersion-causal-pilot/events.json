@@ -3,6 +3,182 @@
   "themeId": "vr-immersion-causal-pilot",
   "events": [
     {
+      "id": "barker-panorama-1787",
+      "label": "Barker's Panorama",
+      "description": "Robert Barker patents 'Apparatus for Exhibiting Pictures' and in 1788 exhibits the world's first full-circle panorama, a 360-degree view of Edinburgh from Calton Hill, in a purpose-built rotunda. Viewers stand on a raised central platform with sightlines controlled top and bottom so they cannot see where the painting ends. The first engineered apparatus built specifically to surround the visual field and blur where the image stops and reality begins — the starting point of a 190-year project of visual-immersion engineering that runs through Cinerama and into this pool's existing milestones.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1787-1788",
+        "earliest": "1787-01-01",
+        "latest": "1788-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "spectacle.panorama_stage": "static"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "barker-panorama-1787-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 4,
+              "accessibility": 1,
+              "openness": -1,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "panorama-becomes-mechanized",
+          "label": "Panorama Becomes Mechanized",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "Barker or an early follower mechanizes the panorama — a moving canvas, mechanical lighting or weather effects — decades before Daguerre's diorama introduces animation, collapsing the panorama/diorama distinction into a single continuous invention.",
+          "requirement": "Engineering investment in moving-canvas or mechanical-effects infrastructure within Barker's own rotunda business",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "spectacle.panorama_stage": "mechanized",
+              "spectacle.temporal_illusion": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 1,
+              "embodied_agency": -2,
+              "sociality": 4,
+              "accessibility": 1,
+              "openness": -1,
+              "institutionalization": 3
+            },
+            "influences": [
+              {
+                "eventId": "daguerre-diorama-1822",
+                "weightMultiplier": 2,
+                "rationale": "Mechanized panorama makes temporal scenic effects more likely to develop within the same lineage."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The diorama's defining innovation (animated light and time-of-day effects) arrives decades earlier and is credited to Barker's tradition rather than treated as Daguerre's separate invention",
+            "The panorama-diorama lineage merges into one continuous project rather than splintering into two named media",
+            "Static panorama painting loses its status as the format's original, 'pure' form"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#barker-panorama-1787"
+      ]
+    },
+    {
+      "id": "daguerre-diorama-1822",
+      "label": "Daguerre's Diorama",
+      "description": "Louis Daguerre, working in the panorama tradition, opens the Diorama in Paris: large-scale paintings animated from behind the screen with shifting light to simulate the passage of time — dawn breaking, weather changing. Still purely visual and purely passive, but a genuine ancestor of both cinema and theatrical special effects, and the first entry in this pool to add temporal change to an otherwise static immersive image.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1822",
+        "earliest": "1822-01-01",
+        "latest": "1822-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "spectacle.temporal_illusion": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "daguerre-diorama-1822-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#daguerre-diorama-1822"
+      ]
+    },
+    {
+      "id": "wheatstone-stereoscope-1838",
+      "label": "Wheatstone's Reflecting Stereoscope",
+      "description": "Charles Wheatstone demonstrates that presenting each eye with a slightly different 2D image produces a compelling illusion of 3D depth. Establishes stereopsis as the primary technology for visual immersion. Begins a 190-year project of visual-depth enhancement.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1838",
+        "earliest": "1838-01-01",
+        "latest": "1838-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "stereoscopy.principle_known": true
+        }
+      },
+      "outcomes": [
+        {
+          "id": "wheatstone-stereoscope-1838-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -2,
+              "sociality": -2,
+              "accessibility": -2,
+              "openness": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#wheatstone-stereoscope-1838"
+      ]
+    },
+    {
       "id": "holmes-stereoscope-1861",
       "label": "Holmes's Handheld Stereoscope",
       "description": "Oliver Wendell Holmes designs a cheap simplified handheld stereoscope. The fork concerns whether he leaves the design open or patents and licenses it.",
@@ -43,7 +219,9 @@
               "openness": 4,
               "institutionalization": -1
             },
-            "enables": ["stereoview-mass-culture-1860s"]
+            "enables": [
+              "stereoview-mass-culture-1860s"
+            ]
           },
           "narrativeConsequences": [
             "Stereoview cards become familiar middle-class domestic media.",
@@ -71,7 +249,9 @@
               "openness": -4,
               "institutionalization": 1
             },
-            "enables": ["stereoview-mass-culture-1860s"],
+            "enables": [
+              "stereoview-mass-culture-1860s"
+            ],
             "influences": [
               {
                 "eventId": "stereoview-mass-culture-1860s",
@@ -86,7 +266,9 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
+      ]
     },
     {
       "id": "stereoview-mass-culture-1860s",
@@ -139,7 +321,104 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#holmes-stereoscope-1861"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#holmes-stereoscope-1861"
+      ]
+    },
+    {
+      "id": "ducos-du-hauron-anaglyph-1891",
+      "label": "Ducos du Hauron's Anaglyph Patent",
+      "description": "French scientist Louis Ducos du Hauron patents the anaglyph: separating an image into two color channels, viewed through correspondingly colored glasses, to reproduce stereo depth in a single printed or projected image. The technical basis for every red-green 3D film this pool's later 1922-1955 entries depend on.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1891",
+        "earliest": "1891-01-01",
+        "latest": "1891-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "cinema.stereoscopic_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "ducos-du-hauron-anaglyph-1891-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -2,
+              "sociality": -1,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#ducos-du-hauron-anaglyph-1891"
+      ]
+    },
+    {
+      "id": "edison-kinetoscope-1891",
+      "label": "Edison's Kinetoscope",
+      "description": "William K. L. Dickson, working for Edison, completes the Kinetoscope: a peephole viewing cabinet that lets one person at a time watch a short looping film by cranking and peering in. First commercial exhibition April 1894, New York. Solitary, private, coin-operated. No projection, no shared audience, no screen.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1891-1894",
+        "earliest": "1891-01-01",
+        "latest": "1894-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "cinema.exhibition_model": "private",
+          "cinema.dominant_venue": "peep_parlor"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "edison-kinetoscope-1891-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -1,
+              "sociality": -3,
+              "accessibility": 1,
+              "openness": -3,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#edison-kinetoscope-1891"
+      ]
     },
     {
       "id": "lumiere-cinematographe-1895",
@@ -181,8 +460,12 @@
               "accessibility": 2,
               "institutionalization": 2
             },
-            "enables": ["movie-palace-system-1905"],
-            "disables": ["kinetoscope-parlor-system-1896"]
+            "enables": [
+              "movie-palace-system-1905"
+            ],
+            "disables": [
+              "kinetoscope-parlor-system-1896"
+            ]
           },
           "narrativeConsequences": [
             "Cinema becomes a shared public ritual rather than an individual cabinet experience."
@@ -209,8 +492,12 @@
               "openness": -2,
               "institutionalization": 1
             },
-            "enables": ["kinetoscope-parlor-system-1896"],
-            "disables": ["movie-palace-system-1905"]
+            "enables": [
+              "kinetoscope-parlor-system-1896"
+            ],
+            "disables": [
+              "movie-palace-system-1905"
+            ]
           },
           "narrativeConsequences": [
             "Moving images develop socially like arcade cabinets or later headsets rather than theatrical cinema.",
@@ -218,7 +505,9 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+      ]
     },
     {
       "id": "kinetoscope-parlor-system-1896",
@@ -271,7 +560,106 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+      ]
+    },
+    {
+      "id": "hales-tours-1905",
+      "label": "Hale's Tours of the World",
+      "description": "Movie houses built as full-scale replica train carriages, seating up to 72 passengers, with front-of-train footage projected at one end, steam-whistle and wheel sound effects, fans blowing bursts of wind from the rear, and painted scenery rolling past the side windows. First exhibited Kansas City, May 1905; 500 US locations at its 1907 peak. A full multisensory, kinesthetic cinema experience fifty years before Sensorama, and structurally its closest ancestor in this pool.",
+      "category": "3d-film",
+      "lineage": "heilig",
+      "time": {
+        "display": "1905",
+        "earliest": "1905-01-01",
+        "latest": "1905-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "cinema.multisensory_stage": "novelty"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "hales-tours-1905-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "cinema.multisensory_infrastructure": false
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": -1,
+              "sociality": 3,
+              "accessibility": 2,
+              "openness": -1,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "hales-tours-becomes-dominant-exhibition-model",
+          "label": "Hales Tours Becomes Dominant Exhibition Model",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "Rather than a five-year novelty fading by 1910, Hale's Tours' multisensory, kinesthetic exhibition format becomes the default template for movie-house construction, and fixed-seat flat-screen theaters develop as the minority format instead.",
+          "requirement": "Continued investor confidence and content variety (not just train footage) sustaining audience interest past its historical novelty period",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "cinema.multisensory_stage": "standard",
+              "cinema.multisensory_infrastructure": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": -1,
+              "sociality": 4,
+              "accessibility": 4,
+              "openness": -2,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "heilig-manifesto-1955",
+                "weightMultiplier": 2,
+                "rationale": "A durable multisensory cinema industry gives Heilig an established commercial lineage to extend."
+              },
+              {
+                "eventId": "sensorama-1962",
+                "weightMultiplier": 2,
+                "rationale": "Existing multisensory venues increase support for a Sensorama-class system."
+              },
+              {
+                "eventId": "heilig-experience-theater-1964",
+                "weightMultiplier": 2,
+                "rationale": "A dominant kinesthetic theater model makes the Experience Theater legible to investors."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The Heilig lineage's founding claim — that cinema must address the whole body, not just the eyes — has thirty years of commercial proof-of-concept before Heilig even publishes 'El Cine del Futuro' in 1955",
+            "Sensorama (1962) and the Experience Theater proposal (1964) read as continuations of an established commercial tradition rather than isolated inventions rejected by institutions",
+            "Cinema architecture and exhibitor economics through the mid-twentieth century are built around motion, wind, and sound infrastructure rather than optics and screen size alone"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#hales-tours-1905"
+      ]
     },
     {
       "id": "movie-palace-system-1905",
@@ -324,233 +712,433 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#lumiere-cinematographe-1895"
+      ]
     },
     {
-      "id": "sensorama-1962",
-      "label": "Sensorama Funding Fork",
-      "description": "Morton Heilig completes a functioning multisensory cabinet combining stereo film, sound, vibration, wind, and smell; the fork determines whether any institution carries it beyond a prototype.",
-      "category": "vr",
-      "lineage": "heilig",
+      "id": "power-of-love-1922",
+      "label": "The Power of Love",
+      "description": "The first 3D feature film, exhibited in anaglyph red/green at the Ambassador Hotel Theater in Los Angeles. Commercially unsuccessful — color balance is difficult to maintain and audiences find the glasses uncomfortable — and 3D filmmaking remains largely experimental for the next three decades rather than becoming a normalized part of Hollywood production.",
+      "category": "3d-film",
+      "lineage": "sutherland",
       "time": {
-        "display": "1962",
-        "earliest": "1962-01-01",
-        "latest": "1962-12-31",
+        "display": "1922",
+        "earliest": "1922-01-01",
+        "latest": "1922-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "cinema.stereoscopic_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "power-of-love-1922-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": -1,
+              "openness": -2,
+              "institutionalization": -2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "power-of-love-succeeds-commercially",
+          "label": "Power Of Love Succeeds Commercially",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "The Power of Love's anaglyph presentation solves its color-balance and eyestrain problems well enough to become a commercial hit, and 3D filmmaking becomes a normalized part of 1920s Hollywood rather than a curiosity abandoned until the 1950s.",
+          "requirement": "Better dye and filter stability for the red/green glasses, or immediate studio reinvestment following a strong opening",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "cinema.stereoscopic_stage": "normalized"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 4,
+              "openness": -2,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "polarized-3d-features-1936",
+                "weightMultiplier": 2,
+                "rationale": "Commercial anaglyph success increases investment in better stereoscopic projection."
+              },
+              {
+                "eventId": "3d-golden-era-1952",
+                "weightMultiplier": 0.6,
+                "rationale": "An earlier normalized 3D industry makes the 1950s boom less likely to be a distinct first wave."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "This pool's existing '3D Film Golden Era' (1952-1955) happens thirty years early, and by the time it would historically have occurred it reads as a nostalgic revival rather than a first wave",
+            "Polarized 3D research (this pool's 1936-1939 entries) gets funded a decade earlier since anaglyph's commercial viability is already proven",
+            "Sound-film conversion (1926-1927) competes directly with an already-established 3D-film industry for capital and screen time, changing which innovation Hollywood prioritizes first"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#power-of-love-1922"
+      ]
+    },
+    {
+      "id": "vitaphone-don-juan-1926",
+      "label": "Vitaphone / Don Juan",
+      "description": "Warner Bros. and Western Electric's Vitaphone sound-on-disc system debuts with Don Juan: no spoken dialogue, but nine synchronized discs of orchestral score and sound effects, recorded live and precisely matched to the reels. The first entry in this pool's cinema thread to add a genuinely new sensory channel — hearing — to what had been a purely visual medium.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1926",
+        "earliest": "1926-01-01",
+        "latest": "1926-12-31",
         "resolution": "year"
       },
       "activation": "default",
       "baseWeight": 1,
       "commonEffects": {
         "sets": {
-          "sensorama.prototype_exists": true,
-          "somatic_vr.development_stage": "experimental"
+          "cinema.sound_stage": "score"
         }
       },
       "outcomes": [
         {
-          "id": "no-patron-emerges",
-          "label": "No patron carries Sensorama forward",
+          "id": "vitaphone-don-juan-1926-documented",
+          "label": "Documented historical path",
           "canonical": true,
           "weight": 3,
-          "description": "Heilig fails to secure institutional or commercial backing, leaving Sensorama as an isolated prototype.",
+          "description": "The documented historical development occurs as described in the milestone record.",
           "requirement": null,
           "confidence": "high",
           "evidenceType": "documented",
-          "rationale": "Institutional failure despite a working prototype is the canonical milestone outcome.",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#vitaphone-don-juan-1926"
+      ]
+    },
+    {
+      "id": "jazz-singer-1927",
+      "label": "The Jazz Singer",
+      "description": "The first feature with synchronized spoken dialogue — only about a quarter of the film, but enough to end the silent era. Al Jolson's 'You ain't heard nothin' yet!' becomes the birth-cry of the talkies. Built on Vitaphone's fragile sound-on-disc system, which will lose the format war to sound-on-film (Movietone) within two years because discs kept drifting out of sync.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1927",
+        "earliest": "1927-01-01",
+        "latest": "1927-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "cinema.sound_stage": "dialogue"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "jazz-singer-1927-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": 3,
+              "openness": -2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "sound-on-film-wins-first",
+          "label": "Sound On Film Wins First",
+          "canonical": false,
+          "weight": 1,
+          "description": "Fox's Movietone sound-on-film process reaches commercial maturity and wide rollout before Warner Bros' Vitaphone captures the 'first talkie' narrative with The Jazz Singer, so the industry standardizes on sound-on-film from the outset.",
+          "requirement": "Movietone's studio and distribution rollout outpacing Vitaphone's marketing and exhibition push in 1926-1927",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
           "effects": {
             "sets": {
-              "sensorama.funding_model": "none",
-              "somatic_vr.institutional_home": "none"
+              "cinema.sound_stage": "standard"
             },
             "trajectoryDelta": {
-              "sensory_breadth": 2,
-              "embodied_agency": 1,
-              "accessibility": -3,
-              "institutionalization": -4
+              "sensory_breadth": -1,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 4,
+              "openness": -1,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": [
+            "Theaters avoid several years of costly, unreliable disc-projector synchronization infrastructure entirely",
+            "The transition to sound is faster and cheaper industry-wide, since prints rather than fragile discs carry the audio track",
+            "Warner Bros. loses its historical claim to having 'invented' the talkies, changing which studio dominates the sound-conversion decade that follows"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#jazz-singer-1927"
+      ]
+    },
+    {
+      "id": "polarized-3d-features-1936",
+      "label": "Polarized 3D Features",
+      "description": "Beggars' Wedding (Italy, 1936) is the first sound stereoscopic feature and the first to use polarized filters rather than anaglyph color separation, solving the color-fringing and eyestrain problems that sank The Power of Love. In Tune With Tomorrow (1939) brings polarized 3D to American screens. Technically solves what anaglyph could not, but the Depression and the onset of WWII restrict industry investment, and 3D remains a marginal format until the pool's 1952 'Golden Era.'",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1936-1939",
+        "earliest": "1936-01-01",
+        "latest": "1939-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "cinema.stereoscopic_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "polarized-3d-features-1936-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": -1,
+              "openness": -2,
+              "institutionalization": -1
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "polarized-3d-arrives-in-hollywood-immediately",
+          "label": "Polarized 3D Arrives In Hollywood Immediately",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "A major US studio invests in polarized-projection infrastructure immediately following In Tune With Tomorrow, rather than the format being sidelined by the Depression and the coming war.",
+          "requirement": "Studio capital available for exhibition-hardware investment in the late 1930s despite the economic and political climate",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "cinema.stereoscopic_stage": "normalized"
             },
-            "disables": [
-              "sensorama-arcade-network-1963",
-              "darpa-somatic-interface-program-1963"
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 3,
+              "openness": -2,
+              "institutionalization": 4
+            },
+            "influences": [
+              {
+                "eventId": "3d-golden-era-1952",
+                "weightMultiplier": 0.6,
+                "rationale": "Earlier studio adoption makes a separate 1950s breakthrough less likely."
+              }
             ]
           },
           "narrativeConsequences": [
-            "The somatic lineage survives as an idea without a durable organization or market."
+            "This pool's '3D Film Golden Era' (1952-1955) happens roughly fifteen years earlier and outside the postwar competition-with-television context that historically drove it",
+            "3D cinema's later reputation as 'a gimmick to compete with TV' never forms, since 3D predates mass television entirely in this branch",
+            "Heilig's 1955 manifesto, written as a critique of the historical 3D boom's collapse, either doesn't exist in this form or targets a completely different, earlier cultural moment"
           ]
-        },
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#polarized-3d-features-1936"
+      ]
+    },
+    {
+      "id": "vitarama-1939",
+      "label": "Fred Waller's Vitarama",
+      "description": "Fred Waller's multi-projector panoramic system, shown at the 1939 World's Fair, uses several synchronized projectors and a curved screen to fill a wide field of view — the direct technical ancestor of this pool's 1952 Cinerama entry, and part of a flurry of realism-enhancing cinema experiments running from the 1920s through the early 1940s.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1939",
+        "earliest": "1939-01-01",
+        "latest": "1939-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "cinema.panoramic_stage": "experimental"
+        }
+      },
+      "outcomes": [
         {
-          "id": "sensorama-arcade-chain",
-          "label": "Private investors build a Sensorama arcade chain",
-          "canonical": false,
-          "weight": 2,
-          "description": "Private investors treat Sensorama as a premium amusement and fund a small network of commercial installations.",
-          "requirement": "An amusement or exhibition investor accepts the machine's maintenance costs and funds repeatable content production.",
-          "confidence": "low-medium",
-          "evidenceType": "historical-inference",
-          "rationale": "Commercial backing is direct; eventual mass adoption remains unasserted.",
+          "id": "vitarama-1939-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
           "effects": {
-            "sets": {
-              "sensorama.funding_model": "private_arcade",
-              "somatic_vr.institutional_home": "commercial"
-            },
             "trajectoryDelta": {
-              "sensory_breadth": 4,
-              "embodied_agency": 2,
+              "sensory_breadth": -2,
+              "embodied_agency": -3,
+              "sociality": 4,
               "accessibility": 1,
+              "openness": -1,
               "institutionalization": 2
-            },
-            "enables": ["sensorama-arcade-network-1963"],
-            "disables": ["darpa-somatic-interface-program-1963"]
+            }
           },
-          "narrativeConsequences": [
-            "Somatic immersion develops through amusement economics and repeat customers rather than research procurement."
-          ]
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#vitarama-1939"
+      ]
+    },
+    {
+      "id": "3d-golden-era-1952",
+      "label": "3D Film Golden Era",
+      "description": "Hollywood's first 3D boom: Bwana Devil (1952), House of Wax (1953), Creature from the Black Lagoon (1954), Dial M for Murder (1954). Over 50 3D features produced. The precise cultural context in which Heilig writes 'El Cine del Futuro' — he is critiquing cinema at its most immersively ambitious, arguing stereopsis alone is not enough.",
+      "category": "3d-film",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1952-1955",
+        "earliest": "1952-01-01",
+        "latest": "1955-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "cinema.stereoscopic_stage": "commercial"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "3d-golden-era-1952-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": 2,
+              "openness": -3,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
         },
         {
-          "id": "sensorama-darpa-funding",
-          "label": "DARPA funds somatic interface research",
+          "id": "3d-boom-sustains",
+          "label": "3D Boom Sustains",
           "canonical": false,
-          "weight": 1,
-          "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training.",
-          "requirement": "A defense research sponsor treats wind, vibration, and smell as useful simulation channels rather than theatrical embellishments.",
-          "confidence": "low",
-          "evidenceType": "speculative",
-          "rationale": "The institutional home and research program are direct within the counterfactual; downstream consumer adoption is not encoded as certain.",
-          "effects": {
-            "sets": {
-              "sensorama.funding_model": "defense",
-              "somatic_vr.institutional_home": "military"
-            },
-            "trajectoryDelta": {
-              "sensory_breadth": 4,
-              "embodied_agency": 3,
-              "accessibility": -2,
-              "openness": -4,
-              "institutionalization": 4
-            },
-            "enables": ["darpa-somatic-interface-program-1963"],
-            "disables": ["sensorama-arcade-network-1963"]
-          },
-          "narrativeConsequences": [
-            "Somatic VR gains durable laboratories and procurement but develops under secrecy and training requirements.",
-            "Consumer uses may arrive later through technology transfer rather than direct entertainment investment."
-          ]
-        }
-      ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
-    },
-    {
-      "id": "sensorama-arcade-network-1963",
-      "label": "Sensorama Arcade Network Forms",
-      "description": "Commercial operators standardize Sensorama installations, maintenance, and repeatable content across multiple venues.",
-      "category": "vr",
-      "lineage": "heilig",
-      "time": {
-        "display": "1963-1970",
-        "earliest": "1963-01-01",
-        "latest": "1970-12-31",
-        "resolution": "range"
-      },
-      "activation": "explicit",
-      "baseWeight": 1,
-      "requires": {
-        "all": [
-          {
-            "kind": "fact",
-            "fact": "sensorama.funding_model",
-            "operator": "equals",
-            "value": "private_arcade"
-          }
-        ]
-      },
-      "commonEffects": {},
-      "outcomes": [
-        {
-          "id": "arcade-network-forms",
-          "label": "The arcade network forms",
-          "canonical": true,
-          "weight": 1,
-          "description": "A small but durable commercial network establishes Sensorama as a repeatable paid experience.",
-          "requirement": null,
+          "weight": 0.75,
+          "description": "The 3D golden era does not collapse in 1955 — improved polaroid systems solve sync and eyestrain problems, and 3D becomes the permanent default of Hollywood cinema.",
+          "requirement": "Technical solutions to eyestrain and projector sync; continued studio investment",
           "confidence": "low-medium",
-          "evidenceType": "historical-inference",
-          "rationale": "This is the direct successor implied by the authored arcade-chain alternative.",
-          "effects": {
-            "sets": {
-              "somatic_vr.development_stage": "niche"
-            },
-            "trajectoryDelta": {
-              "sensory_breadth": 2,
-              "accessibility": 2,
-              "institutionalization": 2
-            }
-          },
-          "narrativeConsequences": [
-            "Full-body sensory installations become a known commercial category rather than a single inventor's artifact."
-          ]
-        }
-      ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
-    },
-    {
-      "id": "darpa-somatic-interface-program-1963",
-      "label": "Defense-Funded Somatic Interface Program",
-      "description": "A durable research program develops multisensory simulation interfaces for training and mission rehearsal.",
-      "category": "vr",
-      "lineage": "heilig",
-      "time": {
-        "display": "1963-1970",
-        "earliest": "1963-01-01",
-        "latest": "1970-12-31",
-        "resolution": "range"
-      },
-      "activation": "explicit",
-      "baseWeight": 1,
-      "requires": {
-        "any": [
-          {
-            "kind": "fact",
-            "fact": "sensorama.funding_model",
-            "operator": "equals",
-            "value": "defense"
-          },
-          {
-            "kind": "outcomeChosen",
-            "eventId": "sword-of-damocles-1968",
-            "outcomeId": "parallel-somatic-track"
-          }
-        ]
-      },
-      "commonEffects": {},
-      "outcomes": [
-        {
-          "id": "defense-program-forms",
-          "label": "The defense research program forms",
-          "canonical": true,
-          "weight": 1,
-          "description": "Funding, laboratories, and personnel establish multisensory interfaces as an ongoing defense research field.",
-          "requirement": null,
-          "confidence": "low",
           "evidenceType": "speculative",
-          "rationale": "This is the immediate institutional consequence of the authored DARPA alternative, not a claim that consumer success follows.",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
           "effects": {
             "sets": {
-              "somatic_vr.development_stage": "research",
-              "somatic_vr.defense_program": true
+              "cinema.stereoscopic_stage": "normalized"
             },
             "trajectoryDelta": {
-              "sensory_breadth": 2,
-              "embodied_agency": 2,
-              "openness": -2,
-              "institutionalization": 2
-            }
+              "sensory_breadth": -3,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 4,
+              "openness": -3,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "heilig-manifesto-1955",
+                "weightMultiplier": 1.5,
+                "rationale": "A sustained visual 3D boom sharpens the occasion for Heilig’s multisensory critique."
+              }
+            ]
           },
           "narrativeConsequences": [
-            "A generation of researchers treats bodily sensation as a technical simulation problem.",
-            "Somatic interfaces gain continuity at the cost of secrecy and limited civilian access."
+            "Visual-only stereoscopic presence becomes the established cinema grammar",
+            "Heilig's somatic alternative has even less traction",
+            "The VR paradigm that eventually develops is even more visually centered"
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#sensorama-1962"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#3d-golden-era-1952"
+      ]
     },
     {
       "id": "cinerama-1952",
@@ -631,7 +1219,734 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#cinerama-1952"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#cinerama-1952"
+      ]
+    },
+    {
+      "id": "heilig-manifesto-1955",
+      "label": "El Cine del Futuro (Heilig's Manifesto)",
+      "description": "Morton Heilig publishes 'El Cine del Futuro' in a Mexican film journal. Argues that cinema must address all five senses to produce genuine presence. Written as the 3D boom collapses — Heilig diagnoses why: visual-only immersion is insufficient. Predates Sutherland's 'Ultimate Display' by a decade.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1955",
+        "earliest": "1955-01-01",
+        "latest": "1955-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "heilig.program_stage": "manifesto"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "heilig-manifesto-1955-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": 3,
+              "embodied_agency": -2,
+              "sociality": 2,
+              "accessibility": 1,
+              "openness": 3,
+              "institutionalization": -1
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#heilig-manifesto-1955"
+      ]
+    },
+    {
+      "id": "heilig-telesphere-1960",
+      "label": "Heilig Telesphere Mask Patent",
+      "description": "Heilig patents the Telesphere Mask — a head-mounted display for stereoscopic TV and film with stereo sound. Predates Sutherland's HMD by eight years. Unlike Sutherland's later HMD, it is designed for cinematic content rather than computer graphics, and is non-interactive.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1960",
+        "earliest": "1960-01-01",
+        "latest": "1960-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "heilig.program_stage": "headset"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "heilig-telesphere-1960-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": -2,
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": -2,
+              "institutionalization": -1
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "telesphere-tv-licensing",
+          "label": "Telesphere Tv Licensing",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "A television network licenses the Telesphere Mask for home stereo TV broadcasts, making Heilig the pioneer of consumer HMDs rather than Sutherland.",
+          "requirement": "TV industry interest in premium immersive content; manufacturing at scale",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "vr.consumer_market": "mass",
+              "vr.display_paradigm": "head_mounted"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -1,
+              "sociality": -2,
+              "accessibility": 3,
+              "openness": -3,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "consumer-vr-2016",
+                "weightMultiplier": 1.6,
+                "rationale": "An established home-headset lineage makes later consumer VR adoption more likely."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "HMD as consumer entertainment device enters homes in the 1960s",
+            "Development pressure on lightweight, comfortable HMD design begins two decades earlier",
+            "The HMD paradigm develops from cinematic content tradition, not CGI"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#heilig-telesphere-1960"
+      ]
+    },
+    {
+      "id": "sensorama-1962",
+      "label": "Sensorama Funding Fork",
+      "description": "Morton Heilig completes a functioning multisensory cabinet combining stereo film, sound, vibration, wind, and smell; the fork determines whether any institution carries it beyond a prototype.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1962",
+        "earliest": "1962-01-01",
+        "latest": "1962-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "sensorama.prototype_exists": true,
+          "somatic_vr.development_stage": "experimental"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "no-patron-emerges",
+          "label": "No patron carries Sensorama forward",
+          "canonical": true,
+          "weight": 3,
+          "description": "Heilig fails to secure institutional or commercial backing, leaving Sensorama as an isolated prototype.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Institutional failure despite a working prototype is the canonical milestone outcome.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "none",
+              "somatic_vr.institutional_home": "none"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 1,
+              "accessibility": -3,
+              "institutionalization": -4
+            },
+            "disables": [
+              "sensorama-arcade-network-1963",
+              "darpa-somatic-interface-program-1963"
+            ]
+          },
+          "narrativeConsequences": [
+            "The somatic lineage survives as an idea without a durable organization or market."
+          ]
+        },
+        {
+          "id": "sensorama-arcade-chain",
+          "label": "Private investors build a Sensorama arcade chain",
+          "canonical": false,
+          "weight": 2,
+          "description": "Private investors treat Sensorama as a premium amusement and fund a small network of commercial installations.",
+          "requirement": "An amusement or exhibition investor accepts the machine's maintenance costs and funds repeatable content production.",
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "Commercial backing is direct; eventual mass adoption remains unasserted.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "private_arcade",
+              "somatic_vr.institutional_home": "commercial"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 2,
+              "accessibility": 1,
+              "institutionalization": 2
+            },
+            "enables": [
+              "sensorama-arcade-network-1963"
+            ],
+            "disables": [
+              "darpa-somatic-interface-program-1963"
+            ]
+          },
+          "narrativeConsequences": [
+            "Somatic immersion develops through amusement economics and repeat customers rather than research procurement."
+          ]
+        },
+        {
+          "id": "sensorama-darpa-funding",
+          "label": "DARPA funds somatic interface research",
+          "canonical": false,
+          "weight": 1,
+          "description": "Defense research funding adopts Sensorama's multisensory approach for simulation and training.",
+          "requirement": "A defense research sponsor treats wind, vibration, and smell as useful simulation channels rather than theatrical embellishments.",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "The institutional home and research program are direct within the counterfactual; downstream consumer adoption is not encoded as certain.",
+          "effects": {
+            "sets": {
+              "sensorama.funding_model": "defense",
+              "somatic_vr.institutional_home": "military"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": 3,
+              "accessibility": -2,
+              "openness": -4,
+              "institutionalization": 4
+            },
+            "enables": [
+              "darpa-somatic-interface-program-1963"
+            ],
+            "disables": [
+              "sensorama-arcade-network-1963"
+            ]
+          },
+          "narrativeConsequences": [
+            "Somatic VR gains durable laboratories and procurement but develops under secrecy and training requirements.",
+            "Consumer uses may arrive later through technology transfer rather than direct entertainment investment."
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#sensorama-1962"
+      ]
+    },
+    {
+      "id": "spacewar-1962",
+      "label": "Spacewar!",
+      "description": "Martin Graetz, Wayne Witanen, and Steve Russell create Spacewar! at MIT — the first widely influential interactive computer game. Visual, two-player, competitive. Runs on a PDP-1 at MIT, the same institution and year as Sensorama, but in a completely different paradigm: interactive, computational, visual.",
+      "category": "gaming",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1962",
+        "earliest": "1962-01-01",
+        "latest": "1962-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "gaming.interface_stage": "keyboard",
+          "computer_graphics.stage": "interactive"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "spacewar-1962-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 3,
+              "sociality": -1,
+              "accessibility": -4,
+              "openness": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#spacewar-1962"
+      ]
+    },
+    {
+      "id": "beflix-bell-labs-1963",
+      "label": "BEFLIX (Bell Labs Computer Animation)",
+      "description": "Ken Knowlton, an engineer at Bell Labs, builds BEFLIX ('Bell Flicks') on an IBM 7090 mainframe with a Stromberg-Carlson SC4020 microfilm recorder — a FORTRAN/assembly system of graphic primitives (draw line, copy region, fill area, zoom) for producing raster computer animation. Engineers building batch-processed, algorithmic imagery, but naming and organizing it entirely around cinematic vocabulary: frames, scenes, cuts. Knowlton later collaborates with artist Stan VanDerBeek on the Poemfields films (1966-1969), pulling the work toward the art world even as Sutherland's Sketchpad (also 1963) and subsequent HMD research proceed on a nominally separate, MIT/Harvard-based engineering track in the same small, cross-aware community of early computer-graphics researchers.",
+      "category": "computer-graphics",
+      "lineage": "bridge",
+      "time": {
+        "display": "1963",
+        "earliest": "1963-01-01",
+        "latest": "1963-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "computer_graphics.stage": "batch"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "beflix-bell-labs-1963-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -2,
+              "sociality": 2,
+              "accessibility": -4,
+              "openness": 1,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "beflix-sutherland-convergence",
+          "label": "Beflix Sutherland Convergence",
+          "canonical": false,
+          "weight": 1,
+          "description": "Sutherland, aware of Bell Labs' work, directly incorporates BEFLIX's frame/scene/cut vocabulary and graphic-primitive approach into his own graphics research, rather than the two tracks staying institutionally separate.",
+          "requirement": "Institutional cross-pollination between Bell Labs and MIT/Harvard's graphics programs — a shared conference, joint proposal, or personnel exchange",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "computer_graphics.stage": "interactive"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 4,
+              "sociality": 1,
+              "accessibility": -1,
+              "openness": 2,
+              "institutionalization": 4
+            },
+            "influences": [
+              {
+                "eventId": "sutherland-ultimate-display-1965",
+                "weightMultiplier": 1.7,
+                "rationale": "Direct exchange links cinematic computation to Sutherland’s interactive-display program."
+              },
+              {
+                "eventId": "lucasfilm-computer-division-1979",
+                "weightMultiplier": 1.6,
+                "rationale": "A unified cinematic and interactive graphics field makes the later Hollywood bridge more likely."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The Sutherland lineage of computer graphics explicitly inherits cinematic editing vocabulary rather than developing a separate engineering vocabulary of primitives and transforms",
+            "Real-time interactive graphics and algorithmic/generative animation develop as a single hybrid discipline rather than splitting into separate fields for decades",
+            "The convergence of cinema and games/VR, which historically takes until machinima and virtual production in the 1990s-2000s, happens as early as the 1960s"
+          ]
+        },
+        {
+          "id": "beflix-becomes-industry-standard",
+          "label": "Beflix Becomes Industry Standard",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "Rather than remaining mostly an internal Bell Labs research and art tool, BEFLIX's graphic-primitive technique is published or licensed widely enough to become an early de facto standard for computer-generated visual effects in film and television.",
+          "requirement": "AT&T (barred as a regulated monopoly from directly competing in consumer computing) choosing to publish the technique broadly, or an outside studio adopting it independently",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "computer_graphics.stage": "production"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": -1,
+              "sociality": 3,
+              "accessibility": 3,
+              "openness": 1,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "lucasfilm-computer-division-1979",
+                "weightMultiplier": 1.8,
+                "rationale": "An existing commercial computer-animation standard attracts earlier studio investment."
+              },
+              {
+                "eventId": "toy-story-pixar-1995",
+                "weightMultiplier": 1.5,
+                "rationale": "A mature production lineage increases the chance of a fully computer-animated feature."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Computer-generated imagery enters commercial film and television production a decade or more before Tron (1982)",
+            "The 'graphic primitives' vocabulary, not the frame/scene/cut cinematic vocabulary, becomes the computer graphics industry's dominant technical language earlier",
+            "Bell Labs, rather than Lucasfilm/Pixar, becomes remembered as the seminal computer-animation studio"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#beflix-bell-labs-1963"
+      ]
+    },
+    {
+      "id": "darpa-somatic-interface-program-1963",
+      "label": "Defense-Funded Somatic Interface Program",
+      "description": "A durable research program develops multisensory simulation interfaces for training and mission rehearsal.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "any": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "defense"
+          },
+          {
+            "kind": "outcomeChosen",
+            "eventId": "sword-of-damocles-1968",
+            "outcomeId": "parallel-somatic-track"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "defense-program-forms",
+          "label": "The defense research program forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "Funding, laboratories, and personnel establish multisensory interfaces as an ongoing defense research field.",
+          "requirement": null,
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "This is the immediate institutional consequence of the authored DARPA alternative, not a claim that consumer success follows.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "research",
+              "somatic_vr.defense_program": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 2,
+              "openness": -2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "A generation of researchers treats bodily sensation as a technical simulation problem.",
+            "Somatic interfaces gain continuity at the cost of secrecy and limited civilian access."
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#sensorama-1962"
+      ]
+    },
+    {
+      "id": "sensorama-arcade-network-1963",
+      "label": "Sensorama Arcade Network Forms",
+      "description": "Commercial operators standardize Sensorama installations, maintenance, and repeatable content across multiple venues.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "1963-1970",
+        "earliest": "1963-01-01",
+        "latest": "1970-12-31",
+        "resolution": "range"
+      },
+      "activation": "explicit",
+      "baseWeight": 1,
+      "requires": {
+        "all": [
+          {
+            "kind": "fact",
+            "fact": "sensorama.funding_model",
+            "operator": "equals",
+            "value": "private_arcade"
+          }
+        ]
+      },
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "arcade-network-forms",
+          "label": "The arcade network forms",
+          "canonical": true,
+          "weight": 1,
+          "description": "A small but durable commercial network establishes Sensorama as a repeatable paid experience.",
+          "requirement": null,
+          "confidence": "low-medium",
+          "evidenceType": "historical-inference",
+          "rationale": "This is the direct successor implied by the authored arcade-chain alternative.",
+          "effects": {
+            "sets": {
+              "somatic_vr.development_stage": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "accessibility": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": [
+            "Full-body sensory installations become a known commercial category rather than a single inventor's artifact."
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#sensorama-1962"
+      ]
+    },
+    {
+      "id": "heilig-experience-theater-1964",
+      "label": "Heilig Experience Theater Proposal",
+      "description": "Heilig proposes a full-scale multisensory theater — a room-sized Sensorama for audiences. Rejected by investors and institutions. The failure was not technical but institutional: no capital, no research backing, no corporate champion. This is the moment the Heilig lineage effectively loses its chance at development.",
+      "category": "vr",
+      "lineage": "heilig",
+      "time": {
+        "display": "c. 1964",
+        "earliest": "1964-01-01",
+        "latest": "1964-12-31",
+        "resolution": "circa"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "heilig.program_stage": "theater"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "heilig-experience-theater-1964-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "somatic_vr.institutional_home": "none",
+              "somatic_vr.development_stage": "experimental"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 4,
+              "embodied_agency": -2,
+              "sociality": 4,
+              "accessibility": -4,
+              "openness": 2,
+              "institutionalization": -4
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "nea-arts-funding",
+          "label": "Nea Arts Funding",
+          "canonical": false,
+          "weight": 1,
+          "description": "The National Endowment for the Arts (or a foundation like Rockefeller) funds the Experience Theater as an experimental arts installation.",
+          "requirement": "Arts funding bodies interested in expanded cinema and installation art (Happenings, Fluxus context)",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "somatic_vr.institutional_home": "arts",
+              "somatic_vr.development_stage": "research",
+              "vr.artistic_lineage": "institutional"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 5,
+              "embodied_agency": -1,
+              "sociality": 3,
+              "accessibility": 1,
+              "openness": 4,
+              "institutionalization": 4
+            },
+            "influences": [
+              {
+                "eventId": "videoplace-1974",
+                "weightMultiplier": 2,
+                "rationale": "An institutionalized expanded-cinema field supports later arts-based interactive environments."
+              },
+              {
+                "eventId": "osmose-char-davies-1995",
+                "weightMultiplier": 1.8,
+                "rationale": "Durable arts funding makes later embodied artistic VR more likely."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Somatic VR develops within the experimental arts world alongside Fluxus and expanded cinema",
+            "Its aesthetic vocabulary is avant-garde, not commercial"
+          ]
+        },
+        {
+          "id": "world-fair-installation",
+          "label": "World Fair Installation",
+          "canonical": false,
+          "weight": 1,
+          "description": "The Experience Theater is installed at a World's Fair (1964-65 New York World's Fair context) as a major attraction.",
+          "requirement": "Corporate sponsor interested in immersive pavilion experience",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "somatic_vr.institutional_home": "commercial",
+              "somatic_vr.development_stage": "niche",
+              "cinema.multisensory_stage": "commercial"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 5,
+              "embodied_agency": -1,
+              "sociality": 5,
+              "accessibility": 4,
+              "openness": -2,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "videoplace-1974",
+                "weightMultiplier": 1.5,
+                "rationale": "Mass exposure legitimizes non-headset immersive environments."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Somatic VR gets massive public exposure and corporate legitimacy",
+            "Public expectation for VR is set by the somatic paradigm rather than the CGI paradigm"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#heilig-experience-theater-1964"
+      ]
+    },
+    {
+      "id": "sutherland-ultimate-display-1965",
+      "label": "The Ultimate Display (Sutherland)",
+      "description": "Ivan Sutherland publishes 'The Ultimate Display' at IFIP. Imagines a computer display as a room in which the computer can control the existence of matter — presence through total visual illusion. The foundational imaginative blueprint for visual VR. Completely ignores smell, touch, taste.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1965",
+        "earliest": "1965-01-01",
+        "latest": "1965-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.research_stage": "academic"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "sutherland-ultimate-display-1965-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -4,
+              "embodied_agency": 3,
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": 2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#sutherland-ultimate-display-1965"
+      ]
     },
     {
       "id": "sword-of-damocles-1968",
@@ -703,7 +2018,9 @@
               "openness": -2,
               "institutionalization": 4
             },
-            "enables": ["darpa-somatic-interface-program-1963"],
+            "enables": [
+              "darpa-somatic-interface-program-1963"
+            ],
             "influences": [
               {
                 "eventId": "vpl-research-1987",
@@ -717,7 +2034,9 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#sword-of-damocles-1968"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#sword-of-damocles-1968"
+      ]
     },
     {
       "id": "videoplace-1974",
@@ -802,7 +2121,186 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#videoplace-1974"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#videoplace-1974"
+      ]
+    },
+    {
+      "id": "lucasfilm-computer-division-1979",
+      "label": "Lucasfilm Computer Division Founded",
+      "description": "George Lucas recruits Ed Catmull — a direct PhD student of Ivan Sutherland at the University of Utah's DARPA-funded computer graphics program, alongside fellow students Jim Clark and Alan Kay — to head a new Computer Division at Lucasfilm, tasked with bringing digital film editing, digital sound, and computer graphics into commercial filmmaking. The Sutherland engineering lineage, incubated inside defense-funded academic research, pivots explicitly toward Hollywood entertainment for the first time.",
+      "category": "computer-graphics",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1979",
+        "earliest": "1979-01-01",
+        "latest": "1979-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "lucasfilm-computer-division-1979-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "computer_graphics.stage": "production"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -1,
+              "sociality": -1,
+              "accessibility": -2,
+              "openness": -2,
+              "institutionalization": 4
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "catmull-stays-academic-or-defense",
+          "label": "Catmull Stays Academic Or Defense",
+          "canonical": false,
+          "weight": 1,
+          "description": "Catmull, instead of joining Lucasfilm, takes an academic or defense-contractor position continuing the DARPA-funded simulation/graphics work directly — flight simulation, NASA-adjacent work — rather than pivoting to commercial filmmaking.",
+          "requirement": "No entertainment-industry recruiter makes an attractive offer, or Catmull's own interests stay closer to the simulation and training applications his Utah cohort was funded to pursue",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "computer_graphics.stage": "interactive",
+              "vr.research_stage": "government"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": 1,
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": -2,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "toy-story-pixar-1995",
+                "weightMultiplier": 0.25,
+                "rationale": "Without Catmull’s Lucasfilm division, Pixar’s historical feature-animation route is much less likely."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "The Sutherland lineage's commercial expression in the 1980s stays defense/simulation-flavored rather than entertainment-flavored",
+            "Computer-generated imagery in commercial film is delayed by a decade or more, or is pioneered by a different, less Utah-DARPA-descended team",
+            "Steve Jobs never has a computer-graphics division to acquire in 1986; Pixar in its historical form does not exist"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#lucasfilm-computer-division-1979"
+      ]
+    },
+    {
+      "id": "nasa-view-1985",
+      "label": "NASA VIEW Program",
+      "description": "NASA Ames develops the Virtual Interface Environment Workstation (VIEW) — an HMD with DataGlove for telepresence and simulation. First major institutional application of visual VR after Sutherland. Establishes VR as a serious research and operational tool.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1985",
+        "earliest": "1985-01-01",
+        "latest": "1985-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "vr.research_stage": "government",
+          "vr.display_paradigm": "head_mounted"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "nasa-view-1985-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "interaction.haptics_stage": "research",
+              "vr.institutional_base": "defense"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": 3,
+              "sociality": -3,
+              "accessibility": -4,
+              "openness": -3,
+              "institutionalization": 4
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "nasa-view-full-sensorium",
+          "label": "Nasa View Full Sensorium",
+          "canonical": false,
+          "weight": 1,
+          "description": "NASA VIEW program includes a parallel multisensory track — developing full-body haptic suits and olfactory interfaces alongside the visual HMD.",
+          "requirement": "NASA interest in realistic simulation of planetary environments for astronaut training",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "interaction.haptics_stage": "research",
+              "somatic_vr.development_stage": "research",
+              "somatic_vr.institutional_home": "military"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 5,
+              "embodied_agency": 4,
+              "sociality": -2,
+              "accessibility": -3,
+              "openness": -3,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "vpl-research-1987",
+                "weightMultiplier": 1.7,
+                "rationale": "NASA-backed somatic engineering supplies tools and personnel to commercial VR."
+              },
+              {
+                "eventId": "nintendo-wii-2006",
+                "weightMultiplier": 1.3,
+                "rationale": "Institutional body-interface research raises the later visibility of motion control."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Full-body haptic suit gets NASA engineering resources in the 1980s",
+            "Military-grade somatic VR develops alongside visual VR"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#nasa-view-1985"
+      ]
     },
     {
       "id": "vpl-research-1987",
@@ -889,7 +2387,256 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#vpl-research-1987"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#vpl-research-1987"
+      ]
+    },
+    {
+      "id": "power-glove-1989",
+      "label": "Nintendo Power Glove",
+      "description": "Nintendo and Mattel release the Power Glove — a consumer gesture/haptic controller for the NES. Fails commercially (poor tracking accuracy, few compatible games). Becomes culturally iconic as a failed future. The first mass-market attempt to make gesture/body interface the gaming paradigm.",
+      "category": "gaming",
+      "lineage": "heilig",
+      "time": {
+        "display": "1989",
+        "earliest": "1989-01-01",
+        "latest": "1989-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "gaming.interface_stage": "gesture"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "power-glove-1989-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "interaction.motion_stage": "niche"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 4,
+              "sociality": -2,
+              "accessibility": 2,
+              "openness": -2,
+              "institutionalization": -2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "power-glove-succeeds",
+          "label": "Power Glove Succeeds",
+          "canonical": false,
+          "weight": 1,
+          "description": "The Power Glove achieves accurate gesture tracking and Nintendo builds a substantial game library around it — establishing body-gesture as the dominant gaming interface 17 years before the Wii.",
+          "requirement": "Better accelerometer technology; Nintendo commitment to game development for the format",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "gaming.interface_stage": "motion",
+              "interaction.motion_stage": "mass"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 3,
+              "embodied_agency": 5,
+              "sociality": 2,
+              "accessibility": 5,
+              "openness": -2,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "nintendo-wii-2006",
+                "weightMultiplier": 2.2,
+                "rationale": "A successful gesture platform gives Nintendo a direct institutional predecessor to Wii motion control."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Gesture/body interface becomes the gaming default in the early 1990s",
+            "The somatic paradigm in gaming has a 10-year head start"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#power-glove-1989"
+      ]
+    },
+    {
+      "id": "osmose-char-davies-1995",
+      "label": "Osmose (Char Davies)",
+      "description": "Painter-turned-Softimage-VP Char Davies debuts Osmose at the Musée d'art contemporain de Montréal: a stereoscopic HMD and biometric vest whose only interface is breath and balance — exhaling sinks the immersant through a layered virtual landscape, inhaling lifts them. Built on the same HMD hardware lineage as Sutherland and VPL's research systems, but explicitly conceived by Davies as a corrective to what she called VR's masculine, militarized, conquest-oriented design language — replacing joysticks and gloves with the most involuntary, unconquerable interface available.",
+      "category": "vr",
+      "lineage": "bridge",
+      "time": {
+        "display": "1995",
+        "earliest": "1995-01-01",
+        "latest": "1995-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "vr.artistic_lineage": "niche"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "osmose-char-davies-1995-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 2,
+              "sociality": -2,
+              "accessibility": -4,
+              "openness": 2,
+              "institutionalization": 1
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "osmose-influences-consumer-vr",
+          "label": "Osmose Influences Consumer Vr",
+          "canonical": false,
+          "weight": 0.5,
+          "description": "Osmose's breath/balance interface research is licensed or adapted by a VR hardware company as an input method alongside or instead of handheld controllers, rather than remaining a singular fine-art installation.",
+          "requirement": "A VR hardware company investing in biometric sensing for consumer hardware rather than treating it as a one-off art-world experiment",
+          "confidence": "low",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "vr.artistic_lineage": "consumer",
+              "interaction.haptics_stage": "consumer"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": 2,
+              "embodied_agency": 5,
+              "sociality": -2,
+              "accessibility": 3,
+              "openness": 1,
+              "institutionalization": 4
+            },
+            "influences": [
+              {
+                "eventId": "consumer-vr-2016",
+                "weightMultiplier": 1.6,
+                "rationale": "Licensed breath and balance interfaces broaden the design brief for consumer VR."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Consumer VR from the late 1990s onward includes biometric, involuntary-bodily input as a standard alongside hand controllers, rather than these appearing decades later in wellness-oriented VR",
+            "VR's popular design language incorporates Davies's explicit critique of conquest/mastery interaction models earlier and more broadly",
+            "Later controller-and-gesture-based headsets in this pool exist in a market that already expects a biometric option, changing their design briefs"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#osmose-char-davies-1995"
+      ]
+    },
+    {
+      "id": "toy-story-pixar-1995",
+      "label": "Toy Story / Pixar's Fully Computer-Animated Feature",
+      "description": "Sixteen years after Lucasfilm's Computer Division was founded, and nine years after Steve Jobs spun it off as Pixar (1986), Pixar releases Toy Story — the first entirely computer-animated feature film, roughly 800,000 render-hours, no traditional cel animation at any stage. A direct institutional and personal descendant of Sutherland's Sketchpad and the Utah DARPA program reaches mass-market Hollywood entertainment. Like every milestone in this Sutherland-descended thread, it is purely audiovisual — no haptic, olfactory, or other sensory channel is addressed, however emotionally 'present' the animated characters are made to feel.",
+      "category": "computer-graphics",
+      "lineage": "sutherland",
+      "time": {
+        "display": "1995",
+        "earliest": "1995-01-01",
+        "latest": "1995-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "toy-story-pixar-1995-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "cinema.animation_stage": "full_cg",
+              "computer_graphics.stage": "production"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -3,
+              "sociality": 2,
+              "accessibility": 4,
+              "openness": -3,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "cg-animation-stays-hybrid",
+          "label": "Cg Animation Stays Hybrid",
+          "canonical": false,
+          "weight": 1,
+          "description": "Full CG animation proves commercially unconvincing at feature length in 1995 — rendering costs, character believability — and the industry instead settles for another decade on a hybrid model, CG effects and sequences embedded within traditionally animated or live-action films, rather than an all-CG feature.",
+          "requirement": "Toy Story's character animation or box-office reception falling short of what made it convincing historically, or Disney hedging with a hybrid release strategy",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "cinema.animation_stage": "hybrid",
+              "computer_graphics.stage": "production"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": -3,
+              "sociality": 3,
+              "accessibility": 2,
+              "openness": -2,
+              "institutionalization": 3
+            }
+          },
+          "narrativeConsequences": [
+            "Fully computer-animated features arrive in the 2000s rather than 1995, delaying the reallocation of Hollywood animation labor and capital toward CG studios by a decade",
+            "Pixar itself, without Toy Story's proof-of-concept success, is acquired, absorbed, or wound down rather than becoming an independent powerhouse",
+            "Traditional 2D animation studios retain market and cultural dominance for longer, changing the competitive landscape Disney's own animation division operates in through the 1990s-2000s"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#toy-story-pixar-1995"
+      ]
     },
     {
       "id": "nintendo-wii-2006",
@@ -990,7 +2737,9 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#nintendo-wii-2006"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#nintendo-wii-2006"
+      ]
     },
     {
       "id": "oculus-kickstarter-2012",
@@ -1035,7 +2784,9 @@
               "openness": 1,
               "institutionalization": 2
             },
-            "enables": ["facebook-acquires-oculus-2014"]
+            "enables": [
+              "facebook-acquires-oculus-2014"
+            ]
           },
           "narrativeConsequences": [
             "A convincing, affordable view becomes the price of entry for the new consumer category."
@@ -1063,14 +2814,100 @@
               "openness": 2,
               "institutionalization": 3
             },
-            "enables": ["facebook-acquires-oculus-2014"]
+            "enables": [
+              "facebook-acquires-oculus-2014"
+            ]
           },
           "narrativeConsequences": [
             "Any acquirer of Oculus must decide whether to absorb, compete with, or interoperate with an established bodily interface."
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#oculus-kickstarter-2012"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#oculus-kickstarter-2012"
+      ]
+    },
+    {
+      "id": "carmack-oculus-cto-2013",
+      "label": "John Carmack Joins Oculus as CTO",
+      "description": "id Software's John Carmack — the engineer behind Doom and Quake's real-time 3D engines — resigns to join Oculus VR full-time as CTO after ZeniMax Media, id's parent company, declines to support Oculus. A second engineering lineage (real-time game-engine development) merges into the Sutherland-descended VR hardware track. ZeniMax later sues Oculus and Facebook for trade-secret misappropriation and wins a $500 million judgment.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2013",
+        "earliest": "2013-01-01",
+        "latest": "2013-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "carmack-oculus-cto-2013-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "vr.founder_control": "founder"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": 4,
+              "sociality": -3,
+              "openness": -2,
+              "institutionalization": 2
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "zenimax-backs-oculus",
+          "label": "Zenimax Backs Oculus",
+          "canonical": false,
+          "weight": 0.75,
+          "description": "ZeniMax, instead of later suing Oculus and Facebook, agrees to formally back and invest in Carmack's Oculus work as an extension of id Software's engine business.",
+          "requirement": "ZeniMax leadership recognizing VR's potential early rather than viewing Carmack's departure as a loss",
+          "confidence": "low-medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "vr.corporate_patron": "gaming_hardware",
+              "vr.founder_control": "shared"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -3,
+              "embodied_agency": 4,
+              "sociality": -2,
+              "accessibility": 2,
+              "openness": -4,
+              "institutionalization": 5
+            },
+            "influences": [
+              {
+                "eventId": "facebook-acquires-oculus-2014",
+                "weightMultiplier": 0.65,
+                "rationale": "A well-funded gaming-company patron makes a Facebook acquisition less necessary."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "No $500 million trade-secret lawsuit and judgment shadow over Oculus's early corporate history",
+            "id Software's engine lineage becomes formally, contractually entangled with VR hardware rather than informally connected via one departing employee",
+            "Carmack's move from games into VR hardware is remembered as a sanctioned corporate pivot rather than a defection"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#carmack-oculus-cto-2013"
+      ]
     },
     {
       "id": "facebook-acquires-oculus-2014",
@@ -1118,7 +2955,9 @@
               "openness": -4,
               "institutionalization": 5
             },
-            "enables": ["facebook-rebrands-meta-2021"]
+            "enables": [
+              "facebook-rebrands-meta-2021"
+            ]
           },
           "narrativeConsequences": [
             "Consumer VR is pulled toward social-platform scale and away from the priorities of an independent gaming startup."
@@ -1146,14 +2985,148 @@
               "openness": -2,
               "institutionalization": 4
             },
-            "disables": ["facebook-rebrands-meta-2021"]
+            "disables": [
+              "facebook-rebrands-meta-2021"
+            ]
           },
           "narrativeConsequences": [
             "There is no Facebook VR division around which to build a company-wide metaverse identity in 2021."
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#facebook-acquires-oculus-2014"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#facebook-acquires-oculus-2014"
+      ]
+    },
+    {
+      "id": "consumer-vr-2016",
+      "label": "Consumer VR Launch (Oculus CV1, HTC Vive, PSVR)",
+      "description": "Three consumer VR headsets launch within months of each other. Visual VR at consumer price points. Room-scale tracking (Vive) is new; controllers are the interaction paradigm. The Sutherland visual-computational lineage reaches mass-market consumer deployment after 48 years.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2016",
+        "earliest": "2016-01-01",
+        "latest": "2016-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.consumer_market": "mass",
+          "vr.display_paradigm": "head_mounted",
+          "gaming.interface_stage": "immersive"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "consumer-vr-2016-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -4,
+              "embodied_agency": 4,
+              "sociality": -2,
+              "accessibility": 4,
+              "openness": -3,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#consumer-vr-2016"
+      ]
+    },
+    {
+      "id": "palmer-luckey-ousted-2017",
+      "label": "Palmer Luckey Ousted from Oculus",
+      "description": "Oculus founder Palmer Luckey is forced out of Facebook following revelation of his $10,000 donation to a pro-Trump group that ran a controversial anti-Clinton billboard. Facebook denies the departure was politically motivated. Founder-vs-corporate-parent friction, the same shape this pool's Silicon Valley theme captures later with Kalanick and Neumann.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2017",
+        "earliest": "2017-01-01",
+        "latest": "2017-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {},
+      "outcomes": [
+        {
+          "id": "palmer-luckey-ousted-2017-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "vr.founder_control": "corporate"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 2,
+              "sociality": -2,
+              "openness": -3,
+              "institutionalization": 4
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "luckey-stays",
+          "label": "Luckey Stays",
+          "canonical": false,
+          "weight": 1,
+          "description": "Facebook leadership decides the controversy isn't worth losing its most visible technical founder, or Luckey more carefully manages the political fallout, and he stays on.",
+          "requirement": "Facebook leadership prioritizing continuity over reputational caution, or Luckey issuing an earlier, more effective response to the controversy",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "vr.founder_control": "shared"
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -2,
+              "embodied_agency": 2,
+              "sociality": -2,
+              "accessibility": 1,
+              "openness": -2,
+              "institutionalization": 3
+            },
+            "influences": [
+              {
+                "eventId": "facebook-rebrands-meta-2021",
+                "weightMultiplier": 0.8,
+                "rationale": "Continued founder influence modestly resists full corporate assimilation of Oculus."
+              }
+            ]
+          },
+          "narrativeConsequences": [
+            "Oculus retains more of its founder-driven, gaming-enthusiast culture rather than fully assimilating into Facebook's corporate structure",
+            "The founder-ousted-by-corporate-parent pattern has one fewer prominent example in the historical record",
+            "Luckey's later defense-technology venture (founded after his historical departure) may not exist in this form, changing the VR-to-defense-tech pipeline this world produces"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#palmer-luckey-ousted-2017"
+      ]
     },
     {
       "id": "facebook-rebrands-meta-2021",
@@ -1234,7 +3207,103 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#facebook-rebrands-meta-2021"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#facebook-rebrands-meta-2021"
+      ]
+    },
+    {
+      "id": "reality-labs-losses-2022",
+      "label": "Reality Labs' Losses Mount, AI Pivot Begins",
+      "description": "Reality Labs racks up close to $90 billion in cumulative operating losses since 2020. By late 2024, executives have quietly stopped saying 'metaverse' on earnings calls. Layoffs, VR studio closures, and spending cuts of up to 30% follow as resources shift toward AI. The craze visibly abating — not a single event but a multi-year deflation, the mirror image of the Meta rebrand's 2021 peak.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2022-2025",
+        "earliest": "2022-01-01",
+        "latest": "2025-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.consumer_market": "contracting"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "reality-labs-losses-2022-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "sociality": -2,
+              "accessibility": -2,
+              "openness": -4,
+              "institutionalization": -3
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#reality-labs-losses-2022"
+      ]
+    },
+    {
+      "id": "apple-vision-pro-2024",
+      "label": "Apple Vision Pro",
+      "description": "Apple launches the Vision Pro at $3,499 — ultra-high-fidelity visual display, spatial computing, eye and hand tracking, passthrough AR/MR. Repositioned as 'spatial computer,' not headset. The culmination of the Sutherland lineage as pure optical hardware. No somatic channels; purely optical presence. Arrives in the same year Meta's Reality Labs losses are mounting and a full two years before generative world models and a second Meta reversal on Horizon Worlds extend this pool's timeline further still.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2024",
+        "earliest": "2024-01-01",
+        "latest": "2024-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.display_paradigm": "head_mounted",
+          "vr.corporate_patron": "gaming_hardware"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "apple-vision-pro-2024-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -5,
+              "embodied_agency": 4,
+              "sociality": -4,
+              "accessibility": -5,
+              "openness": -5,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#apple-vision-pro-2024"
+      ]
     },
     {
       "id": "genie-world-models-2024",
@@ -1304,7 +3373,134 @@
           ]
         }
       ],
-      "sourceRefs": ["themes/vr-immersion/milestones.json#genie-world-models-2024"]
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#genie-world-models-2024"
+      ]
+    },
+    {
+      "id": "world-labs-marble-2024",
+      "label": "World Labs and Spatial Intelligence (Fei-Fei Li)",
+      "description": "Fei-Fei Li — Stanford computer vision professor, architect of ImageNet, and co-director of Stanford's Human-Centered AI institute — raises $230 million in September 2024 to found World Labs, betting that 'spatial intelligence' is AI's next frontier after language. In November 2025 the company launches Marble, a commercial platform generating exportable 3D environments from text, image, or video prompts. A $1 billion follow-on round, with Autodesk investing $200 million and taking an advisory seat, signals that the incumbent 3D-content-creation industry sees world-generation as displacement, not supplement. Another Stanford-incubated venture, in the same institutional lineage as Terman's students decades earlier, but selling spatial generation rather than hardware.",
+      "category": "vr",
+      "lineage": "bridge",
+      "time": {
+        "display": "2024-2025",
+        "earliest": "2024-01-01",
+        "latest": "2025-12-31",
+        "resolution": "range"
+      },
+      "activation": "default",
+      "baseWeight": 1.25,
+      "commonEffects": {
+        "sets": {
+          "computer_graphics.stage": "generative"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "world-labs-marble-2024-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "sets": {
+              "generative.professional_tools": false
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": 3,
+              "sociality": -1,
+              "openness": -2,
+              "institutionalization": 4
+            }
+          },
+          "narrativeConsequences": []
+        },
+        {
+          "id": "autodesk-marble-integration",
+          "label": "Autodesk Marble Integration",
+          "canonical": false,
+          "weight": 1,
+          "description": "Autodesk's advisory stake becomes a full integration, and Marble-style generation is folded directly into mainstream professional 3D content tools (Maya, 3ds Max) rather than remaining a separate consumer/prosumer platform.",
+          "requirement": "Autodesk deciding to cannibalize its own traditional modeling workflow rather than positioning generative world models as a separate product line",
+          "confidence": "medium",
+          "evidenceType": "speculative",
+          "rationale": "Provisional causal conversion of the legacy branch alternative. The narrative premise, requirement, and consequences are inherited; typed effects, influences, and six-axis values are preliminary judgments pending review.",
+          "effects": {
+            "sets": {
+              "generative.professional_tools": true
+            },
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": 3,
+              "sociality": -1,
+              "accessibility": 1,
+              "openness": -4,
+              "institutionalization": 5
+            }
+          },
+          "narrativeConsequences": [
+            "Professional 3D artists' workflow shifts toward prompting and editing generated worlds rather than modeling from scratch, within a few years rather than a decade",
+            "World Labs' technology becomes infrastructure inside incumbent software rather than a competing consumer platform, changing who captures the value of the underlying research",
+            "Li's 'spatial intelligence' framing gets embedded into mainstream production pipelines rather than staying a research frontier"
+          ]
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#world-labs-marble-2024"
+      ]
+    },
+    {
+      "id": "horizon-worlds-reversal-2026",
+      "label": "Horizon Worlds Shutdown-Then-Reversal",
+      "description": "In March 2026, Meta announces it is shutting down the VR version of Horizon Worlds as it shifts focus to AI — then reverses the decision within 48 hours after user backlash. The most recent dated event in this pool: the metaverse craze's whiplash coda, five years after the Meta rebrand and squarely in the middle of Reality Labs' sustained retreat. The reversal holds by a thread — user backlash, not a change of strategic heart, is what kept Horizon Worlds alive on VR, and nothing in Meta's public reasoning ruled out revisiting the shutdown later. Whether this reads as the end of 'the metaverse' or merely a contested, temporary pause is left for the story to decide, since this is the last dated event in the pool and nothing follows it to settle the question.",
+      "category": "vr",
+      "lineage": "sutherland",
+      "time": {
+        "display": "2026",
+        "earliest": "2026-01-01",
+        "latest": "2026-12-31",
+        "resolution": "year"
+      },
+      "activation": "default",
+      "baseWeight": 1,
+      "commonEffects": {
+        "sets": {
+          "vr.consumer_market": "contracting",
+          "vr.metaverse_bet": "product_line"
+        }
+      },
+      "outcomes": [
+        {
+          "id": "horizon-worlds-reversal-2026-documented",
+          "label": "Documented historical path",
+          "canonical": true,
+          "weight": 3,
+          "description": "The documented historical development occurs as described in the milestone record.",
+          "requirement": null,
+          "confidence": "high",
+          "evidenceType": "documented",
+          "rationale": "Canonical control outcome copied from the documented legacy milestone; its six-axis delta is a provisional translation of the legacy four-axis vector plus description-based accessibility, openness, and institutionalization judgments.",
+          "effects": {
+            "trajectoryDelta": {
+              "sensory_breadth": -1,
+              "embodied_agency": 1,
+              "sociality": -2,
+              "openness": -3,
+              "institutionalization": -2
+            }
+          },
+          "narrativeConsequences": []
+        }
+      ],
+      "sourceRefs": [
+        "themes/vr-immersion/milestones.json#horizon-worlds-reversal-2026"
+      ]
     }
   ]
 }
