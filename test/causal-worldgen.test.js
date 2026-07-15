@@ -74,10 +74,15 @@ test('both render prompts receive explicit canonical v2 outcomes', () => {
   const theme = pilotTheme('baseline');
   const world = generateWorld(theme, 1);
   const canonicalBranch = world.steps.find(step => step.isBranchPoint);
+  const verbalPrompt = buildRenderPrompt(theme, world);
   assert.ok(canonicalBranch.chosenOutcome.canonical);
-  assert.match(buildRenderPrompt(theme, world).userPrompt, /Outcome in this world \(canonical control\)/);
-  assert.match(buildRenderPrompt(theme, world).userPrompt, /event window:/);
-  assert.match(buildRenderPrompt(theme, world).userPrompt, new RegExp(canonicalBranch.chosenOutcome.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(verbalPrompt.userPrompt, /Outcome in this world \(canonical control\)/);
+  assert.match(verbalPrompt.userPrompt, /event window:/);
+  assert.match(verbalPrompt.userPrompt, new RegExp(canonicalBranch.chosenOutcome.description.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+  assert.match(verbalPrompt.systemPrompt, /one or two complete, plain-language sentences/);
+  assert.match(verbalPrompt.systemPrompt, /what it physically or operationally was/);
+  assert.match(verbalPrompt.systemPrompt, /do not invent a mechanism, sensory effect, performance claim, or other capability/);
+  assert.match(verbalPrompt.userPrompt, /do not add unsupported capabilities/);
   assert.match(buildScenePrompt(theme, world).userPrompt, /Outcome in this world \(canonical control\)/);
 });
 

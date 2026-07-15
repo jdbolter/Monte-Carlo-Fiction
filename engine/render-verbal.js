@@ -29,9 +29,14 @@ const OUT_ROOT  = join(__dirname, '..', 'outputs', 'stories');
 // or "the smell team" with no grounding), and endings that only implied
 // the world's meaning through imagery rather than ever stating it. See
 // taskLines below for the structural fix (thesis stated before the final
-// image, not left for the image to carry alone) — this primer covers the
-// per-milestone legibility half of the fix.
-const DEFAULT_STYLE_PRIMER = `Write literary short fiction, not an essay or a summary — but never assume the reader already knows this history. Every time the story reaches a real invention, technology, institution, or event from the given path, ground it in a clear phrase or sentence woven into the prose: what it actually was, what it did, why it mattered — not just an evocative allusion to a name or date. Specific characters, concrete sensory detail, no headers, no bullet points, no dry exposition dump. The prose can still be atmospheric and oblique in its imagery — just not opaque about the facts underneath it. The reader should feel both the plausibility of the alternative path and the strangeness of the world it produces.`;
+// image, not left for the image to carry alone).
+const DEFAULT_STYLE_PRIMER = `Write literary short fiction, not an essay or a summary — but never assume the reader already knows this history. Specific characters, concrete sensory detail, no headers, no bullet points, no dry exposition dump. The prose can still be atmospheric and oblique in its imagery — just not opaque about the facts underneath it. The reader should feel both the plausibility of the alternative path and the strangeness of the world it produces.`;
+
+// Tightened 2026-07-14 after the shorter "what it was and why it mattered"
+// wording still produced descriptive allusions rather than explanations.
+// Kept separate from the style primer so it appears as an explicit output
+// requirement rather than a soft preference about voice.
+const MILESTONE_GROUNDING_INSTRUCTION = `For every milestone, before narrating its consequence or divergence, weave one or two complete, plain-language sentences into the story that explain the underlying innovation, institution, or event to a reader who has never heard of it. Explain what it physically or operationally was, how it worked at a basic level or what a person actually did, saw, heard, or felt when encountering it, and what it made newly possible compared with what came before. Spell out an unfamiliar term or acronym on first use. A proper name, date, evocative characteristic, or unexplained technical phrase does not count as grounding. Treat the supplied milestone description and chosen outcome as authoritative: clarify their stated facts, but do not invent a mechanism, sensory effect, performance claim, or other capability that the supplied path does not support. Keep these explanations inside the flowing prose rather than turning them into footnotes or an encyclopedia entry; after grounding the milestone, dramatize what this world's selected outcome changed.`;
 
 // --- Extrapolation (optional, off by default) ---
 // Promoted from scripts/experiment-extrapolation.js after a single validated
@@ -124,12 +129,12 @@ export function buildRenderPrompt(theme, world, options = {}) {
   const taskLines = extrapolate
     ? [
         `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world," ending at ${lastStep.label} (${stepOccurrenceDate(lastStep)}). Write a short story of ${minWords}-${maxWords} words total that does three things in sequence:`,
-        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${stepOccurrenceDate(lastStep)}), grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered.`,
+        `1. For roughly the first ${minWords - extrapolationWords}-${maxWords - extrapolationWords} words: dramatize the exact given path, moving through time from its first moment to its last real/counterfactual moment (${lastStep.label}, ${stepOccurrenceDate(lastStep)}), applying the required milestone grounding below at every step.`,
         `2. Near the end of that dramatization, before moving past ${lastStep.label}: ${THESIS_INSTRUCTION}`,
         `3. For the final ~${extrapolationWords} words: continue PAST that last moment, roughly ${extrapolationYears} years further, into events that are NOT in the given path — invent them yourself. This invented continuation must be disciplined, not generic science fiction: it must follow specifically from (a) this world's overall trajectory — ${world.trajectoryDescription} — and (b) the named institutions, technologies, tensions, and downstream consequences already established in the path above, especially any "downstream consequences" text attached to counterfactual choices. Do not introduce a generic, unrelated future technology, and do not introduce a new geographic setting beyond what's already established in the given path — extend the specific logic, institutions, and places already in motion in this world. Inventing new named characters for this continuation is fine. This closing anecdote should land with the weight of the thesis just stated in step 2, not have to carry that meaning by itself — and it may return to the story's normal literary register, only the thesis sentence itself needs the plain-analytical shift.`
       ]
     : [
-        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that does three things in sequence: first, dramatize this exact path, moving through time from its first moment toward its terminal moment, grounding each milestone as it appears in plain, legible terms — what it actually was and why it mattered. Then, near the end, ${THESIS_INSTRUCTION} Only after that, close on one final anecdote or image — back in the story's normal literary register — that lands with the weight of that stated meaning, rather than straining to carry the whole meaning by itself.`
+        `You will be given a specific chosen path through a sequence of real and counterfactual moments — a "world." Write a short story (${minWords}-${maxWords} words) that does three things in sequence: first, dramatize this exact path, moving through time from its first moment toward its terminal moment and applying the required milestone grounding below at every step. Then, near the end, ${THESIS_INSTRUCTION} Only after that, close on one final anecdote or image — back in the story's normal literary register — that lands with the weight of that stated meaning, rather than straining to carry the whole meaning by itself.`
       ];
 
   const systemPrompt = [
@@ -137,6 +142,9 @@ export function buildRenderPrompt(theme, world, options = {}) {
     '',
     `## Your task`,
     ...taskLines,
+    '',
+    `## Required grounding for every milestone`,
+    MILESTONE_GROUNDING_INSTRUCTION,
     '',
     DEFAULT_STYLE_PRIMER,
     '',
@@ -154,14 +162,14 @@ export function buildRenderPrompt(theme, world, options = {}) {
         '',
         formatWorldForPrompt(world),
         '',
-        `Write the story now. ${minWords}-${maxWords} words total. Flowing prose paragraphs. No headers or lists. Before you move past "${lastStep.label}", shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why. Then the last ~${extrapolationWords} words move past it into invented territory roughly ${extrapolationYears} years further on, grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences, back in the story's normal register, landing on that already-stated meaning. Do not introduce a new geographic setting; inventing new named characters is fine.`
+        `Write the story now. ${minWords}-${maxWords} words total. Flowing prose paragraphs. No headers or lists. For every milestone, include the required one or two plain-language grounding sentences before explaining its consequence or divergence; do not assume the reader recognizes a name or technical term, and do not add unsupported capabilities. Before you move past "${lastStep.label}", shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why. Then the last ~${extrapolationWords} words move past it into invented territory roughly ${extrapolationYears} years further on, grounded in this world's trajectory (${world.trajectoryDescription}) and established consequences, back in the story's normal register, landing on that already-stated meaning. Do not introduce a new geographic setting; inventing new named characters is fine.`
       ].join('\n')
     : [
         `The chosen path through this world:`,
         '',
         formatWorldForPrompt(world),
         '',
-        `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists. Ground each milestone in plain terms as it appears. Near the end, shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why — then return to the story's normal register and close on one image that lands with that meaning already established.`
+        `Write the story now. ${minWords}-${maxWords} words. Flowing prose paragraphs. No headers or lists. For every milestone, include the required one or two plain-language grounding sentences before explaining its consequence or divergence; do not assume the reader recognizes a name or technical term, and do not add unsupported capabilities. Near the end, shift into plain analytical prose for one to two sentences and state the world's thesis directly — not a compressed image or parallelism, an actual explanation of what shifted and why — then return to the story's normal register and close on one image that lands with that meaning already established.`
       ].join('\n');
 
   return { systemPrompt, userPrompt };
