@@ -19,3 +19,12 @@ outputs/stories/*/*
 # Same reasoning for rendered scene scripts (visual-render layer).
 outputs/scenes/*/*
 !outputs/scenes/*/.gitkeep
+
+# Sampling regime (redesign branch): rendered worlds are costly, non-reproducible
+# model output — ignore them like outputs/stories. worlds.md is regenerated from
+# those JSONs, so ignore it too. But scorecard.md holds *judgments* (research
+# data, not a generated artifact), so keep it tracked. Copy out any specific
+# rendered world worth preserving.
+sampling/outputs/*/*.json
+sampling/outputs/*/worlds.md
+!sampling/outputs/*/scorecard.md

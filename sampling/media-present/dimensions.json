@@ -1,0 +1,93 @@
+{
+  "artifact": "media-present-dimensions",
+  "version": 1,
+  "frozen": "2026-07-16",
+  "description": "Dimensions of a media present. A configuration assigns exactly one value per dimension. 'ground' is our world's value. k = the number of dimensions whose sampled value differs from ground (Hamming distance from the all-ground configuration). This file is the compile-time artifact for the sampling regime; it replaces state-registry.json's typed facts + axes.",
+  "conventions": {
+    "ordered": "false for every dimension except 'resemblance'. Only resemblance is a true scale; the rest are unordered nominal sets.",
+    "groundGloss": "optional qualifier on the ground value that carries stance/detail not reducible to the bare value id."
+  },
+  "dimensions": [
+    {
+      "id": "attention_unit",
+      "label": "Attention unit",
+      "ordered": false,
+      "ground": "solitary",
+      "values": ["solitary", "dyad", "household", "congregation", "civic-assembly", "crowd"]
+    },
+    {
+      "id": "sensory_register",
+      "label": "Sensory register",
+      "ordered": false,
+      "ground": "audiovisual",
+      "values": ["audiovisual", "visual-only", "auditory-only", "haptic-primary", "proprioceptive", "olfactory", "thermal", "undifferentiated"]
+    },
+    {
+      "id": "resemblance",
+      "label": "Resemblance",
+      "ordered": true,
+      "ground": "photorealist",
+      "groundGloss": "aspiring (our world sits at photorealist and reaches upward)",
+      "values": ["arbitrary", "abstract", "schematic", "cartoon", "stylized", "realist", "photorealist", "hyperreal"]
+    },
+    {
+      "id": "fidelity_criterion",
+      "label": "Fidelity criterion",
+      "ordered": false,
+      "ground": "optical+index-welded",
+      "groundGloss": "the two criteria fused since photography (~180 years)",
+      "values": ["optical+index-welded", "to-canonical-type", "to-source-transmission", "to-function", "to-felt-truth"]
+    },
+    {
+      "id": "authorship_distribution",
+      "label": "Authorship distribution",
+      "ordered": false,
+      "ground": "professional-caste",
+      "values": ["professional-caste", "universal", "guild", "algorithmic", "hereditary", "initiatory"]
+    },
+    {
+      "id": "provisioning",
+      "label": "Provisioning",
+      "ordered": false,
+      "ground": "advertising-funded",
+      "values": ["advertising-funded", "market-purchase", "subscription", "welfare-entitlement", "civic-duty", "gift-reciprocal", "patronage"]
+    },
+    {
+      "id": "custody",
+      "label": "Custody",
+      "ordered": false,
+      "ground": "remote-tenancy",
+      "groundGloss": "permanent at host's discretion",
+      "values": ["remote-tenancy", "personal-possession", "civic-archive", "distributed-peer-custody", "in-body-mortal", "performed-only", "scheduled-decay", "seasonal-withdrawal"]
+    },
+    {
+      "id": "address",
+      "label": "Address",
+      "ordered": false,
+      "ground": "broadcast-to-strangers",
+      "values": ["broadcast-to-strangers", "kin-only", "commissioned-by-patron", "posthumous", "addressed-to-nonhumans", "self-addressed"]
+    },
+    {
+      "id": "literacy_floor",
+      "label": "Literacy floor",
+      "ordered": false,
+      "ground": "read+type",
+      "values": ["read+type", "none", "read-only", "read+write", "world-build", "model-train", "perform-from-memory"]
+    },
+    {
+      "id": "compulsion",
+      "label": "Compulsion",
+      "ordered": false,
+      "ground": "optional-but-compulsory-in-fact",
+      "groundGloss": "optional in name, compulsory in fact",
+      "values": ["optional-but-compulsory-in-fact", "freely-optional", "compulsory-by-law", "initiatory", "forbidden-to-some", "forbidden-to-most"]
+    },
+    {
+      "id": "metering",
+      "label": "Metering",
+      "ordered": false,
+      "ground": "attention-metered-and-sold",
+      "values": ["attention-metered-and-sold", "unmetered", "time-taxed", "quota-per-person", "metered-by-copy", "metered-by-performance"]
+    }
+  ]
+}
