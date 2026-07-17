@@ -6,6 +6,7 @@
   "description": "Monte Carlo narrative generation: a shared engine that generates many structurally distinct alternate-history 'worlds' from a theme's milestone pool, then renders each as a short story.",
   "scripts": {
     "dev": "node server.js",
+    "sample-ui": "node sampling/server.js",
     "generate": "node scripts/generate-worlds.js",
     "render": "node scripts/render-stories.js",
     "render-scenes": "node scripts/render-scenes.js",

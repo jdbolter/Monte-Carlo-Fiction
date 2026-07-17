@@ -137,7 +137,7 @@ export function enumerateExactK(dims, k) {
 const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504, 529]); // 529 = Overloaded
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-async function rationalize(sample, dims, { model, maxTokens, words, maxRetries = 6 }) {
+export async function rationalize(sample, dims, { model, maxTokens, words, maxRetries = 6 }) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.local.example to .env.local and add your key.');
   const { systemPrompt, userPrompt } = buildConfigPrompt(sample, dims, { words });
@@ -237,7 +237,7 @@ function readExistingVerdicts(runDir) {
 
 // Rebuild worlds.md + scorecard.md from EVERY rendered JSON on disk (not just
 // this run's), preserving existing verdicts. Robust to interrupted/resumed runs.
-function rebuildOutputs(runDir) {
+export function rebuildOutputs(runDir) {
   const recs = readdirSync(runDir)
     .filter(f => /^[se][\d-]*\d\.json$/.test(f))
     .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
@@ -256,6 +256,72 @@ function rebuildOutputs(runDir) {
   }
   writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
   return recs.length;
+}
+
+// ---- UI support: render+save a single config, record verdicts, list a run ----
+
+// Stable id from a config's off-ground moves, so re-rendering the same world
+// overwrites rather than duplicating.
+export function configTag(config, dims) {
+  const k = dims.filter(d => config[d.id] !== d.ground).length;
+  const offs = dims.filter(d => config[d.id] !== d.ground)
+    .map(d => `${d.id}:${config[d.id]}`).sort().join('|');
+  let h = 0;
+  for (let i = 0; i < offs.length; i++) h = (h * 31 + offs.charCodeAt(i)) >>> 0;
+  return `k${k}-${h.toString(36)}`;
+}
+
+// scorecard.md written from the JSON records (which carry verdict/note); this is
+// the JSON-sourced variant used by the UI (the CLI's rebuildOutputs is md-sourced).
+export function writeScorecardFromRecords(runDir) {
+  const recs = readdirSync(runDir).filter(f => /\.json$/.test(f))
+    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
+    .sort((a, b) => a.tag.localeCompare(b.tag));
+  const out = [`# Scorecard — ${runDir.split('/').pop()}`, '',
+    'Verdicts recorded via the sampling UI.', '',
+    '| tag | k | off-ground moves | verdict | notes |',
+    '|-----|---|------------------|---------|-------|'];
+  for (const r of recs) out.push(`| ${r.tag} | ${r.k} | ${movesString(r)} | ${r.verdict || ''} | ${r.note || ''} |`);
+  writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
+  return recs.length;
+}
+
+export async function renderAndSave(sample, dims, runDir, opts = {}) {
+  const model = opts.model || 'claude-sonnet-5';
+  const maxTokens = opts.maxTokens || 1400;
+  const words = opts.words || 400;
+  const maxRetries = opts.maxRetries ?? 6;
+  const text = await rationalize(sample, dims, { model, maxTokens, words, maxRetries });
+  const k = sample.k ?? kOf(sample.config, dims);
+  const tag = opts.tag || configTag(sample.config, dims);
+  const record = {
+    tag, k, seed: sample.seed ?? null, model,
+    offGround: offGroundList(sample, dims),
+    config: sample.config, text,
+    verdict: '', note: '',
+    renderedAt: new Date().toISOString()
+  };
+  mkdirSync(runDir, { recursive: true });
+  writeFileSync(join(runDir, `${tag}.json`), JSON.stringify(record, null, 2), 'utf8');
+  return record;
+}
+
+export function setVerdict(runDir, tag, verdict, note = '') {
+  const p = join(runDir, `${tag}.json`);
+  if (!existsSync(p)) throw new Error(`no such world: ${tag}`);
+  const rec = JSON.parse(readFileSync(p, 'utf8'));
+  rec.verdict = verdict;
+  rec.note = note;
+  writeFileSync(p, JSON.stringify(rec, null, 2), 'utf8');
+  writeScorecardFromRecords(runDir);
+  return rec;
+}
+
+export function listRun(runDir) {
+  if (!existsSync(runDir)) return [];
+  return readdirSync(runDir).filter(f => /\.json$/.test(f))
+    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
+    .sort((a, b) => a.tag.localeCompare(b.tag));
 }
 
 // --- CLI ---

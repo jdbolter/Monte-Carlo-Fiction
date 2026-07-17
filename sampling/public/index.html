@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Media-Present Sampler</title>
+<style>
+  :root { --ink:#1d1c1a; --sub:#6b6862; --line:#e0dcd3; --accent:#c15f3c; --bg:#faf8f4;
+          --ok:#2e7d54; --strain:#b8860b; --bad:#a33; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink);
+         font:15px/1.5 -apple-system,Segoe UI,Roboto,sans-serif; }
+  header { padding:18px 24px; border-bottom:1px solid var(--line); background:#fff; }
+  h1 { margin:0; font-size:18px; font-weight:650; }
+  .hint { color:var(--sub); font-size:13px; margin-top:3px; }
+  .wrap { max-width:900px; margin:0 auto; padding:20px 24px 60px; }
+  .controls { display:flex; flex-wrap:wrap; gap:12px 18px; align-items:flex-end;
+              background:#fff; border:1px solid var(--line); border-radius:10px; padding:14px 16px; }
+  .field { display:flex; flex-direction:column; gap:3px; }
+  .field label { font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--sub); }
+  select, input { font:inherit; padding:6px 8px; border:1px solid var(--line); border-radius:6px; background:#fff; }
+  input[type=number] { width:74px; }
+  button { font:inherit; cursor:pointer; border:1px solid var(--line); background:#fff;
+           border-radius:6px; padding:7px 12px; }
+  button.primary { background:var(--accent); color:#fff; border-color:var(--accent); font-weight:600; }
+  button:disabled { opacity:.5; cursor:default; }
+  details.ref { margin:14px 0; }
+  details.ref summary { cursor:pointer; color:var(--sub); font-size:13px; }
+  .ref table { border-collapse:collapse; width:100%; font-size:13px; margin-top:8px; }
+  .ref td { border-bottom:1px solid var(--line); padding:5px 8px; vertical-align:top; }
+  .ref .dim { font-weight:600; white-space:nowrap; }
+  .ref .grd { color:var(--accent); }
+  .status { color:var(--sub); font-size:13px; margin:14px 2px; min-height:18px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:10px; padding:16px 18px; margin:14px 0; }
+  .card h3 { margin:0 0 6px; font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; }
+  .kbadge { background:#efe9df; color:var(--sub); border-radius:20px; padding:1px 9px; font-size:12px; font-weight:600; }
+  .moves { margin:6px 0 10px; }
+  .move { font-size:13.5px; margin:3px 0; }
+  .move b { color:var(--accent); }
+  .tag { font-size:11px; color:#8a877f; }
+  .tag.emphasis { color:#6b6862; } .tag.exclusive { color:#8a5a3a; }
+  .full { color:var(--sub); font-size:12.5px; margin:2px 0 10px; }
+  .prose { font:16px/1.62 Georgia,serif; white-space:pre-wrap; margin:10px 0; padding:12px 0;
+           border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+  .verdicts { display:flex; gap:8px; align-items:center; margin-top:10px; flex-wrap:wrap; }
+  .vbtn.sel[data-v=cohere] { background:var(--ok); color:#fff; border-color:var(--ok); }
+  .vbtn.sel[data-v=strain] { background:var(--strain); color:#fff; border-color:var(--strain); }
+  .vbtn.sel[data-v=incoherent] { background:var(--bad); color:#fff; border-color:var(--bad); }
+  .note { flex:1; min-width:160px; }
+  .saved { color:var(--ok); font-size:12px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Media-Present Sampler</h1>
+  <div class="hint">Author the dimensions; the RNG samples the points. Sample or enumerate, render, read, judge.</div>
+</header>
+<div class="wrap">
+  <div class="controls">
+    <div class="field"><label>mode</label>
+      <select id="mode">
+        <option value="sample">sample</option>
+        <option value="enumerate">enumerate (all at k)</option>
+      </select></div>
+    <div class="field" id="f-k"><label>k</label><input type="number" id="k" value="2" min="1" max="9"></div>
+    <div class="field" id="f-krange" style="display:none"><label>k range</label>
+      <span style="display:flex;gap:4px"><input type="number" id="kLo" value="1" min="1" max="9">
+      <input type="number" id="kHi" value="2" min="1" max="9"></span></div>
+    <div class="field" id="f-n"><label>count</label><input type="number" id="n" value="8" min="1" max="40"></div>
+    <div class="field" id="f-seed"><label>seed</label><input type="number" id="seed" value="1"></div>
+    <div class="field" id="f-limit" style="display:none"><label>limit</label><input type="number" id="limit" value="20" min="1" max="60"></div>
+    <div class="field" id="f-offset" style="display:none"><label>offset</label><input type="number" id="offset" value="0" min="0"></div>
+    <div class="field"><label>model</label>
+      <select id="model">
+        <option value="claude-sonnet-5">sonnet-5</option>
+        <option value="claude-haiku-4-5-20251001">haiku-4.5</option>
+        <option value="claude-opus-4-8">opus-4.8</option>
+      </select></div>
+    <button class="primary" id="go">Sample</button>
+    <button id="loadSaved">Load saved</button>
+    <label style="font-size:12px;color:var(--sub);display:flex;align-items:center;gap:5px">
+      <input type="checkbox" id="krange-toggle"> use k-range (sample)</label>
+  </div>
+
+  <details class="ref"><summary>dimension reference (ground = our present)</summary>
+    <table id="refTable"><tbody></tbody></table></details>
+
+  <div class="status" id="status"></div>
+  <div id="cards"></div>
+</div>
+
+<script type="module">
+const $ = s => document.querySelector(s);
+const cardsEl = $('#cards'), statusEl = $('#status');
+let DIMS = [];
+
+async function api(path, opts) {
+  const r = await fetch('/api/' + path, opts);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+  return j;
+}
+
+function refreshModeUI() {
+  const enumerate = $('#mode').value === 'enumerate';
+  const krange = $('#krange-toggle').checked && !enumerate;
+  $('#f-k').style.display = krange ? 'none' : '';
+  $('#f-krange').style.display = krange ? '' : 'none';
+  $('#f-n').style.display = enumerate ? 'none' : '';
+  $('#f-seed').style.display = enumerate ? 'none' : '';
+  $('#f-limit').style.display = enumerate ? '' : 'none';
+  $('#f-offset').style.display = enumerate ? '' : 'none';
+  $('#go').textContent = enumerate ? 'Enumerate' : 'Sample';
+}
+$('#mode').onchange = refreshModeUI;
+$('#krange-toggle').onchange = refreshModeUI;
+
+async function loadDims() {
+  const { dimensions } = await api('dimensions');
+  DIMS = dimensions;
+  const tb = $('#refTable').querySelector('tbody');
+  tb.innerHTML = dimensions.map(d => {
+    const alts = d.values.filter(v => v !== d.ground).join(' · ');
+    return `<tr><td class="dim">${d.label}<br><span class="tag ${d.exclusive?'exclusive':'emphasis'}">${d.exclusive?'exclusive':'emphasis'}</span></td>
+      <td><span class="grd">${d.ground}</span> — ${d.description}<br><span style="color:var(--sub)">${alts}</span></td></tr>`;
+  }).join('');
+}
+
+function moveLine(o) {
+  return `<div class="move">▸ <b>${o.label}: ${o.value}</b> <span class="tag ${o.exclusive?'exclusive':'emphasis'}">[${o.exclusive?'exclusive':'emphasis'}]</span>` +
+    (o.gloss ? ` — <span style="color:var(--sub)">${o.gloss}</span>` : '') +
+    ` <span class="tag">(ours: ${o.ground})</span></div>`;
+}
+
+function cardHTML(c) {
+  const full = DIMS.map(d => {
+    const v = c.config[d.id];
+    const off = v !== d.ground;
+    return `<span style="${off?'color:var(--accent);font-weight:600':''}">${d.label.split(' ')[0]}:${v}</span>`;
+  }).join('  ·  ');
+  return `<h3><span class="kbadge">k=${c.k}</span> <span class="tag">${c.tag}</span></h3>
+    <div class="moves">${c.offGround.map(moveLine).join('')}</div>
+    <details class="ref"><summary>full configuration</summary><div class="full">${full}</div></details>
+    <div class="render-area"><button class="renderBtn">Render this world</button></div>`;
+}
+
+function verdictHTML(rec) {
+  const sel = v => rec.verdict === v ? 'sel' : '';
+  return `<div class="prose">${rec.text}</div>
+    <div class="verdicts">
+      <button class="vbtn ${sel('cohere')}" data-v="cohere">cohere</button>
+      <button class="vbtn ${sel('strain')}" data-v="strain">strain</button>
+      <button class="vbtn ${sel('incoherent')}" data-v="incoherent">incoherent</button>
+      <input class="note" placeholder="note (optional)" value="${(rec.note||'').replace(/"/g,'&quot;')}">
+      <span class="saved"></span>
+    </div>`;
+}
+
+function wireCard(el, c) {
+  el.querySelector('.renderBtn').onclick = async (e) => {
+    const btn = e.target; btn.disabled = true; btn.textContent = 'rendering…';
+    try {
+      const rec = await api('render', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ config: c.config, k: c.k, seed: c.seed, model: $('#model').value }) });
+      const area = el.querySelector('.render-area');
+      area.innerHTML = verdictHTML(rec);
+      wireVerdicts(area, rec.tag);
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Render this world';
+      alert('Render failed: ' + err.message);
+    }
+  };
+}
+
+function wireVerdicts(area, tag) {
+  const note = area.querySelector('.note'), saved = area.querySelector('.saved');
+  area.querySelectorAll('.vbtn').forEach(b => b.onclick = async () => {
+    try {
+      await api('verdict', { method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ tag, verdict: b.dataset.v, note: note.value }) });
+      area.querySelectorAll('.vbtn').forEach(x => x.classList.remove('sel'));
+      b.classList.add('sel');
+      saved.textContent = '✓ saved';
+      setTimeout(() => saved.textContent = '', 1500);
+    } catch (err) { alert('Save failed: ' + err.message); }
+  });
+}
+
+function renderCards(configs, savedMap) {
+  cardsEl.innerHTML = '';
+  configs.forEach(c => {
+    const el = document.createElement('div');
+    el.className = 'card';
+    el.innerHTML = cardHTML(c);
+    cardsEl.appendChild(el);
+    const prior = savedMap && savedMap[c.tag];
+    if (prior) {
+      const area = el.querySelector('.render-area');
+      area.innerHTML = verdictHTML(prior);
+      wireVerdicts(area, prior.tag);
+    } else {
+      wireCard(el, c);
+    }
+  });
+}
+
+$('#go').onclick = async () => {
+  statusEl.textContent = 'sampling…';
+  try {
+    const mode = $('#mode').value;
+    const body = { mode, model: $('#model').value };
+    if (mode === 'enumerate') { body.k = +$('#k').value; body.limit = +$('#limit').value; body.offset = +$('#offset').value; }
+    else if ($('#krange-toggle').checked) { body.kLo = +$('#kLo').value; body.kHi = +$('#kHi').value; body.n = +$('#n').value; body.seed = +$('#seed').value; }
+    else { body.k = +$('#k').value; body.n = +$('#n').value; body.seed = +$('#seed').value; }
+    const { configs, total } = await api('sample', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const { worlds } = await api('worlds');
+    const savedMap = Object.fromEntries(worlds.map(w => [w.tag, w]));
+    renderCards(configs, savedMap);
+    statusEl.textContent = mode === 'enumerate'
+      ? `showing ${configs.length} of ${total} configs at k=${$('#k').value}`
+      : `${configs.length} sampled configs`;
+  } catch (err) { statusEl.textContent = 'error: ' + err.message; }
+};
+
+$('#loadSaved').onclick = async () => {
+  statusEl.textContent = 'loading saved…';
+  try {
+    const { worlds } = await api('worlds');
+    if (!worlds.length) { statusEl.textContent = 'no rendered worlds saved yet'; cardsEl.innerHTML=''; return; }
+    const configs = worlds.map(w => ({ tag:w.tag, k:w.k, seed:w.seed, config:w.config,
+      offGround: w.offGround.map(o => ({...o, label:(DIMS.find(d=>d.id===o.dimension)||{}).label||o.dimension, exclusive:(DIMS.find(d=>d.id===o.dimension)||{}).exclusive})) }));
+    const savedMap = Object.fromEntries(worlds.map(w => [w.tag, w]));
+    renderCards(configs, savedMap);
+    statusEl.textContent = `${worlds.length} saved worlds`;
+  } catch (err) { statusEl.textContent = 'error: ' + err.message; }
+};
+
+refreshModeUI();
+loadDims();
+</script>
+</body>
+</html>
