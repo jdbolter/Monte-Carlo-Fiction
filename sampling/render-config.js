@@ -46,7 +46,9 @@ loadEnv();
 const SYSTEM = `You are given a "media present": a complete configuration of a society's dominant media, specified across 11 dimensions. Most dimensions sit at GROUND — the same value as our actual present — and a small number are OFF-GROUND, moved to a different value. This configuration was chosen by a random number generator, not by you and not by any person. Your job is to RATIONALIZE it, not to judge or improve it.
 
 Rules:
-- Treat the off-ground moves as fixed facts of this world. Do not add, soften, or substitute changes. Do not drift back toward our consensus present or toward familiar techno-forecast imagery.
+- Treat the off-ground moves as fixed facts of this world: do not substitute them, cancel them, or add further changes of your own, and do not drift back toward our consensus present or familiar techno-forecast imagery.
+- Each dimension is tagged [exclusive] or [emphasis]. For an [exclusive] dimension the named value strictly holds and its alternatives do not exist in this world. For an [emphasis] dimension the value names what PREDOMINATES or is especially important — render it as the dominant mode, not an absolute erasure of the others; rival modes may persist in the background where that is realistic.
+- A value gloss (text after an em dash) explains what a value means; use it and do not contradict it.
 - Find the SINGLE underlying logic or theme under which the off-ground moves cohere into one world — not a list of separate changes, but the institution or condition that makes them one thing.
 - Ground values are our world; do not re-explain them. Spend your words on how the off-ground moves reshape everyday media life, and on the felt texture of the result.
 - Hold valence open. If the world admits both a controlling and a liberating reading, present the tension rather than resolving it. The undecidability is often the story.
@@ -65,13 +67,16 @@ function taskLineForK(k) {
 
 function configLines(sample, dims) {
   const off = [];
+  const gloss = (d, v) => (d.glosses && d.glosses[v] ? ` — ${d.glosses[v]}` : '');
   const lines = dims.map(d => {
     const v = sample.config[d.id];
+    const mode = d.exclusive ? 'exclusive' : 'emphasis';
+    const g = gloss(d, v);
     if (v !== d.ground) {
-      off.push(`${d.label}: ${v} (our world: ${d.ground})`);
-      return `- ${d.label}: ${v}   [OFF-GROUND — our world: ${d.ground}]`;
+      off.push(`${d.label} [${mode}]: ${v}${g} (our world: ${d.ground})`);
+      return `- ${d.label} [${mode}] (${d.description}): ${v}${g}   [OFF-GROUND — our world: ${d.ground}]`;
     }
-    return `- ${d.label}: ${v}   [ground]`;
+    return `- ${d.label} [${mode}]: ${v}${g}   [ground]`;
   });
   return { lines, off };
 }
@@ -84,7 +89,7 @@ export function buildConfigPrompt(sample, dims, { words = 400 } = {}) {
     `The off-ground move${off.length === 1 ? '' : 's'} (this is what makes this world differ from ours):`,
     ...off.map(o => `  • ${o}`),
     '',
-    'The full configuration across all 11 dimensions:',
+    `The full configuration across all ${dims.length} dimensions:`,
     ...lines,
     '',
     `Write a coherent description of this media present in roughly ${words} words of continuous prose (no headings, no lists). Begin in the world, not with a preamble about the exercise.`

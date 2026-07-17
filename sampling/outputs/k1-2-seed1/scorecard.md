@@ -5,15 +5,15 @@ When done: paste this file back into the chat.
 
 | tag | k | off-ground moves | verdict | notes |
 |-----|---|------------------|---------|-------|
-| s1-000 | 2 | attention_unit=congregation (was solitary); fidelity_criterion=to-function (was optical+index-welded) |  |  |
-| s1-001 | 1 | sensory_register=auditory-only (was audiovisual) |  |  |
-| s1-002 | 1 | custody=in-body-mortal (was remote-tenancy) |  |  |
-| s1-003 | 2 | sensory_register=auditory-only (was audiovisual); custody=in-body-mortal (was remote-tenancy) |  |  |
-| s1-004 | 2 | sensory_register=proprioceptive (was audiovisual); provisioning=welfare-entitlement (was advertising-funded) |  |  |
-| s1-005 | 1 | address=posthumous (was broadcast-to-strangers) |  |  |
-| s1-006 | 1 | custody=civic-archive (was remote-tenancy) |  |  |
-| s1-007 | 2 | attention_unit=civic-assembly (was solitary); literacy_floor=none (was read+type) |  |  |
-| s1-008 | 1 | literacy_floor=read+write (was read+type) |  |  |
+| s1-000 | 2 | attention_unit=congregation (was solitary); fidelity_criterion=to-function (was optical+index-welded) | strain |There is no plausible reaoson why collective view and to-function go together (or dont')  |
+| s1-001 | 1 | sensory_register=auditory-only (was audiovisual) | cohere | interesting single premise |
+| s1-002 | 1 | custody=in-body-mortal (was remote-tenancy) | strain | cool idea but needs careful explaining and justification |
+| s1-003 | 2 | sensory_register=auditory-only (was audiovisual); custody=in-body-mortal (was remote-tenancy) |strain  | cool idea but needs careful explaining. This one seems to interpret in body as including on your person. Whereas in body could be a technology implanted in you -- that is more radical. |
+| s1-004 | 2 | sensory_register=proprioceptive (was audiovisual); provisioning=welfare-entitlement (was advertising-funded) |strain  | The problem is that the system reads sensory register as being exclusive. It should be just primary of emphasized. It makes no sense to have ONLY proprioceptive input. Not even a good sci-fi premise.  |
+| s1-005 | 1 | address=posthumous (was broadcast-to-strangers) |strain  | cool idea, but again this cannot be the ONLY address. It needs to be part of a larger more varies media economy. Then its cool |
+| s1-006 | 1 | custody=civic-archive (was remote-tenancy) |cohere  | again here, this cannot be the only form of media storage, just a necessary or culturally accepted part |
+| s1-007 | 2 | attention_unit=civic-assembly (was solitary); literacy_floor=none (was read+type) |strain  | again the system interprets civic-assembly as the ONLY form of attention_unit. This needs to be made primary but not exclusive. |
+| s1-008 | 1 | literacy_floor=read+write (was read+type) | strain | it interprets writing by hand here. Not very interesting. |
 | s1-009 | 2 | resemblance=cartoon (was photorealist); address=posthumous (was broadcast-to-strangers) |  |  |
 | s1-010 | 1 | metering=metered-by-performance (was attention-metered-and-sold) |  |  |
 | s1-011 | 1 | compulsion=initiatory (was optional-but-compulsory-in-fact) |  |  |
