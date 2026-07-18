@@ -1,56 +1,80 @@
-# Monte-Carlo-Fiction
+# Monte-Carlo-Fiction — the world model
 
-This is a testbed for the idea of generating a run of x (>99) narratives consisting of variation on a theme. The narratives might be speculative (design) fictions or more traditional narratives with character development and interaction. The resulting narrative would then be read and analyzed by an LLM.
+*Experimental branch `dev-claude-redesign`. This branch replaced the earlier causal
+event-walking engine with a single unified world model. Everything lives under
+[`sampling/`](sampling/).*
 
-The two active themes are schema-v2 **causal alternate-history** experiments. They support canonical baseline, single-divergence, limited-divergence, naturalistic, and all-counterfactual batches so alternatives can be compared with controls.
+## The idea
 
-See `MONTE_CARLO_STRATEGY.md` for the full design rationale.
+There is **one world model**, and it has two ingredients:
 
-`vr-immersion` contains 47 events and 38 typed facts spanning Barker's panorama through the 2026 Horizon Worlds reversal. `silicon-valley` contains 37 events—including all 28 converted source milestones and nine explicit downstream consequences—governed by 24 typed facts. The schema and design rationale live under [`docs/causal-v2/`](docs/causal-v2/README.md). The former schema-v1 theme folders were removed after their causal replacements became the standard versions; their source data remains available in Git history.
+1. **Changed dimensions** — what is different about this present. A configuration over a
+   table of media-present dimensions (attention, sensory register, resemblance, authorship,
+   provisioning, custody, literacy, compulsion, metering), where some values differ from
+   their real-world "ground" value. A seeded RNG samples these, so difference is guaranteed
+   and escapes our priors.
+2. **Event backstory** — the real historical events that ground those changes, selected from
+   two research-built corpora (immersive-media history and Silicon-Valley/computing history)
+   because they resonate with the changed dimensions.
 
-## Architecture
+A **World** = changed dimensions + event backstory, plus a plain-language `facts` list the
+renderer must honor. Neither half is produced alone. This permanently avoids the old engine's
+problem of converging on reality: difference comes from the dimensions, grounding from events.
 
-Two layers, kept deliberately separate so new themes never require touching engine code:
+`world = changed dimensions + event backstory → rendered as an artifact.`
 
-- **`engine/`** — shared, theme-agnostic. `worldgen.js` dispatches missing/`schemaVersion: 1` themes to the unchanged `selector.js` path and `schemaVersion: 2` themes to `causal-worldgen.js`. The causal path uses typed state, outcome-specific effects, time-window eligibility, explicit divergence policies, and replay validation. Both paths produce structured world JSON for the prose and scene-script renderers; no model calls occur during world generation.
-- **`themes/<id>/`** — one folder per theme. Schema-v1 themes use `milestones.json`; schema-v2 themes use `events.json` plus `state-registry.json`. Both use `theme.config.json` and may supply `framework.json`.
-- **`api/`** — thin HTTP handlers wiring the engine to the web UI (`list-themes`, `generate-worlds`, `render-story`, `render-scene`, `list-worlds`, `list-stories`, `list-scenes`).
-- **`public/`** — the web interface: pick a theme, generate a batch of worlds, render any of them as prose or as a scene script (or both — they're independent per world), browse the library, or clear a theme's worlds and renders together.
-- **`data/worlds/<theme>/`**, **`outputs/stories/<theme>/`**, and **`outputs/scenes/<theme>/`** — generated artifacts, one JSON file per world/story/scene-script.
+## Two interfaces
 
-`vr-immersion` was originally ported from the VR_Speculation repo's pastcasting milestone pool; it is now the first full causal reference theme.
+- **Main app — `npm run main` → http://localhost:3000.** Three tabs: **Generate** worlds
+  (free), **Render** them into artifacts (needs an API key), **Library** to read and judge
+  (cohere / strain / incoherent). This is the primary interface.
+- **Tuning bench — `npm run ui` → http://localhost:4000.** A single-page sample→render→judge
+  tool for iterating on prompts and dimensions. Same underlying renderer as the main app.
 
-## Running it
+## Command line (free unless noted)
 
 ```
-npm run dev          # starts a local server at http://localhost:3000 (auto-increments the port if taken), no dependencies to install
-npm test             # causal-runtime and legacy-compatibility tests
+npm run world -- --k-range 1 2 --n 3 --seed 4      # generate + inspect Worlds
+npm run world -- --k 2 --n 3 --seed 4 --save       # also save to sampling/worlds/
+npm run sample -- --k 2 --n 8                       # just the sampled configurations
+npm run backstory -- --k 2 --seed 7                # backstory selection, with reasons
+npm run render -- --k 2 --n 5 --seed 1 --form found-document          # render (needs API key)
+npm run render -- --k-range 1 2 --n 6 --seed 7 --form scene --dry-run # preview prompt, free
 ```
 
-World generation works immediately with no setup. To render stories or scene scripts, copy `.env.local.example` to `.env.local` and add an `ANTHROPIC_API_KEY`.
+## Rendering
 
-There are also CLI equivalents for batch work, in `scripts/`:
+A renderer consumes a **World** and writes an **artifact**, not an essay. It builds the
+prompt from `world.facts` (plain sentences) + `world.backstory` (real events as lineage),
+forbids the dimension vocabulary, and targets a **form**:
+
+- `found-document` (recommended default — hardest to lapse into analysis), `scene`, `testimony`.
+
+Three tuning levers live in the `SYSTEM` string of `sampling/render-config.js`: **tone** (no
+dystopian default; varied register), **lineage** (backstory is deep history — never depict old
+tech as current), and **grain** (facts are the dominant grain of the culture's media, not
+literal rules for every message). API overload (Sonnet 529s during US hours) is handled by
+retry/backoff, or pass `--model claude-haiku-4-5-20251001`.
+
+## Where things are
 
 ```
-npm run generate -- --theme vr-immersion --count 100          # free, no API key needed
-npm run generate -- --theme silicon-valley --count 100        # free, no API key needed
-npm run render -- --theme vr-immersion --limit 20             # renders un-rendered worlds to prose, costs real API calls
-npm run render-scenes -- --theme vr-immersion --limit 20      # renders un-rendered worlds to scene scripts, costs real API calls
+sampling/
+├── media-present/dimensions.json   dimension table + per-value gloss & worldFact (compile-time artifact)
+├── history/vr.json                 immersive-media backstory corpus (~68 events, 1600s–2026)
+├── history/silicon-valley.json     computing/capital backstory corpus (~56 events, 1909–2024)
+├── sampler.js                      free, deterministic k-targeted sampling / enumeration
+├── backstory.js                    selects grounding events per changed move
+├── world.js                        makeWorld() — assembles the unified World object  ← the model
+├── render-config.js                the renderer: World → artifact (forms, retry, scorecard)
+├── main-server.js + main/          the main app (Generate / Render / Library) on :3000
+├── server.js + public/             the tuning bench (sample→render→judge) on :4000
+├── worlds/                         saved generated Worlds (gitignored)
+└── outputs/                        rendered artifacts (gitignored); scorecard.md is tracked
 ```
 
-## Adding a theme
+## Docs
 
-For schema v2, use `themes/vr-immersion/` or `themes/silicon-valley/` with `docs/causal-v2/` as working examples and specification. The engine still accepts schema-v1 data for compatibility, but no active theme uses it. No registration step—the engine discovers every folder under `themes/` automatically.
-
-## Future applications
-
-The same approach could support many subjects besides technological history:
-
-- **Alternative biographies** — follow a well-known figure through different mentors, education, employment, relationships, geographic moves, successes, and failures. State would describe changing resources, affiliations, reputation, commitments, and opportunities rather than treating personality as fixed destiny.
-- **Political turning points** — explore elections, reforms, revolutions, diplomatic crises, social movements, or wars through choices that change coalitions, legitimacy, institutional capacity, public opinion, and later event eligibility.
-- **Histories of science** — model a discovery as the product of competing theories, instruments, laboratories, funding systems, communication networks, and priority disputes. This could show alternatives in which a result arrives elsewhere, later, under another interpretation, or not at all, without reducing scientific change to a single “great person.”
-- **Institutions and places** — generate alternate histories of a university, laboratory, company, city, region, museum, or government agency as leadership decisions, funding, migration, regulation, and external shocks alter its development.
-- **Cultural and intellectual movements** — examine how artistic schools, literary genres, philosophical traditions, or media forms change through patronage, censorship, translation, new production tools, critical reception, and encounters among particular people and institutions.
-- **Other technological systems** — apply the existing model to fields such as computing, biotechnology, energy, transportation, spaceflight, or communications, especially where standards, regulation, capital, and institutional ownership create several plausible paths.
-
-A subject is especially suitable when it has documented inflection points, multiple defensible outcomes, a manageable set of state variables, and consequences that can be expressed as later requirements, enables, disables, or softer influences. Each new theme should distinguish documented history from historical inference and speculation, preserve sources for its causal claims, and begin with preliminary values that can be revised after batch testing and expert review.
+- [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) — the World object + renderer contract (architecture).
+- [`sampling/BACKSTORY.md`](sampling/BACKSTORY.md) — events-as-backstory + the render-form redesign, with worked examples.
+- [`sampling/CLAUDE.md`](sampling/CLAUDE.md) — operating manual, decision log, open questions.

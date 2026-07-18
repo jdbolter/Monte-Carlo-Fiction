@@ -1,16 +1,16 @@
 {
   "name": "monte-carlo-fiction",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
-  "description": "Monte Carlo narrative generation: a shared engine that generates many structurally distinct alternate-history 'worlds' from a theme's milestone pool, then renders each as a short story.",
+  "description": "Distant-writing world model: sample a space of possible media presents (changed dimensions) and ground each in real historical backstory, producing one World object that many renderers can turn into artifacts.",
   "scripts": {
-    "dev": "node server.js",
-    "sample-ui": "node sampling/server.js",
-    "generate": "node scripts/generate-worlds.js",
-    "render": "node scripts/render-stories.js",
-    "render-scenes": "node scripts/render-scenes.js",
-    "test": "node --test"
+    "sample": "node sampling/sampler.js",
+    "backstory": "node sampling/backstory.js",
+    "world": "node sampling/world.js",
+    "render": "node sampling/render-config.js",
+    "main": "node sampling/main-server.js",
+    "ui": "node sampling/server.js"
   },
   "engines": {
     "node": ">=18"

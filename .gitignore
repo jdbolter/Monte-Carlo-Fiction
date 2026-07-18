@@ -3,28 +3,9 @@ node_modules/
 .DS_Store
 *.log
 
-# Generated worlds are fully reproducible from theme + seed (worldgen.js
-# uses a deterministic RNG) — no need to version them. (Ignoring contents
-# one level down, not the directory itself, so .gitkeep can survive.)
-data/worlds/*/*
-!data/worlds/*/.gitkeep
-
-# Rendered stories cost real API calls and aren't reproducible (model
-# output varies run to run), but they're still generated artifacts, not
-# source — keep them out of git too. Copy specific ones out manually if
-# you want to preserve/share a particular story.
-outputs/stories/*/*
-!outputs/stories/*/.gitkeep
-
-# Same reasoning for rendered scene scripts (visual-render layer).
-outputs/scenes/*/*
-!outputs/scenes/*/.gitkeep
-
-# Sampling regime (redesign branch): rendered worlds are costly, non-reproducible
-# model output — ignore them like outputs/stories. worlds.md is regenerated from
-# those JSONs, so ignore it too. But scorecard.md holds *judgments* (research
-# data, not a generated artifact), so keep it tracked. Copy out any specific
-# rendered world worth preserving.
+# Generated worlds and renders — reproducible from seed, or costly one-off model output;
+# not source. Judgments (scorecard.md) ARE tracked so verdicts get versioned.
+sampling/worlds/*.json
 sampling/outputs/*/*.json
 sampling/outputs/*/worlds.md
 !sampling/outputs/*/scorecard.md

@@ -1,177 +1,73 @@
-# Monte-Carlo-Fiction — Agent Instructions
+# Monte-Carlo-Fiction — agent operating manual
 
-This file is the operating manual for an LLM agent working on this repo. Read it at the start of every session. Keep it current — when the architecture changes, update this file in the same turn.
+Read this at the start of a session. Branch `dev-claude-redesign`.
 
----
+## What this project is now
 
-## What this project is
+One **unified world model** for distant-writing / speculative media presents. The earlier
+causal event-walking engine has been retired (it converged on reality). A World has two
+ingredients — **changed dimensions + event backstory** — and is rendered into an **artifact**
+by a library of forms. Full architecture in [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md).
 
-A testbed for generating a large run (>99) of narratives that vary on a shared theme, so the resulting set can be read and analyzed as a batch rather than one story at a time. See `MONTE_CARLO_STRATEGY.md` for the original design rationale (JSON-first world state, Monte Carlo sampling over a milestone pool, a validated world set before spending money on prose).
+Do not reintroduce a standalone dimension-sampler-without-history or a standalone causal
+forward-walk; they exist only fused, as one World.
 
-This is explicitly an **alternate-histories** experiment, not merely a real-history dramatization tool. Both active themes use schema v2, with explicit canonical outcomes and selectable control policies (`baseline`, `single`, `limited`, `naturalistic`, and `all-counterfactual`). Schema-v1 dispatch remains supported for compatibility, but no active theme uses it.
+## Layout (everything under `sampling/`)
 
-This is a sibling project to `/Users/jaybolter/Documents/GitHub/VR_Speculation` and its Obsidian vault at `/Users/jaybolter/Documents/VR-Speculation` — several techniques here (the trajectory-vector milestone selector, the single-shot prose-rendering call) were adapted from that project's `pastcasting` and `fiction` tools, but reworked to run headlessly and cheaply across many runs instead of one live user session.
+- `media-present/dimensions.json` — dimension table; each value carries a `gloss`
+  (designer-facing) and a `worldFact` (render-facing plain sentence).
+- `history/vr.json`, `history/silicon-valley.json` — research-built backstory corpora (real
+  events + tags). The only event source now.
+- `sampler.js` — free, deterministic, seeded, k-targeted sampling + enumeration.
+- `backstory.js` — selects grounding events per changed move (provisional `DIMENSION_TAG_MAP`,
+  balanced across moves, recency-biased, deduped).
+- `world.js` — `makeWorld(config, dims, opts)` assembles the World; `generateWorlds(...)` + CLI.
+- `render-config.js` — the renderer: World → artifact. Builds the prompt from `world.facts` +
+  `world.backstory`, forbids the dimension vocabulary, targets a `--form`
+  (found-document / scene / testimony). Retry/backoff, `--resume`, scorecard.
+- `main-server.js` + `main/` — the main app (Generate / Render / Library) on :3000.
+- `server.js` + `public/` — the tuning bench (sample→render→judge) on :4000.
 
----
-
-## Architecture: two layers, kept strictly separate
-
-**Layer 1 — `engine/worldgen.js` (structured, free, fast, no model calls).**
-Dispatches by theme schema version. Missing/`schemaVersion: 1` themes retain the legacy milestone selector and always sample a `branch_alternative`; `schemaVersion: 2` themes use the causal selector, whose chosen outcomes mutate typed state and control later event eligibility. Both paths use seeded RNG (`engine/selector.js`, `makeRng`) so a given theme + seed reproduces the same world — this is why generated worlds are gitignored (see below).
-
-**Layer 2 — one model call per world, costs money. Two sibling renderers, same input, different output shape:**
-- `engine/render-verbal.js` renders a world as one continuous-prose story at the active theme's configured length (900–1,100 words for both active themes).
-- `engine/render-visual.js` renders a world as a scene-by-scene animation script: one scene per milestone step, each with a `visualDirection` (a terse prompt for a future image/video generation pass) and a `narration` line (a voiceover script for a future TTS pass), plus one `styleGuide` string anchoring the whole world's visual language. Still text-only output — no image/video/audio generation exists yet; this is the structured intermediate a future visual-rendering pipeline would consume. Added 2026-07-09 as a prototype; see Known state below.
-
-Both renderers send only that world's specific chosen path (not a full research-wiki dump — that was the old, much more expensive `VR_Speculation/api/fiction.js` pattern) plus a short generic style primer and the theme's optional `framework.json` primer, adapted per output format.
-
-Never blur these two layers. Worldgen should never make a network call; render should never contain selection/scoring logic. Adding a new theme should never require touching any engine file — themes only supply data and config.
-
----
-
-## Directory structure
-
-```
-Monte-Carlo-Fiction/
-├── engine/                   shared, theme-agnostic code
-│   ├── selector.js            MilestoneSelector — trajectory-vector scoring, seeded RNG, branch sampling
-│   ├── causal-state.js        typed facts, requirements, effects, state snapshots for schema v2
-│   ├── causal-selector.js     time-window eligibility, causal selection, divergence policies for schema v2
-│   ├── causal-validate.js     static v2 theme checks + per-world causal replay validation
-│   ├── causal-worldgen.js     schema-v2 world construction
-│   ├── theme-loader.js        version-aware theme-folder loader
-│   ├── worldgen.js            schema dispatch + generateWorld / generateWorldBatch / persistence
-│   ├── render-verbal.js       buildRenderPrompt / renderStory / save|list|loadStory — prose story renderer; optional { extrapolate } continues ~10y past the world's end, see Known state
-│   ├── render-visual.js       buildScenePrompt / renderSceneScript / save|list|loadSceneScript — scene-script renderer (visualDirection + narration per milestone, prototype); optional { extrapolate } appends one invented scene
-│   └── validate.js            diversityReport — path diversity, milestone coverage, final-milestone convergence, branch choices, axis stats
-│
-├── themes/
-│   ├── _template/              retained schema-v1 compatibility template
-│   ├── vr-immersion/           active schema-v2 theme (47 events, 38 typed facts, six axes)
-│   └── silicon-valley/         active schema-v2 theme (37 events, 24 typed facts, six axes)
-│       ├── theme.config.json    axes, start event, divergence policy, worldgen tuning, render settings
-│       ├── events.json          time-windowed events with canonical/counterfactual outcomes and effects
-│       ├── state-registry.json  controlled typed facts and axis definitions
-│       └── framework.json       short lineage/causal-principle primer injected into render calls
-│
-├── api/                       thin HTTP handlers (Vercel-handler-shaped: (req,res) => ...)
-│   ├── list-themes.js          GET  — every theme under themes/ except _template
-│   ├── generate-worlds.js      POST { themeId, count, startSeed? } — batch worldgen + diversity report
-│   ├── render-story.js         POST { themeId, worldId } — calls the model, prose renderer
-│   ├── render-scene.js         POST { themeId, worldId } — calls the model, scene-script renderer
-│   ├── list-worlds.js          GET  ?theme= — saved worlds, flagged with hasStory / hasSceneScript
-│   ├── list-stories.js         GET  ?theme= — saved stories
-│   └── list-scenes.js          GET  ?theme= — saved scene scripts
-│
-├── public/                    static web frontend (vanilla JS, no build step)
-│   ├── index.html              three views: theme picker, generate, library
-│   ├── css/style.css
-│   └── js/app.js               fetch calls into api/, renders diversity report + world cards (render story / render scenes) + reader modal (openStoryReader / openSceneReader)
-│
-├── server.js                  zero-dependency local dev server (Node built-ins only)
-│                                serves public/, routes /api/<name> to api/<name>.js,
-│                                auto-increments port on EADDRINUSE (tries up to 20 ports above the default)
-│
-├── scripts/                   CLI equivalents of the web UI, for batch work
-│   ├── generate-worlds.js      --theme --count --start-seed — free, wraps engine/worldgen.js directly
-│   ├── render-stories.js       --theme --limit --world-id — renders un-rendered worlds, wraps engine/render-verbal.js
-│   └── render-scenes.js        --theme --limit --world-id — renders un-rendered scene scripts, wraps engine/render-visual.js
-│
-├── data/worlds/<themeId>/      generated world JSON, one file per run — gitignored (reproducible from seed)
-├── outputs/stories/<themeId>/  rendered story JSON, one file per run — gitignored (not reproducible; copy out manually to keep one)
-├── outputs/scenes/<themeId>/   rendered scene-script JSON, one file per run — gitignored, same reasoning as outputs/stories/
-│
-├── test/                       Node test suite: causal runtime/themes + isolated schema-v1 compatibility
-├── MONTE_CARLO_STRATEGY.md    original design doc / phase plan
-├── README.md                  quick-start + architecture summary
-└── CLAUDE.md                  this file
-```
-
----
-
-## Running it
+## Running
 
 ```
-npm run dev
-npm test
+npm run world -- --k-range 1 2 --n 3 --seed 4      # generate + inspect Worlds (free)
+npm run backstory -- --k 2 --seed 7                # inspect backstory selection (free)
+npm run render -- --k 2 --n 1 --seed 1 --form found-document   # render (needs ANTHROPIC_API_KEY)
+npm run render -- ... --dry-run                    # preview the prompt, spend nothing
+npm run main                                        # main app on :3000
+npm run ui                                          # tuning bench on :4000
 ```
 
-No `npm install` needed — `server.js` and everything under `engine/`/`api/` use only Node built-ins (`fetch` is global in Node ≥18). Starts at `http://localhost:3000`; if that port is taken, it automatically tries higher ports (up to 20 above) and prints which one it landed on.
+World generation is free and deterministic (seed + table + corpora reproduce a World). Only
+rendering costs API calls; Sonnet 529-overloads during US working hours — the renderer retries,
+or pass `--model claude-haiku-4-5-20251001`.
 
-World generation works immediately with no setup — it's the free, deterministic layer. To render stories or scene scripts, copy `.env.local.example` to `.env.local` and set `ANTHROPIC_API_KEY`. `server.js`, `scripts/render-stories.js`, and `scripts/render-scenes.js` each read `.env.local` themselves (no dotenv dependency). `.env.local` is the deliberate convention here (not plain `.env`) to match the sibling `VR_Speculation` repo, which uses `.env.local` because it deploys via Vercel and `vercel dev` auto-loads that filename — this repo doesn't use `vercel dev`, but the naming was kept consistent across both projects anyway.
+## The render prompt — three tuning levers (in `render-config.js` `SYSTEM`)
 
-`npm run render-scenes -- --theme <id> --limit <n>` renders scene scripts from the CLI. The web UI (`npm run dev`) also has per-world "Render story" and "Render scenes" buttons on the Generate screen, and separate "Read story" / "View scenes" actions in the Library — both formats render independently per world.
+- **tone** — no dystopian default; varied, lived-in register.
+- **lineage** — backstory is deep history; never depict old technology as current.
+- **grain** — world-facts are the dominant grain of the culture's media, not literal rules for
+  every message (news/weather still arrive normally).
 
-The Library's "Clear everything" action is a full per-theme reset: it deletes that theme's saved worlds, rendered stories, and rendered scene scripts together. It leaves `.gitkeep` files and the directory structure intact.
+Forms live in the `FORMS` map; `found-document` is the default and the strongest anti-jargon form.
 
----
+## Key docs
 
-## Theme schemas
+- `sampling/WORLD-CONTRACT.md` — the World object shape + renderer contract.
+- `sampling/BACKSTORY.md` — events-as-backstory + render-form redesign (worked examples).
+- `sampling/CLAUDE.md` — detailed notes, decision log, open questions.
 
-Schema v1 (see `themes/_template/README.md` for the authoritative legacy version):
+## Open threads
 
-- **`theme.config.json`** — `axes` (3-5 trajectory dimension names meaningful to that theme's tensions), `categoryField` (default `"category"`), `startMilestoneId`, `stepsPerWorld`, `worldgen` tuning (`topN`, `branchPointBonus`, `crossCategoryBonusEvery`), `render` (model, maxTokens, minWords/maxWords).
-- **`milestones.json`** — array of inflection points: `id`, `date`, `label`, `description`, `category`, `is_branch_point`, `trajectory_contribution` (keyed by that theme's `axes`). Branch points additionally carry `branch_alternatives` (`id`, `description`, `plausibility`, `requirement`, `downstream_effects`) and optionally `era_constraints` (`available`/`not_available`, used only for prose plausibility, not scoring).
-- **`framework.json`** (optional) — `lineages`, `causal_principles`, `voice_guidance`. Kept deliberately short; this is not a place to paste a full research wiki.
+- **Render quality is still being tuned** (tone/lineage/grain) on the :4000 bench — the levers
+  above are first-pass. The backstory `DIMENSION_TAG_MAP` and event tags are also provisional.
+- **Renderers as a library**: found-document/scene/testimony are the first entries; essay,
+  video/animation script, prose story come later. All consume the one World object.
 
-Adding a schema-v2 theme: copy one of the two active themes, replace its event/state data, and follow `docs/causal-v2/README.md`. The `_template` folder remains only as a schema-v1 compatibility example. No registration step — `engine/theme-loader.js` discovers every folder under `themes/` except those starting with `_`.
+## House rules
 
-Schema v2 uses `schemaVersion: 2`, `startEventId`, ISO time windows, `events.json`, and `state-registry.json` instead of `milestones.json`. See `docs/causal-v2/README.md` for the design contract and `themes/vr-immersion/` plus `themes/silicon-valley/` for active reference implementations. Its output retains legacy renderer fields while adding `chosenOutcome`, `occurredAt`, `timeWindow`, state snapshots, applied effects, and eligibility traces.
-
----
-
-## Known state / open items
-
-- **VR causal schema activated 2026-07-14, expanded 2026-07-15, and promoted to the standard `vr-immersion` ID 2026-07-15.** The theme has 47 events, 38 typed facts, six trajectory axes, and 14 maximum steps spanning 1787–2026. It contains all 42 converted milestone records plus the five explicit consequence events created for the original pilot. The former schema-v1 source was removed from the live theme directory and remains available in Git commit `ad6c18a`; event `sourceRefs` point there. The translations, added facts, and soft causal influences remain provisional and no new hard `disables` were inferred for the imported events.
-  - `single` and `limited` use a seeded canonical planning pass to distribute divergence opportunities across the timeline; causal changes may remove later planned limited-mode forks, but the configured one-to-three bounds are enforced. Causal trajectory alignment is normalized by selected-path length so cumulative scores cannot overpower time decay; tuning remains `topN: 5` and `timeDecayWeight: 20`. Post-expansion, a 100-seed default batch produced 100 distinct event chains and outcome paths, sampled 41/47 events, spread first divergence across 17 dates, and ended across 16 final milestones. A 1,000-seed audit sampled 45/47 events. `npm test` covers all policies plus isolated schema-v1 dispatch compatibility. Causal claims and numerical weights remain provisional adaptations of existing milestone prose, not newly source-audited research.
-
-- **Silicon Valley causal theme added and promoted to the standard `silicon-valley` ID 2026-07-15.** It contains all 28 converted milestone records and all 24 counterfactual alternatives, plus nine explicit consequence events. The former schema-v1 source was removed from the live directory and remains available in Git commit `98beccd`; event `sourceRefs` point there. Its 24 typed facts and six axes (`capital`, `founder_power`, `openness`, `scale`, `institutionalization`, `valley_concentration`) support hard direct dependencies and soft uncertain influences. Numerical effects, weights, the two added axes, and the nine consequence-event interpretations are preliminary adaptations of the existing local evidence, not newly researched claims.
-  - Default mode is limited divergence (one to three) with 12 maximum steps, `topN: 9`, and `timeDecayWeight: 20`. The wider shortlist prevents important reversal events from being excluded solely because their vector opposes the accumulated boom trajectory. `dotcom-crash-2000` uses `baseWeight: 6` as editorial salience: at the ordinary 1.25 weight it was eligible but absent from a 1,000-seed sample. A first-class event-salience field would be cleaner if this distinction becomes common across themes.
-  - A 100-seed default batch produced 100 distinct event and outcome paths, sampled 36/37 events and 23/24 counterfactual outcomes, spread first divergence across 18 dates, and ended at 10 final milestones; 61/100 ended at the deliberate `genai-boom-2022-2024` convergence point. A 1,000-seed audit produced 1,000 distinct outcome paths and 998 event chains, sampled all 37 events and all 24 counterfactual outcomes, spread first divergence across 19 dates, and ended at 14 final milestones. All five policies and every generated causal transition replay-validated. Theme-specific tests also lock the legacy-content preservation and require each explicit consequence to record its enabling cause.
-
-- **Diversity summary simplified 2026-07-15.** The Generate screen formerly displayed `unique endings` and `repeated-ending rate`. For schema-v2 worlds, "ending" was keyed by the entire accumulated terminal state, so a batch could report 0% repeated endings even when every world ended at the same named event — observed directly with 20 causal-pilot worlds all ending at Genie in 2024. Those two fields and the old repeated-ending warning were removed from `diversityReport`. The summary now reports worlds generated, unique world paths, milestone-pool coverage, and the most common final milestone as a literal count (for example, `20/20 end at Generative World-Model Fork`). `finalMilestoneDistribution` ignores selected outcome and terminal state by design. The richer causal terminal-state diagnostics remain available in the report for later analysis but are no longer presented as narrative endings or printed by the CLI.
-- **`vr-immersion` began as a 17-of-32 partial port and was expanded to 42 milestones on 2026-07-11.** The current pool adds immersive-spectacle prehistory, a computer-graphics bridge, and a 2013–2026 Oculus/Meta/world-model arc; it is not identical to the sibling source's 32-point set. Before that expansion, batches converged heavily on Apple Vision Pro. After the expansion and selector pacing fix, a 100-seed legacy run measured 94% convergence on `horizon-worlds-reversal-2026`. The report now expresses convergence as the most common final milestone and its literal world count rather than the removed repeated-ending percentage.
-- **`engine/selector.js`'s scoring had no notion of time, fixed 2026-07-13.** Reported symptom: `vr-immersion` worlds routinely jumped straight from an 1860s milestone to 2012 or 2024, skipping almost the entire 19th/early-20th-century pool. Root cause was two compounding gaps, both theme-agnostic (so this affected every theme, not just `vr-immersion`): (1) `_score()` was a pure trajectory-vector dot product with zero penalty for how many years away a candidate sat, and the cumulative (non-decaying) trajectory vector let a thematically-reinforcing cluster of milestones — `vr-immersion`'s 2012-2024 consumer-VR run, whose `trajectory_contribution` vectors all point the same direction — dominate scoring over decades of closer, more modestly-aligned candidates once the trajectory leaned that way even slightly; (2) `selectNext()`'s final pick among the top-N shortlist was a **uniform** random draw, not weighted by score at all, so a candidate that only barely made the shortlist had identical odds to the top-ranked one — meaning even a correctly time-penalized distant milestone would still win exactly as often as the nearby favorite, as long as it stayed in the top N.
-  - **Fix part 1 — time-decay penalty in `_score()`.** Added a term proportional to how many "expected step spans" a candidate's year-gap represents beyond one free span, where the expected span (`expectedYearsPerStep`, computed in the constructor) is that theme's actual date range divided by its `stepsPerWorld` — so no theme needs manual tuning to get a sane pace. Weight is `worldgen.timeDecayWeight`, default `DEFAULT_TIME_DECAY_WEIGHT = 6`, chosen so a ~150-year jump roughly cancels the ~25-30 dot-product scores that were pulling worlds toward the 2012+ cluster in practice.
-  - **Fix part 2 — rank-weighted (not uniform) selection in `selectNext()`.** Weight is `(shortlistSize - rank)^rankWeightExponent`, theme-tunable via `worldgen.rankWeightExponent`, default `DEFAULT_RANK_WEIGHT_EXPONENT = 2`. Tested exponents 1/2/3 against 100 seeds of `vr-immersion`: 2 gave a meaningfully tighter jump distribution than 1 (avg worst-jump-per-world 94y → 88y, absolute worst case across 100 worlds 163y → 133y) with no measurable diversity cost (95/100 unique milestone chains either way); 3 barely improved jumps further but did cost diversity (86/100 chains, fewer unique endings) — not a universal constant, worth re-checking if a theme's diversity report looks off after a milestone-pool change.
-  - **Verified**: re-ran the same 100-seed batch before/after each fix and traced individual worlds' step-by-step score breakdowns to confirm the mechanism (not just correlation) — `engine/validate.js`'s `diversityReport` still reports 95% chain diversity on `vr-immersion` post-fix, so this didn't come at the cost of run-to-run variety. `silicon-valley` re-checked too (shared engine code) — pacing stayed tight and plausible, no regression.
-- **`render-verbal.js`'s prose style was too allusive/elusive, fixed 2026-07-13.** Reported symptom: stories read as "hip sci-fi" — evocative but assumed the reader already knew the real history behind each milestone (e.g. alluding to "Sutherland's wireframe cubes" or "the smell team" with no grounding), and endings only ever implied the world's meaning through a closing image, never stated it — the prior style primer explicitly said "end on an image, not a thesis." `buildRenderPrompt`'s `taskLines` and `DEFAULT_STYLE_PRIMER` rewritten with two changes: (1) every milestone must now be grounded in plain, legible terms as it's introduced ("what it actually was and why it mattered"), not just alluded to; (2) restructured from "dramatize → image" into "dramatize → state the thesis plainly (a sentence or two, in the narrator's or a character's own words, what this world's trajectory adds up to) → then close on one image that lands with that meaning already established," so the closing image no longer has to carry the whole meaning by itself. Same restructure applied to the `extrapolate` variant (the thesis now lands at the end of the dramatized portion, immediately before the invented coda). Verified by re-rendering the same world (`vr-immersion-0081`) both with and without `--extrapolate` and reading the output directly, plus one `silicon-valley` world for cross-theme generalization — all three produced a clearly stated thesis paragraph followed by a landing final image, each milestone glossed in plain terms, word counts within range. Not yet re-rendered across a full batch (only spot-checked 3 renders), and `render-visual.js`'s `narration`/`visualDirection` fields were not touched — they may have the same allusiveness issue but weren't in scope for this fix.
-  - **Tightened same day**: the first version asked the thesis to be said "plainly," but the model kept writing it in the same literary-compression register as the surrounding prose — e.g. "image scaled to everyone, touch given to almost no one," a poetic parallelism standing in for an explanation rather than actually explaining anything. `THESIS_INSTRUCTION` (a shared string interpolated into both the extrapolate and non-extrapolate `taskLines`) now explicitly calls for a register shift to plain analytical prose for just that one sentence, with a worked good/bad contrast pair embedded in the instruction itself ("prefer 'The emphasis fell on visual fidelity, developed for the largest possible audience, while technologies for the other senses...were left undeveloped' over a compressed line like 'image scaled to everyone, touch given to almost no one'"), plus an explicit "return to the story's normal register" cue immediately after so the shift doesn't bleed into the closing image. Re-verified on the same two worlds (`vr-immersion-0081`, `silicon-valley-0002`) — both now produce a thesis sentence that reads as genuine explanation ("The pattern here is that visual fidelity was cultivated for mass audiences because cinema had already trained a market to want stereoscopic images..."; "The throughline is this: at two separate junctures, seventy years apart, capital and talent...were retained inside existing institutions...rather than distributing control") rather than compressed imagery.
-  - **Milestone grounding tightened 2026-07-14**: the shorter instruction to say "what it actually was and why it mattered" still allowed the model to substitute a descriptive allusion for an explanation, especially in the longer 900-1100-word causal-pilot stories. `MILESTONE_GROUNDING_INSTRUCTION` now makes grounding a separate hard requirement: before narrating each milestone's consequence, use one or two complete plain-language sentences to explain what the innovation/institution/event physically or operationally was, how it basically worked or what a person experienced, and what it made newly possible. Unfamiliar terms and acronyms must be explained on first use; a name, date, or evocative trait does not count. The supplied path remains authoritative, and the model is explicitly forbidden from inventing unsupported mechanisms, sensory effects, performance claims, or capabilities. Applied to both ordinary and extrapolated prose prompts; `render-visual.js` remains unchanged. Prompt-shape test added; not yet verified with another paid live render.
-- **No character-simulation layer yet** (`MONTE_CARLO_STRATEGY.md` Phase 5/6 — running characters through validated worlds, then cross-layer analysis). Only world generation and single-world prose rendering exist so far.
-- **No batch-render or "render all" UI action yet** — the web UI renders one world (and one format — story or scenes, chosen per click) at a time; rendering a large batch currently means clicking through each world card individually.
-- **Generated data is gitignored by design.** `data/worlds/*/*` and `outputs/stories/*/*` are excluded (with `!.../\.gitkeep` exceptions so the folder structure survives a fresh clone) because worlds are deterministically reproducible from theme + seed, and stories are one-off model outputs, not source. If a specific rendered story is worth keeping/sharing, copy it out of `outputs/stories/` into a location that isn't gitignored.
-- **`silicon-valley` is the first non-VR theme** (per `MONTE_CARLO_STRATEGY.md`'s "Immediate Next Steps"), added 2026-07-04. Counterfactual history of Silicon Valley from Lee de Forest's vacuum tube (1913) to the generative-AI investment surge (2024) — 28 milestones, 19 branch points, `axes: [capital, founder_power, openness, scale]`. Sourced from Michael Houck's "The Entire History of Silicon Valley" (venture-capital/company throughline) and Steve Blank's "The Secret History of Silicon Valley" (WWII/Cold War military-university origin story). `framework.json` frames the whole theme as tension between two lineages — the Terman model (military-funded, institutional, top-down) and the garage-founder model (individual risk-taking, bottom-up) — and asks render prose to let voice register whichever lineage a given world's path leans toward.
-  - **Pilot batch run 2026-07-09** (`npm run generate -- --theme silicon-valley --count 20`): 100% unique milestone chains. Terminal milestone `genai-boom-2022-2024` was originally not a branch point, so 17/20 worlds converged there identically — added two branch alternatives to it plus a second alternative each to three other late-era branch points in the former schema-v1 data (retained in Git commit `98beccd`). After the fix: four unique endings and 18/20 worlds still landed on the deliberate present-day convergence point. Decision: accepted, not pursued further.
-  - **Found and fixed a real bug in `engine/validate.js` while investigating this**: the repeated-ending check keyed terminal worlds by `terminalProfile.milestoneId` alone, ignoring `chosenAlternative` — so two worlds that reached the same milestone but diverged into different branch content were wrongly counted as identical endings. Fixed by keying on `milestoneId::chosenAlternative.id` when the terminal step is a branch point. This affects diversity reporting for every theme, not just `silicon-valley` — worth knowing if past diversity reports (including the `vr-immersion` ~83% figure above) are revisited, since that number was measured before this fix and may shift slightly on re-run.
-- **`engine/render-visual.js` is a new prototype layer, added 2026-07-09.** First step toward an eventual animation pipeline (`data/worlds/` → scene script → some future image/video/TTS generation stage, none of which exists yet). Sibling to `render-verbal.js`, not a replacement — old file renamed to `engine/render-verbal.js` in the same change to make the two-renderer split explicit. Output schema per world: `{ styleGuide, scenes: [{ milestoneId, visualDirection, narration, pacingSeconds }] }`, one scene per milestone step, in order. `visualDirection` and `narration` are deliberately separate fields (concrete/machine-facing vs. spoken/TTS-facing registers) rather than one blended paragraph, since they're expected to feed different downstream generators later. Validated against `silicon-valley-0001` and `-0002` (5/5 scenes each, correctly reflecting each world's branch alternatives, e.g. Terman staying east coast, the 1978 tax cut failing) — but only 2 worlds total, not stress-tested across a full batch or edge cases.
-  - **Fixed 2026-07-10: model output is no longer parsed as raw JSON text.** The original approach (ask the model to hand-format a JSON blob, strip code fences, `JSON.parse` it) broke in production — an unescaped quote inside a `narration`/`visualDirection` string produced `Expected ':' after property name` parse errors. Replaced with a forced Anthropic tool-use call (`SCENE_TOOL` / `emit_scene_script` in `render-visual.js`, `tool_choice: { type: 'tool', name: ... }`): the API parses the structured output itself and returns `tool_use.input` as an already-valid object, so this whole class of malformed-JSON bug is no longer possible. This also surfaced a second, previously-masked bug: the per-world token budget (`render.visualMaxTokens || (800 + steps*300)`) was too tight for tool-use's more verbose output shape — responses were hitting `stop_reason: "max_tokens"` mid-array, and the API silently drops an incomplete top-level field (`scenes`) rather than erroring, which surfaced as `Expected N scenes, got 0`. Budget raised to `1500 + steps*700` (a 5-step world measures ~2250 output tokens in practice); re-validated against three worlds across both themes (`silicon-valley-0003`, `-0007`, `vr-immersion-0001`, 5/6/5 scenes respectively) with zero parse failures.
-- **Web UI and `api/` wiring for scene scripts added 2026-07-09**, same day as `render-visual.js` itself. New routes `api/render-scene.js` (POST, mirrors `render-story.js`) and `api/list-scenes.js` (GET, mirrors `list-stories.js`); `api/list-worlds.js` now also flags `hasSceneScript`. Generate screen has separate "Render story" / "Render scenes" buttons per world card; Library screen has separate "Read story" / "View scenes" actions (each disabled if that format hasn't been rendered for that world) and a new `openSceneReader` reader-modal view (style guide + per-scene visual/narration blocks) alongside the existing `openStoryReader` (renamed from `openReader`). Verified end-to-end via the API directly (render, list, flag-propagation all confirmed working); the actual browser rendering of the new buttons/modal has not been visually checked in-browser, only via HTML/JS content inspection.
-- **Extrapolation past a world's last milestone — prototyped 2026-07-11, promoted into the engine 2026-07-12.** The idea: after rendering a world's real/counterfactual path, continue the narrative roughly 10 years further into events the model invents itself, disciplined so it doesn't drift into generic sci-fi. First tested as a standalone one-off (`scripts/experiment-extrapolation.js`, run against `vr-immersion-0001`, saved at `outputs/experiment-extrapolation-vr-immersion-0001.json`) with a two-part system prompt: dramatize the given path, then invent a coda constrained to follow from the world's `trajectoryDescription` and the `downstream_effects` already attached to chosen branches. That test result held up on review — the invented coda picked up specifically on the world's Genie-class generative-world-model milestone rather than inventing an unrelated technology, and closed on an image that rhymed with the opening milestone (Barker's 1788 panorama). One craft issue surfaced: the model also invented new geographic settings (Lagos, Lahore) that weren't in the given path — judged undesirable, whereas inventing new named characters was judged fine.
-  - **Promoted into `engine/render-verbal.js` and `engine/render-visual.js` as an opt-in `options.extrapolate` parameter** (default `false`, fully backward-compatible — existing calls with no options are unaffected). `buildRenderPrompt(theme, world, { extrapolate, extrapolationYears, extrapolationWords })` and `buildScenePrompt(theme, world, { extrapolate, extrapolationYears })` both accept it; `renderStory` / `renderSceneScript` pass it through and record `extrapolated` / `extrapolationYears` on the saved output. Defaults: 10 years, 150 words (verbal only — visual has no word budget, it appends one scene).
-  - **The geography constraint from the review above is now hard-coded into the prompt itself**, alongside the pre-existing "no unrelated future technology" constraint: the invented continuation may not introduce a new geographic setting beyond what the given path already established, but new named characters are explicitly permitted. Applies to both renderers.
-  - **Visual renderer shape**: extrapolation adds exactly one additional scene (not a fractional word budget, since scenes are the visual renderer's unit) with `milestoneId` set to `<lastMilestoneId>__extrapolated` and a new `isExtrapolated` boolean field (now required on every scene in `SCENE_TOOL`'s schema, `false` for real-milestone scenes). `renderSceneScript`'s token budget and scene-count validation both switched from `world.steps.length` to a `totalScenes` value that accounts for the extra scene.
-  - **CLI wiring**: `node scripts/render-stories.js --theme <id> --world-id <id> --extrapolate [--extrapolation-years <n>]` and the equivalent on `scripts/render-scenes.js`. Verified by dry-running `buildRenderPrompt` / `buildScenePrompt` against `vr-immersion-0001` with `extrapolate: true` and `false` (no API calls) — confirmed the geography/character constraints only appear in extrapolate mode, the scene count instruction correctly goes from 6 to 7, and the extrapolated-scene milestoneId placeholder renders correctly. Not yet verified against a live model call with the new prompt wording (the original validated run predates this promotion and used slightly different, less constrained prompt text).
-  - **Wired into `api/render-story.js`, `api/render-scene.js`, and the web UI, 2026-07-12.** Both API routes now read `extrapolate` / `extrapolationYears` off `req.body` and pass them straight through as the renderer's options object. `public/js/app.js`'s `worldCard()` (Generate screen) grew an "Extrapolate ~10y" checkbox per world card, shared between that card's "Render story" and "Render scenes" actions; it's read at click time and sent in the POST body, then disabled after the first render for that card (extrapolation, like rendering itself, only applies once — re-rendering isn't supported). The reader modal (`openStoryReader` / `openSceneReader`) shows an "extrapolated +Ny" badge in the meta line when `story.extrapolated` / `sceneScript.extrapolated` is true, the invented scene in a scene-script reader is labeled "invented continuation" in place of a date/milestone, and the Library grid's tag row appends `+Ny` to the word/scene count tag for already-rendered extrapolated items. Verified by syntax-checking all changed files and booting `server.js` to confirm `index.html`, `js/app.js`, and `/api/list-themes` still serve correctly; the checkbox's actual in-browser behavior has not been visually clicked through.
-  - **Note**: `api/list-worlds.js`'s `hasStory` / `hasSceneScript` flags don't carry extrapolation info, so a world card on the Generate screen can't show whether an *already*-rendered story was extrapolated before you click into it — only the reader modal and Library screen (which load the full story/sceneScript object) can. Not fixed; low priority since the checkbox itself already goes inert after first render.
-  - **`scripts/experiment-extrapolation.js` has been deleted** (2026-07-12) now that the CLI flags above supersede it. The original validated output JSON at `outputs/experiment-extrapolation-vr-immersion-0001.json` was left alone as a record of the pre-promotion prompt wording and result.
-- **Runaway-length guards added to both renderers, 2026-07-13**, after a live report of scene scripts overshooting their expected count (e.g. "expected 6 scenes, got 60+") — not reproduced directly, but traced to a real gap: the raised token budget from the tool-use fix above (see 2026-07-10 entry) gave a degenerate model response room to loop past the correct scene count, since the `scenes` array had no hard length bound in its JSON schema.
-  - **`render-visual.js`**: `SCENE_TOOL` is now built per-call by `buildSceneTool(totalScenes)` instead of being a static top-level constant, so `scenes` can carry `minItems`/`maxItems` both pinned to that world's exact expected count (`world.steps.length`, or `+1` when `extrapolate` is on). Also added a direct `data.stop_reason === 'max_tokens'` check before parsing the tool_use block, so a truncated response throws a clear "was truncated" error instead of being inferred after the fact from a scene-count mismatch.
-  - **`render-verbal.js`**: had no equivalent cap at all — prose has no array to bound, so nothing previously caught a story that ran on past its requested word count. Added the same `stop_reason === 'max_tokens'` check, plus a word-count sanity bound (`wordCount > maxWords * 1.5` throws) to catch a story that finished cleanly but still overshot well past `minWords`-`maxWords`. Note extrapolation is carved out of that same total budget, not additive on top of it (see `buildRenderPrompt`'s `taskLines`), so the validation deliberately uses the theme's unmodified `render.minWords`/`render.maxWords` regardless of whether `extrapolate` is on.
-  - Verified: re-rendered `silicon-valley-0002` (scenes, 5/5) and `silicon-valley-0004`/`-0005` (stories, plain + `--extrapolate`, both within word-count range) after each change — no false positives from the new bounds. The original "60+ scenes" report was never reproduced live across ~8 attempts (5-8 step worlds, extrapolate on/off), so this is a defensive hardening fix rather than a confirmed root-cause fix; worth revisiting if it recurs with the exact error text and `stop_reason`/`usage` from the live response.
-- **`chosenAlternative.requirement` was captured in every saved world (`buildStep()` in `worldgen.js`) but silently dropped before reaching the model, fixed 2026-07-14.** Raised as a question: would the render prompt's missing plausibility-grounding fields (`requirement`, `eraConstraints`) affect story coherence? Investigation found `formatWorldForPrompt()` in both renderers only interpolated `description` + `downstreamEffects` — never `requirement` (the theme author's specific causal justification for why a divergence was plausible, e.g. "an established manufacturer recognizes the oscillator's value before Hewlett and Packard secure independent customers"; populated on 33 of `vr-immersion`'s 42 milestones' branch alternatives) or `eraConstraints` (`available`/`not_available` tech lists; populated on 6 `vr-immersion` milestones).
-  - **Fix**: both renderers' `formatWorldForPrompt()` now interpolate a `"What made this plausible: {requirement}"` line between the chosen-path description and its downstream consequences, whenever `requirement` is present.
-  - **`eraConstraints` deliberately NOT wired in** — reasoned that Sonnet already has strong period-accurate knowledge of the domains covered so far (unlikely to spontaneously invent real-time CGI in 1962 unprompted), so the expected coherence gain is lower than `requirement`'s, and it adds prompt length for a guardrail against a failure mode not actually observed. Worth revisiting if an anachronism shows up in a live render.
-  - **Verified, and this surfaced a real correctness bug, not just a style improvement**: rendered `vr-immersion-0081` (the same reference world as the 2026-07-13 prose-style fix) once before and once after, no other change. The "before" story got a branch backwards — for `lumiere-cinematographe-1895 → kinetoscope-model-prevails` (Edison's solitary peephole-viewing model should have won out over shared theatrical projection), the before-text instead narrated communal projection succeeding, directly contradicting the world's chosen path. The "after" text correctly narrates the peephole model winning ("Edison's lawyers were faster; the peephole box won") and grounds it in the `requirement` field's actual causal claim about patent enforcement. Single-world spot check (both renderers), not a full batch re-render.
-- **The "60+ scenes" mystery from the entry above is now actually root-caused, 2026-07-14** (that entry only added defensive bounds; this is the real mechanism). While live-verifying the `requirement` fix against `render-visual.js`, reproduced `Expected 9 scenes, got 9384` directly. Diagnosis: `toolUse.input.scenes` sometimes comes back as a **JSON-encoded string** instead of a true nested array — `tool_choice: { type: 'tool' }` guarantees the overall tool call is well-formed, but doesn't force every individual field to stay unstringified. `scenes.length` on a string measures characters, not items, which is almost certainly what "expected 6, got 60+" actually was. Worse: when the model does this, it's effectively hand-typing JSON into that string the same way the pre-tool-use approach (fixed 2026-07-10) did, and reintroduces that exact class of typo — observed live: a stray `;` where JSON needed a `,`, and a full-width `：` in place of ASCII `:`, both producing a string that fails `JSON.parse`. Measured across 9 live calls rendering the same world: 4 clean arrays, 2 parseable stringified arrays, 3 unparseable strings — roughly a 1-in-3 raw failure rate, not a rare edge case.
-  - **Fix**: `renderSceneScript()` now retries the whole API call (up to 3 attempts) whenever `scenes` comes back missing, as an unparseable string, or the wrong length — each attempt is an independent draw from the model, so the failure rate compounds downward across attempts (~3.6% for all 3 to fail if independent). A truncated response (`stop_reason === 'max_tokens'`) is still NOT retried, since that's a deterministic budget/config problem, not model stochasticity. A parseable stringified array is still accepted (unwrapped via `JSON.parse` before use) rather than treated as a failure, since the content itself is fine.
-  - **Verified**: re-ran `renderSceneScript` against `vr-immersion-0081` and `vr-immersion-0001` after the fix — both succeeded (9/9 and 6/6 scenes respectively) with correct branch-aware content. Not yet stress-tested across a full batch or against `silicon-valley`, though the bug and fix are both in theme-agnostic code.
-
----
-
-## Session startup checklist
-
-1. Read this file.
-2. Skim `README.md` for the quick-start commands.
-3. Check `git status` / recent commits for anything in flight.
-4. Ask what to work on next, unless already told.
+- World generation never makes model calls; keep the free/deterministic layer clean.
+- Generated worlds/renders are gitignored (reproducible or costly); judgments (`scorecard.md`)
+  are tracked.
+- The dimension table, world-facts, and backstory bridge are live and provisional — expect edits.

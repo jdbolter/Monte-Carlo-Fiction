@@ -70,6 +70,12 @@
     <div class="field" id="f-seed"><label>seed</label><input type="number" id="seed" value="1"></div>
     <div class="field" id="f-limit" style="display:none"><label>limit</label><input type="number" id="limit" value="20" min="1" max="60"></div>
     <div class="field" id="f-offset" style="display:none"><label>offset</label><input type="number" id="offset" value="0" min="0"></div>
+    <div class="field"><label>form</label>
+      <select id="form">
+        <option value="found-document">found document</option>
+        <option value="scene">scene</option>
+        <option value="testimony">testimony</option>
+      </select></div>
     <div class="field"><label>model</label>
       <select id="model">
         <option value="claude-sonnet-5">sonnet-5</option>
@@ -161,7 +167,7 @@ function wireCard(el, c) {
     const btn = e.target; btn.disabled = true; btn.textContent = 'rendering…';
     try {
       const rec = await api('render', { method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ config: c.config, k: c.k, seed: c.seed, model: $('#model').value }) });
+        body: JSON.stringify({ config: c.config, k: c.k, seed: c.seed, model: $('#model').value, form: $('#form').value }) });
       const area = el.querySelector('.render-area');
       area.innerHTML = verdictHTML(rec);
       wireVerdicts(area, rec.tag);

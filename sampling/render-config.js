@@ -1,184 +1,128 @@
 // =========================================
-// sampling/render-config.js — the render/rationalize step (Layer 2 of the
-// sampling regime). Calls the Anthropic API; costs real money per config.
+// sampling/render-config.js — the renderer (Layer 2). Consumes a WORLD.
 //
-// Given a sampled media-present configuration (from sampler.js), ask the model
-// to RATIONALIZE it into a coherent described present — find the single logic
-// under which the off-ground moves cohere, without choosing the destination
-// (the RNG already did) and without drifting back toward the consensus present.
+// Given a World (from world.js: changed dimensions + world-facts + backstory),
+// ask the model to write an ARTIFACT in a chosen form — never an analytic essay.
+// The prompt is built from world.facts + world.backstory (no dimension vocabulary),
+// so the output depicts the world instead of describing a configuration.
+//
+// Calls the Anthropic API; costs money per world. Retries on Overloaded (529),
+// paces requests, and --resume skips already-rendered worlds.
 //
 // Usage:
-//   node sampling/render-config.js --k 2 --n 3 --seed 1
-//   node sampling/render-config.js --k-range 1 2 --n 5 --seed 7
-//   node sampling/render-config.js --enumerate --k 1            # all 62 k=1 worlds
-//   node sampling/render-config.js --k 2 --n 3 --seed 1 --dry-run   # print prompts, NO API call
-//
-// Reads ANTHROPIC_API_KEY from ../.env.local (same zero-dep loader as the repo).
+//   node sampling/render-config.js --k 2 --n 3 --seed 1 --form found-document
+//   node sampling/render-config.js --k-range 1 2 --n 6 --seed 7 --form scene
+//   node sampling/render-config.js --enumerate --k 2 --form found-document --resume
+//   node sampling/render-config.js --k 2 --n 2 --seed 1 --dry-run       # print prompt, no API
 // =========================================
 
 import { readFileSync, existsSync, mkdirSync, writeFileSync, readdirSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import {
-  loadDimensions, sampleBatch, sampleExactK, groundConfig, kOf, formatConfig, makeRng
-} from './sampler.js';
+import { loadDimensions, sampleBatch, groundConfig, kOf } from './sampler.js';
+import { makeWorld } from './world.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const OUT_ROOT  = join(__dirname, 'outputs');
+const OUT_ROOT = join(__dirname, 'outputs');
 
-// --- Load ../.env.local (same approach as scripts/render-stories.js) ---
+// --- Load ../.env.local ---
 function loadEnv() {
   const envPath = join(__dirname, '..', '.env.local');
   if (!existsSync(envPath)) return;
   for (const line of readFileSync(envPath, 'utf8').split('\n')) {
-    const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
-    const idx = trimmed.indexOf('=');
-    if (idx === -1) continue;
-    const key = trimmed.slice(0, idx).trim();
-    const value = trimmed.slice(idx + 1).trim();
-    if (!(key in process.env)) process.env[key] = value;
+    const t = line.trim();
+    if (!t || t.startsWith('#')) continue;
+    const i = t.indexOf('=');
+    if (i === -1) continue;
+    const k = t.slice(0, i).trim(), v = t.slice(i + 1).trim();
+    if (!(k in process.env)) process.env[k] = v;
   }
 }
 loadEnv();
 
-// --- prompt construction (k-aware) ---
-const SYSTEM = `You are given a "media present": a complete configuration of a society's dominant media, specified across 11 dimensions. Most dimensions sit at GROUND — the same value as our actual present — and a small number are OFF-GROUND, moved to a different value. This configuration was chosen by a random number generator, not by you and not by any person. Your job is to RATIONALIZE it, not to judge or improve it.
+// ---------------- forms ----------------
+export const FORMS = {
+  'found-document': `Write a single primary-source document from inside this world, about 250 words — a notice, listing, warranty, certificate, syllabus, obituary, ration card, memo, or letter. It must read as genuine found material: no framing, no explanation, only the document itself. The world's rules are implicit in the document's form and details, never stated.`,
+  'scene': `Write a single scene, about 350 words, with one ordinary person doing an ordinary thing in this world. Convey how the world works only through what they do, see, and take for granted — never explain it. Begin inside the scene.`,
+  'testimony': `Write about 300 words of first-person testimony from someone describing their ordinary media life, unaware that any of it is unusual. Plain speech, concrete particulars. Never name the underlying logic; let it sit in what they consider normal.`
+};
+export const DEFAULT_FORM = 'found-document';
 
-Rules:
-- Treat the off-ground moves as fixed facts of this world: do not substitute them, cancel them, or add further changes of your own, and do not drift back toward our consensus present or familiar techno-forecast imagery.
-- Each dimension is tagged [exclusive] or [emphasis]. For an [exclusive] dimension the named value strictly holds and its alternatives do not exist in this world. For an [emphasis] dimension the value names what PREDOMINATES or is especially important — render it as the dominant mode, not an absolute erasure of the others; rival modes may persist in the background where that is realistic.
-- A value gloss (text after an em dash) explains what a value means; use it and do not contradict it.
-- Find the SINGLE underlying logic or theme under which the off-ground moves cohere into one world — not a list of separate changes, but the institution or condition that makes them one thing.
-- Ground values are our world; do not re-explain them. Spend your words on how the off-ground moves reshape everyday media life, and on the felt texture of the result.
-- Hold valence open. If the world admits both a controlling and a liberating reading, present the tension rather than resolving it. The undecidability is often the story.
-- Stay concrete and legible: what a person experiences, what institutions exist, what changes about receiving and making media. Invent named characters or scenes if useful; do not invent new geographies or new dimensions beyond those specified.
-- If the moves genuinely resist coherence, find the most disciplined single reading available and say plainly where it strains — do not paper over it.`;
+const SYSTEM = `You are given a set of WORLD-FACTS describing a media present that differs from our own, plus a LINEAGE of real historical events behind it. Write the requested artifact — a piece of writing from inside this world.
 
-function taskLineForK(k) {
-  if (k <= 1) {
-    return 'This world differs from ours in exactly ONE dimension. Lift that single change into the foreground and explore it deeply against an otherwise-familiar present: follow its consequences through everyday media life until the one hinge reorganizes the whole.';
-  }
-  if (k === 2) {
-    return 'This world differs from ours in exactly TWO dimensions. Find and hold the single theme that unites both moves into one institution or condition; let the two changes explain each other rather than sit side by side.';
-  }
-  return `This world differs from ours in ${k} dimensions. Find the strongest single logic that binds as many of them as possible; if one move will not join the others, say so plainly rather than forcing it.`;
-}
+Reading the world-facts:
+- Honor every world-fact, but treat each as the dominant GRAIN of the culture's media — what its most important and characteristic media are like — not a literal rule governing every message. Ordinary information (news, weather, a note to a friend) still travels by whatever means is natural; the facts tell you where the culture's central, prestigious, attention-holding media sit, not that every scrap of communication obeys them. (A world whose important media are bodily and felt still tells you tomorrow's weather in words.)
+- "Predominantly" or "mostly" means the leading mode, not the only one. A flat statement holds broadly, but need not be pushed to absurd totality.
+- Add no new differences of your own, and do not quietly drift back toward our own present.
 
-function configLines(sample, dims) {
-  const off = [];
-  const gloss = (d, v) => (d.glosses && d.glosses[v] ? ` — ${d.glosses[v]}` : '');
-  const lines = dims.map(d => {
-    const v = sample.config[d.id];
-    const mode = d.exclusive ? 'exclusive' : 'emphasis';
-    const g = gloss(d, v);
-    if (v !== d.ground) {
-      off.push(`${d.label} [${mode}]: ${v}${g} (our world: ${d.ground})`);
-      return `- ${d.label} [${mode}] (${d.description}): ${v}${g}   [OFF-GROUND — our world: ${d.ground}]`;
-    }
-    return `- ${d.label} [${mode}]: ${v}${g}   [ground]`;
-  });
-  return { lines, off };
-}
+Using the lineage:
+- It is this world's deep history — the origins that explain how its media came to be this way. Use it to understand the world, not to name-drop. Treat these events as we treat the printing press or the telegraph: distant history, not current or recent technology. NEVER depict an old device as something people still use. At most the very newest items surface as ordinary background; the ancient ones are heritage a character would rarely mention, if ever.
 
-export function buildConfigPrompt(sample, dims, { words = 400 } = {}) {
-  const { lines, off } = configLines(sample, dims);
+Tone:
+- This is neither a warning nor a utopia. Render it as a lived, ordinary present with the ordinary mixture of the mundane, the comforting, the irritating, and the poignant. Do NOT default to dystopia or ominous science fiction — many of these worlds are simply someone's normal life. Let the register vary (warm, dry, wistful, matter-of-fact); reach for the ominous only if the facts truly demand it.
+
+Craft:
+- DEPICT; do not analyze. Use no analytic or media-studies vocabulary. Never use the words "dimension," "media present," "configuration," "variable," or name any category — write from inside the world, not about it.
+- Begin inside the world. No preamble about the exercise; no title unless the form calls for one.`;
+
+export function buildRenderPrompt(world, { form = DEFAULT_FORM } = {}) {
+  const task = FORMS[form] || FORMS[DEFAULT_FORM];
   const userPrompt = [
-    taskLineForK(sample.k),
+    task,
     '',
-    `The off-ground move${off.length === 1 ? '' : 's'} (this is what makes this world differ from ours):`,
-    ...off.map(o => `  • ${o}`),
+    'WORLD-FACTS (all hold in this world):',
+    ...world.facts.map(f => `- ${f}`),
     '',
-    `The full configuration across all ${dims.length} dimensions:`,
-    ...lines,
-    '',
-    `Write a coherent description of this media present in roughly ${words} words of continuous prose (no headings, no lists). Begin in the world, not with a preamble about the exercise.`
+    'LINEAGE (the deep history behind how this world\'s media came to be — for your understanding; do not recount it, and do not present old technology as current):',
+    world.backstory.brief || '(none)',
+    ''
   ].join('\n');
   return { systemPrompt: SYSTEM, userPrompt };
 }
 
-// --- enumerate all configurations at exactly k (for the finite low-k space) ---
-function* combinations(arr, k) {
-  const n = arr.length;
-  if (k > n) return;
-  const idx = Array.from({ length: k }, (_, i) => i);
-  while (true) {
-    yield idx.map(i => arr[i]);
-    let i = k - 1;
-    while (i >= 0 && idx[i] === n - k + i) i--;
-    if (i < 0) return;
-    idx[i]++;
-    for (let j = i + 1; j < k; j++) idx[j] = idx[j - 1] + 1;
-  }
-}
-
-function* product(arrays) {
-  if (!arrays.length) { yield []; return; }
-  const [first, ...rest] = arrays;
-  for (const v of first) for (const tail of product(rest)) yield [v, tail].flat();
-}
-
-export function enumerateExactK(dims, k) {
-  const out = [];
-  const dimIdx = dims.map((_, i) => i);
-  let counter = 0;
-  for (const subset of combinations(dimIdx, k)) {
-    const altLists = subset.map(di => dims[di].values.filter(v => v !== dims[di].ground));
-    for (const combo of product(altLists)) {
-      const cfg = groundConfig(dims);
-      subset.forEach((di, j) => { cfg[dims[di].id] = combo[j]; });
-      out.push({ index: counter++, seed: null, k: kOf(cfg, dims), config: cfg });
-    }
-  }
-  return out;
-}
-
-// --- Anthropic API call (mirrors engine/render-verbal.js) with retry/backoff ---
-const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504, 529]); // 529 = Overloaded
+// ---------------- Anthropic call with retry/backoff ----------------
+const RETRYABLE_STATUS = new Set([408, 429, 500, 502, 503, 504, 529]);
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-export async function rationalize(sample, dims, { model, maxTokens, words, maxRetries = 6 }) {
+export async function renderWorld(world, opts = {}) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) throw new Error('ANTHROPIC_API_KEY is not set. Copy .env.local.example to .env.local and add your key.');
-  const { systemPrompt, userPrompt } = buildConfigPrompt(sample, dims, { words });
-  const bodyStr = JSON.stringify({
-    model,
-    max_tokens: maxTokens,
-    system: systemPrompt,
-    messages: [{ role: 'user', content: userPrompt }],
-    thinking: { type: 'disabled' }
+  const model = opts.model || 'claude-sonnet-5';
+  const maxTokens = opts.maxTokens || 1400;
+  const maxRetries = opts.maxRetries ?? 6;
+  const { systemPrompt, userPrompt } = buildRenderPrompt(world, { form: opts.form });
+  const body = JSON.stringify({
+    model, max_tokens: maxTokens, system: systemPrompt,
+    messages: [{ role: 'user', content: userPrompt }], thinking: { type: 'disabled' }
   });
+  const backoff = a => Math.min(30000, 1000 * 2 ** (a + 1)) + Math.floor(Math.random() * 500);
 
-  const backoffMs = a => Math.min(30000, 1000 * 2 ** (a + 1)) + Math.floor(Math.random() * 500);
   let lastErr;
   for (let attempt = 0; attempt <= maxRetries; attempt++) {
     try {
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      const res = await fetch('https://api.anthropic.com/v1/messages', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-        body: bodyStr
+        body
       });
-      if (response.ok) {
-        const data = await response.json();
-        if (data.stop_reason === 'max_tokens') {
-          throw Object.assign(new Error(`truncated (hit max_tokens=${maxTokens})`), { fatal: true });
-        }
+      if (res.ok) {
+        const data = await res.json();
+        if (data.stop_reason === 'max_tokens') throw Object.assign(new Error(`truncated (max_tokens=${maxTokens})`), { fatal: true });
         return data.content?.[0]?.text ?? '';
       }
-      const err = await response.json().catch(() => ({}));
-      const msg = err.error?.message || `Anthropic API error ${response.status}`;
-      if (RETRYABLE_STATUS.has(response.status) && attempt < maxRetries) {
-        const ra = Number(response.headers.get('retry-after'));
-        const wait = Number.isFinite(ra) && ra > 0 ? ra * 1000 : backoffMs(attempt);
+      const err = await res.json().catch(() => ({}));
+      const msg = err.error?.message || `Anthropic API error ${res.status}`;
+      if (RETRYABLE_STATUS.has(res.status) && attempt < maxRetries) {
+        const ra = Number(res.headers.get('retry-after'));
+        const wait = Number.isFinite(ra) && ra > 0 ? ra * 1000 : backoff(attempt);
         process.stderr.write(`[${msg}; retry ${attempt + 1}/${maxRetries} in ${Math.round(wait / 1000)}s] `);
         lastErr = new Error(msg); await sleep(wait); continue;
       }
       throw new Error(msg);
     } catch (e) {
-      if (e.fatal) throw e;                               // don't retry truncation
-      const transient = /fetch failed|network|ECONN|ETIMEDOUT|EAI_AGAIN/i.test(e.message || '');
-      if (transient && attempt < maxRetries) {
-        const wait = backoffMs(attempt);
+      if (e.fatal) throw e;
+      if (/fetch failed|network|ECONN|ETIMEDOUT|EAI_AGAIN/i.test(e.message || '') && attempt < maxRetries) {
+        const wait = backoff(attempt);
         process.stderr.write(`[${e.message}; retry ${attempt + 1}/${maxRetries} in ${Math.round(wait / 1000)}s] `);
         lastErr = e; await sleep(wait); continue;
       }
@@ -188,143 +132,111 @@ export async function rationalize(sample, dims, { model, maxTokens, words, maxRe
   throw lastErr || new Error('render failed after retries');
 }
 
-function offGroundList(sample, dims) {
-  return dims.filter(d => sample.config[d.id] !== d.ground)
-    .map(d => ({ dimension: d.id, value: sample.config[d.id], ground: d.ground }));
-}
-
-function movesString(record) {
-  return record.offGround.map(o => `${o.dimension}=${o.value} (was ${o.ground})`).join('; ');
-}
-
-// worlds.md — the one file you READ: every rendered world, in order.
-function writeReadable(runDir, records) {
-  const out = [`# Rendered worlds — ${runDir.split('/').pop()}`, '',
-    `${records.length} worlds. Read here; record verdicts in scorecard.md.`, ''];
-  for (const r of records) {
-    out.push(`## ${r.tag}  (k=${r.k})`);
-    out.push(`*off-ground:* ${movesString(r)}`, '');
-    out.push(r.text.trim(), '', '---', '');
+// ---------------- enumerate the finite low-k space ----------------
+function* combinations(arr, k) {
+  const n = arr.length; if (k > n) return;
+  const idx = Array.from({ length: k }, (_, i) => i);
+  while (true) {
+    yield idx.map(i => arr[i]);
+    let i = k - 1; while (i >= 0 && idx[i] === n - k + i) i--;
+    if (i < 0) return;
+    idx[i]++; for (let j = i + 1; j < k; j++) idx[j] = idx[j - 1] + 1;
   }
-  writeFileSync(join(runDir, 'worlds.md'), out.join('\n'), 'utf8');
 }
-
-// scorecard.md — the one file you FILL: verdict per world.
-function writeScorecard(runDir, records) {
-  const out = [`# Scorecard — ${runDir.split('/').pop()}`, '',
-    'Fill **verdict** with one of: `cohere` / `strain` / `incoherent`. Notes optional.',
-    'When done: run the harness on this folder, or paste this file back into the chat.', '',
-    '| tag | k | off-ground moves | verdict | notes |',
-    '|-----|---|------------------|---------|-------|'];
-  for (const r of records) {
-    out.push(`| ${r.tag} | ${r.k} | ${movesString(r)} |  |  |`);
+function* product(arrays) {
+  if (!arrays.length) { yield []; return; }
+  const [first, ...rest] = arrays;
+  for (const v of first) for (const tail of product(rest)) yield [v, tail].flat();
+}
+export function enumerateExactK(dims, k) {
+  const out = []; const dimIdx = dims.map((_, i) => i); let c = 0;
+  for (const subset of combinations(dimIdx, k)) {
+    const altLists = subset.map(di => dims[di].values.filter(v => v !== dims[di].ground));
+    for (const combo of product(altLists)) {
+      const cfg = groundConfig(dims);
+      subset.forEach((di, j) => { cfg[dims[di].id] = combo[j]; });
+      out.push({ index: c++, seed: null, k: kOf(cfg, dims), config: cfg });
+    }
   }
-  writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
+  return out;
 }
 
-// Parse any verdicts already entered in an existing scorecard, so a rebuild
-// (after a resumed/interrupted run) never clobbers judgments you've written.
-function readExistingVerdicts(runDir) {
-  const map = new Map();
-  const p = join(runDir, 'scorecard.md');
-  if (!existsSync(p)) return map;
-  for (const line of readFileSync(p, 'utf8').split('\n')) {
-    const m = line.match(/^\|\s*([^|]+?)\s*\|\s*\d+\s*\|[^|]*\|\s*([^|]*?)\s*\|\s*([^|]*?)\s*\|\s*$/);
-    if (m && m[1].trim() !== 'tag') map.set(m[1].trim(), { verdict: m[2].trim(), notes: m[3].trim() });
-  }
-  return map;
-}
-
-// Rebuild worlds.md + scorecard.md from EVERY rendered JSON on disk (not just
-// this run's), preserving existing verdicts. Robust to interrupted/resumed runs.
-export function rebuildOutputs(runDir) {
-  const recs = readdirSync(runDir)
-    .filter(f => /^[se][\d-]*\d\.json$/.test(f))
-    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
-    .sort((a, b) => a.tag.localeCompare(b.tag));
-  if (!recs.length) return 0;
-  writeReadable(runDir, recs);
-  const verdicts = readExistingVerdicts(runDir);
-  const out = [`# Scorecard — ${runDir.split('/').pop()}`, '',
-    'Fill **verdict** with one of: `cohere` / `strain` / `incoherent`. Notes optional.',
-    'When done: paste this file back into the chat.', '',
-    '| tag | k | off-ground moves | verdict | notes |',
-    '|-----|---|------------------|---------|-------|'];
-  for (const r of recs) {
-    const v = verdicts.get(r.tag) || { verdict: '', notes: '' };
-    out.push(`| ${r.tag} | ${r.k} | ${movesString(r)} | ${v.verdict} | ${v.notes} |`);
-  }
-  writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
-  return recs.length;
-}
-
-// ---- UI support: render+save a single config, record verdicts, list a run ----
-
-// Stable id from a config's off-ground moves, so re-rendering the same world
-// overwrites rather than duplicating.
+// stable id from a config's changed moves (used as the UI/scorecard tag)
 export function configTag(config, dims) {
-  const k = dims.filter(d => config[d.id] !== d.ground).length;
-  const offs = dims.filter(d => config[d.id] !== d.ground)
-    .map(d => `${d.id}:${config[d.id]}`).sort().join('|');
-  let h = 0;
-  for (let i = 0; i < offs.length; i++) h = (h * 31 + offs.charCodeAt(i)) >>> 0;
-  return `k${k}-${h.toString(36)}`;
+  const changed = dims.filter(d => config[d.id] !== d.ground);
+  const key = changed.map(d => `${d.id}:${config[d.id]}`).sort().join('|');
+  let h = 0; for (let i = 0; i < key.length; i++) h = (h * 31 + key.charCodeAt(i)) >>> 0;
+  return `k${changed.length}-${h.toString(36)}`;
 }
 
-// scorecard.md written from the JSON records (which carry verdict/note); this is
-// the JSON-sourced variant used by the UI (the CLI's rebuildOutputs is md-sourced).
-export function writeScorecardFromRecords(runDir) {
-  const recs = readdirSync(runDir).filter(f => /\.json$/.test(f))
-    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
-    .sort((a, b) => a.tag.localeCompare(b.tag));
-  const out = [`# Scorecard — ${runDir.split('/').pop()}`, '',
-    'Verdicts recorded via the sampling UI.', '',
-    '| tag | k | off-ground moves | verdict | notes |',
-    '|-----|---|------------------|---------|-------|'];
-  for (const r of recs) out.push(`| ${r.tag} | ${r.k} | ${movesString(r)} | ${r.verdict || ''} | ${r.note || ''} |`);
-  writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
-  return recs.length;
+// ---------------- render + save a world ----------------
+function movesString(rec) {
+  return (rec.offGround || []).map(o => `${o.dimension}=${o.value} (was ${o.ground})`).join('; ');
 }
 
 export async function renderAndSave(sample, dims, runDir, opts = {}) {
-  const model = opts.model || 'claude-sonnet-5';
-  const maxTokens = opts.maxTokens || 1400;
-  const words = opts.words || 400;
-  const maxRetries = opts.maxRetries ?? 6;
-  const text = await rationalize(sample, dims, { model, maxTokens, words, maxRetries });
-  const k = sample.k ?? kOf(sample.config, dims);
+  const form = opts.form || DEFAULT_FORM;
+  const world = makeWorld(sample.config, dims, { seed: sample.seed ?? null });
+  const text = await renderWorld(world, { ...opts, form });
   const tag = opts.tag || configTag(sample.config, dims);
   const record = {
-    tag, k, seed: sample.seed ?? null, model,
-    offGround: offGroundList(sample, dims),
-    config: sample.config, text,
-    verdict: '', note: '',
-    renderedAt: new Date().toISOString()
+    tag, form, k: world.dimensions.k, seed: sample.seed ?? null, model: opts.model || 'claude-sonnet-5',
+    summary: world.summary,
+    facts: world.facts,
+    offGround: world.dimensions.changed.map(c => ({ dimension: c.dimension, value: c.value, ground: c.ground })),
+    backstory: world.backstory.events.map(e => ({ display: e.display, label: e.label, corpus: e.corpus })),
+    text, verdict: '', note: '', renderedAt: new Date().toISOString()
   };
   mkdirSync(runDir, { recursive: true });
   writeFileSync(join(runDir, `${tag}.json`), JSON.stringify(record, null, 2), 'utf8');
   return record;
 }
 
+// ---------------- readable + scorecard (from JSON records) ----------------
+export function writeReadable(runDir, records) {
+  const out = [`# Rendered worlds — ${runDir.split('/').pop()}`, '',
+    `${records.length} worlds. Read here; record verdicts in scorecard.md.`, ''];
+  for (const r of records) {
+    out.push(`## ${r.tag}  (k=${r.k}, ${r.form})`);
+    out.push(`*${r.summary}*`, '');
+    out.push(r.text.trim(), '', '---', '');
+  }
+  writeFileSync(join(runDir, 'worlds.md'), out.join('\n'), 'utf8');
+}
+export function writeScorecardFromRecords(runDir) {
+  const recs = readdirSync(runDir).filter(f => /\.json$/.test(f))
+    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8'))).sort((a, b) => a.tag.localeCompare(b.tag));
+  const out = [`# Scorecard — ${runDir.split('/').pop()}`, '',
+    'Fill **verdict** with one of: `cohere` / `strain` / `incoherent`. Notes optional.',
+    'When done: paste this file back into the chat.', '',
+    '| tag | k | form | off-ground moves | verdict | notes |',
+    '|-----|---|------|------------------|---------|-------|'];
+  for (const r of recs) out.push(`| ${r.tag} | ${r.k} | ${r.form} | ${movesString(r)} | ${r.verdict || ''} | ${r.note || ''} |`);
+  writeFileSync(join(runDir, 'scorecard.md'), out.join('\n') + '\n', 'utf8');
+  return recs.length;
+}
+function rebuildRun(runDir) {
+  const recs = readdirSync(runDir).filter(f => /\.json$/.test(f))
+    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8'))).sort((a, b) => a.tag.localeCompare(b.tag));
+  if (recs.length) { writeReadable(runDir, recs); writeScorecardFromRecords(runDir); }
+  return recs.length;
+}
 export function setVerdict(runDir, tag, verdict, note = '') {
   const p = join(runDir, `${tag}.json`);
   if (!existsSync(p)) throw new Error(`no such world: ${tag}`);
   const rec = JSON.parse(readFileSync(p, 'utf8'));
-  rec.verdict = verdict;
-  rec.note = note;
+  rec.verdict = verdict; rec.note = note;
   writeFileSync(p, JSON.stringify(rec, null, 2), 'utf8');
   writeScorecardFromRecords(runDir);
   return rec;
 }
-
 export function listRun(runDir) {
   if (!existsSync(runDir)) return [];
   return readdirSync(runDir).filter(f => /\.json$/.test(f))
-    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8')))
-    .sort((a, b) => a.tag.localeCompare(b.tag));
+    .map(f => JSON.parse(readFileSync(join(runDir, f), 'utf8'))).sort((a, b) => a.tag.localeCompare(b.tag));
 }
 
-// --- CLI ---
+// ---------------- CLI ----------------
 function parseArgs(argv) {
   const a = {};
   for (let i = 0; i < argv.length; i++) {
@@ -333,15 +245,12 @@ function parseArgs(argv) {
     else if (t === '--k-range') { a.kLo = Number(argv[++i]); a.kHi = Number(argv[++i]); }
     else if (t === '--n') a.n = Number(argv[++i]);
     else if (t === '--seed') a.seed = Number(argv[++i]);
+    else if (t === '--form') a.form = argv[++i];
     else if (t === '--enumerate') a.enumerate = true;
     else if (t === '--limit') a.limit = Number(argv[++i]);
     else if (t === '--dry-run') a.dryRun = true;
-    else if (t === '--model') a.model = argv[++i];
-    else if (t === '--max-tokens') a.maxTokens = Number(argv[++i]);
-    else if (t === '--words') a.words = Number(argv[++i]);
-    else if (t === '--delay') a.delay = Number(argv[++i]);
-    else if (t === '--max-retries') a.maxRetries = Number(argv[++i]);
     else if (t === '--resume') a.resume = true;
+    else if (t === '--model') a.model = argv[++i];
   }
   return a;
 }
@@ -349,76 +258,53 @@ function parseArgs(argv) {
 async function main() {
   const args = parseArgs(process.argv.slice(2));
   const dims = loadDimensions();
-  const model = args.model || 'claude-sonnet-5';
-  const maxTokens = args.maxTokens || 1400;
-  const words = args.words || 400;
+  const form = args.form || DEFAULT_FORM;
+  if (!FORMS[form]) { console.error(`Unknown --form "${form}". Options: ${Object.keys(FORMS).join(', ')}`); process.exit(1); }
   const seed = args.seed ?? 1;
+  const model = args.model || 'claude-sonnet-5';
 
-  // Build the list of configs to render.
-  let batch;
-  let label;
+  let batch, label;
   if (args.enumerate) {
-    if (args.k == null) { console.error('--enumerate requires --k (e.g. --enumerate --k 1)'); process.exit(1); }
-    batch = enumerateExactK(dims, args.k);
-    label = `enum-k${args.k}`;
+    if (args.k == null) { console.error('--enumerate requires --k'); process.exit(1); }
+    batch = enumerateExactK(dims, args.k); label = `enum-k${args.k}-${form}`;
   } else {
-    const kSpec = args.kLo != null ? [args.kLo, args.kHi] : (args.k != null ? args.k : 2);
+    const kSpec = args.kLo != null ? [args.kLo, args.kHi] : (args.k ?? 2);
     batch = sampleBatch({ dims, kSpec, n: args.n ?? 3, baseSeed: seed });
-    label = Array.isArray(kSpec) ? `k${kSpec[0]}-${kSpec[1]}-seed${seed}` : `k${kSpec}-seed${seed}`;
+    label = (Array.isArray(kSpec) ? `k${kSpec[0]}-${kSpec[1]}` : `k${kSpec}`) + `-${form}-seed${seed}`;
   }
   if (args.limit != null) batch = batch.slice(0, args.limit);
 
-  console.log(`# render-config  —  ${batch.length} config(s), ${label}, model ${model}${args.dryRun ? '  [DRY RUN — no API calls]' : ''}`);
-  console.log(`# ${dims.length} dimensions; ground = our present\n`);
+  console.log(`# render — ${batch.length} world(s), ${label}, model ${model}${args.dryRun ? '  [DRY RUN — no API]' : ''}\n`);
 
   if (args.dryRun) {
-    // Show the assembled prompt for each config — proves the plumbing, spends nothing.
     for (const s of batch) {
-      const { systemPrompt, userPrompt } = buildConfigPrompt(s, dims, { words });
+      const world = makeWorld(s.config, dims, { seed: s.seed });
+      const { userPrompt } = buildRenderPrompt(world, { form });
       console.log('─'.repeat(70));
-      console.log(formatConfig(s, dims));
-      console.log('\n--- USER PROMPT ---\n' + userPrompt + '\n');
+      console.log(`${world.id}  (k=${world.dimensions.k}) — ${world.summary}`);
+      console.log('\n--- USER PROMPT ---\n' + userPrompt);
     }
-    console.log(`(system prompt is identical for every call; ${SYSTEM.length} chars)`);
+    console.log(`(system prompt identical for every call; ${SYSTEM.length} chars; form: ${form})`);
     return;
   }
 
   const runDir = join(OUT_ROOT, label);
   mkdirSync(runDir, { recursive: true });
-  const delay = args.delay ?? 700;         // gentle pacing between calls (ms)
-  const maxRetries = args.maxRetries ?? 6;  // backoff retries on Overloaded/transient
-  let ok = 0, skipped = 0, apiCalls = 0;
-  for (let bi = 0; bi < batch.length; bi++) {
-    const s = batch[bi];
-    const tag = args.enumerate ? `e${String(s.index).padStart(4, '0')}` : `s${seed}-${String(s.index).padStart(3, '0')}`;
+  const delay = 700; const maxRetries = 6; let ok = 0, skipped = 0, calls = 0;
+  for (const s of batch) {
+    const tag = configTag(s.config, dims);
     const outPath = join(runDir, `${tag}.json`);
-    if (args.resume && existsSync(outPath)) {
-      console.log(`skip ${tag} (k=${s.k}) — already rendered`);
-      skipped++;
-      continue;
-    }
-    if (apiCalls > 0 && delay) await sleep(delay);
-    apiCalls++;
-    process.stdout.write(`rendering ${tag} (k=${s.k}) … `);
+    if (args.resume && existsSync(outPath)) { console.log(`skip ${tag} (k=${s.k}) — already rendered`); skipped++; continue; }
+    if (calls > 0) await sleep(delay);
+    calls++;
+    process.stdout.write(`rendering ${tag} (k=${s.k}, ${form}) … `);
     try {
-      const text = await rationalize(s, dims, { model, maxTokens, words, maxRetries });
-      const record = {
-        tag, k: s.k, seed: s.seed, model,
-        offGround: offGroundList(s, dims),
-        config: s.config,
-        text,
-        renderedAt: new Date().toISOString()
-      };
-      writeFileSync(outPath, JSON.stringify(record, null, 2), 'utf8');
-      ok++;
-      console.log('ok');
-    } catch (e) {
-      console.log('FAILED: ' + e.message);
-    }
+      await renderAndSave(s, dims, runDir, { form, model, maxRetries, tag });
+      ok++; console.log('ok');
+    } catch (e) { console.log('FAILED: ' + e.message); }
   }
-  const total = rebuildOutputs(runDir);
-  console.log(`\n# this run: ${ok} rendered${skipped ? `, ${skipped} skipped (already present)` : ''}`);
-  console.log(`# folder now holds ${total} worlds → ${runDir}`);
+  const total = rebuildRun(runDir);
+  console.log(`\n# this run: ${ok} rendered${skipped ? `, ${skipped} skipped` : ''}; folder now holds ${total} worlds → ${runDir}`);
   console.log(`#   read:  ${join(runDir, 'worlds.md')}`);
   console.log(`#   judge: ${join(runDir, 'scorecard.md')}`);
 }

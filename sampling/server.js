@@ -90,7 +90,7 @@ async function handleApi(name, req, res) {
     if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY not set in .env.local' });
     try {
       const sample = { config: body.config, k: body.k, seed: body.seed ?? null };
-      const record = await renderAndSave(sample, dims, RUN_DIR, { model: body.model, words: body.words });
+      const record = await renderAndSave(sample, dims, RUN_DIR, { model: body.model, form: body.form });
       return sendJson(res, 200, record);
     } catch (e) {
       return sendJson(res, 502, { error: e.message });

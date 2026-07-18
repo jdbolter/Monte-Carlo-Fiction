@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monte-Carlo-Fiction</title>
+<style>
+  :root {
+    --bg:#131110; --bg-panel:#1b1816; --bg-card:#201c1a; --border:#3a332e;
+    --text:#ece5da; --text-dim:#a89e91; --accent:#c8916e; --accent-2:#8ec89a;
+    --accent-3:#6e9ec8; --danger:#c86e6e;
+    --font-serif:Georgia,'Iowan Old Style','Palatino Linotype',serif;
+    --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--text); font-family:var(--font-sans); line-height:1.5; }
+
+  .topbar { border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10;
+    background:rgba(19,17,16,0.92); backdrop-filter:blur(6px); }
+  .topbar-inner { max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+  .brand { font-family:var(--font-serif); font-size:1.15rem; letter-spacing:.02em; background:none; border:none; color:var(--text); cursor:default; }
+  .topnav { display:flex; gap:6px; }
+  .nav-link { background:none; border:1px solid transparent; color:var(--text-dim); font:inherit; font-size:.92rem; padding:8px 14px; border-radius:6px; cursor:pointer; }
+  .nav-link:hover { color:var(--text); border-color:var(--border); }
+  .nav-link.active { color:var(--accent); border-color:var(--border); background:var(--bg-panel); }
+
+  main#app { max-width:1080px; margin:0 auto; padding:0 24px 80px; }
+  .screen { display:none; } .screen.active { display:block; }
+  .hero { padding:44px 0 26px; border-bottom:1px solid var(--border); margin-bottom:26px; }
+  .hero h1 { font-family:var(--font-serif); font-size:2.2rem; margin:0 0 10px; }
+  .hero .lede { color:var(--text-dim); max-width:640px; font-size:1.02rem; }
+  .section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:26px 0 16px; flex-wrap:wrap; }
+  .section-heading h2 { font-family:var(--font-serif); margin:0; font-size:1.4rem; }
+  .muted { color:var(--text-dim); font-size:.9rem; }
+
+  .panel { background:var(--bg-panel); border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:20px; }
+  .form-row { display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; }
+  .field { display:flex; flex-direction:column; gap:4px; }
+  .field label, .form-row > label { color:var(--text-dim); font-size:.82rem; }
+  input[type="number"], select { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px 10px; font:inherit; font-size:.92rem; width:82px; }
+  select { width:auto; }
+  .check { flex-direction:row; align-items:center; gap:6px; color:var(--text-dim); font-size:.85rem; }
+  .btn { border:1px solid var(--border); background:var(--bg-card); color:var(--text); padding:9px 18px; border-radius:6px; cursor:pointer; font:inherit; font-size:.92rem; }
+  .btn:hover { border-color:var(--accent); } .btn:disabled { opacity:.5; cursor:not-allowed; }
+  .btn-primary { background:var(--accent); border-color:var(--accent); color:#201c1a; font-weight:600; }
+  .btn-small { padding:5px 12px; font-size:.82rem; }
+  .btn-danger { border-color:var(--danger); color:var(--danger); }
+  .btn-danger:hover { background:var(--danger); color:#201c1a; border-color:var(--danger); }
+  .spacer { flex:1; }
+  .status { margin:12px 2px; font-size:.9rem; color:var(--text-dim); min-height:1.2em; }
+  .status.error { color:var(--danger); }
+
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-top:8px; }
+  .card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px; transition:border-color .15s; }
+  .card:hover { border-color:var(--accent); }
+  .card h3 { margin:6px 0 8px; font-family:var(--font-serif); font-size:1.1rem; font-weight:600; }
+  .tag-row { display:flex; gap:6px; flex-wrap:wrap; }
+  .tag { font-size:.72rem; padding:3px 8px; border-radius:100px; border:1px solid var(--border); color:var(--text-dim); }
+  .tag.branch { color:var(--accent); border-color:var(--accent); }
+  .tag.rendered { color:var(--accent-2); border-color:var(--accent-2); }
+  .steps { margin:8px 0; font-size:.86rem; color:var(--text); }
+  .steps span { display:block; padding:2px 0; }
+  .steps span b { color:var(--accent); font-weight:600; }
+  .hint { color:var(--text-dim); font-size:.8rem; margin:8px 0 0; }
+  .actions { margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+
+  /* library artifact */
+  .artifact { grid-column:1/-1; }
+  .artifact .story-body { font-family:var(--font-serif); font-size:1.05rem; line-height:1.75; white-space:pre-wrap;
+    margin:12px 0; padding:16px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  .scene-label { display:inline-block; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); }
+  .verdicts { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  .vbtn { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:6px; padding:5px 11px; cursor:pointer; font:inherit; font-size:.85rem; }
+  .vbtn.sel[data-v=cohere] { background:var(--accent-2); color:#201c1a; border-color:var(--accent-2); }
+  .vbtn.sel[data-v=strain] { background:var(--accent); color:#201c1a; border-color:var(--accent); }
+  .vbtn.sel[data-v=incoherent] { background:var(--danger); color:#201c1a; border-color:var(--danger); }
+  .note { flex:1; min-width:170px; width:auto; }
+  .saved { color:var(--accent-2); font-size:.8rem; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-inner">
+  <button class="brand">Monte-Carlo-Fiction</button>
+  <nav class="topnav">
+    <button class="nav-link active" data-tab="generate">Generate</button>
+    <button class="nav-link" data-tab="render">Render</button>
+    <button class="nav-link" data-tab="library">Library</button>
+  </nav>
+</div></div>
+
+<main id="app">
+
+  <!-- GENERATE -->
+  <section class="screen active" id="screen-generate">
+    <div class="hero">
+      <h1>Generate a world</h1>
+      <div class="lede">Each world is a media present that differs from ours in a few dimensions, grounded in the real history that led there. Generation is free and reproducible from a seed.</div>
+    </div>
+    <div class="panel"><div class="form-row">
+      <div class="field"><label>mode</label><select id="g-mode">
+        <option value="sample">sample</option><option value="enumerate">enumerate (all at k)</option></select></div>
+      <div class="field" id="g-fk"><label>k</label><input type="number" id="g-k" value="2" min="1" max="9"></div>
+      <div class="field" id="g-fkr" style="display:none"><label>k range</label>
+        <span style="display:flex;gap:4px"><input type="number" id="g-klo" value="1" min="1" max="9"><input type="number" id="g-khi" value="2" min="1" max="9"></span></div>
+      <div class="field" id="g-fn"><label>count</label><input type="number" id="g-n" value="6" min="1" max="40"></div>
+      <div class="field" id="g-fs"><label>seed</label><input type="number" id="g-seed" value="1"></div>
+      <div class="field" id="g-fl" style="display:none"><label>limit</label><input type="number" id="g-limit" value="20" min="1" max="60"></div>
+      <label class="field check"><input type="checkbox" id="g-kr"> k-range</label>
+      <button class="btn btn-primary" id="g-go">Generate</button>
+      <span class="spacer"></span>
+      <button class="btn btn-danger" id="g-clear">Clear worlds</button>
+    </div></div>
+    <div class="status" id="g-status">Generated worlds are saved; write them up on the Render tab.</div>
+    <div class="card-grid" id="g-list"></div>
+  </section>
+
+  <!-- RENDER -->
+  <section class="screen" id="screen-render">
+    <div class="section-heading"><h2>Render worlds into artifacts</h2><span class="muted" id="r-status"></span></div>
+    <div class="panel"><div class="form-row">
+      <div class="field"><label>form</label><select id="r-form"></select></div>
+      <div class="field"><label>model</label><select id="r-model">
+        <option value="claude-sonnet-5">sonnet-5</option>
+        <option value="claude-haiku-4-5-20251001">haiku-4.5</option>
+        <option value="claude-opus-4-8">opus-4.8</option></select></div>
+      <button class="btn" id="r-refresh">Refresh</button>
+      <button class="btn btn-primary" id="r-all">Render all unrendered</button>
+      <span class="spacer"></span>
+      <button class="btn btn-danger" id="r-clear">Clear worlds</button>
+    </div></div>
+    <div class="card-grid" id="r-list"></div>
+  </section>
+
+  <!-- LIBRARY -->
+  <section class="screen" id="screen-library">
+    <div class="section-heading"><h2>Library</h2><span class="muted" id="l-count"></span></div>
+    <div class="panel"><div class="form-row">
+      <button class="btn" id="l-refresh">Refresh</button>
+      <span class="hint">Read each artifact and judge it — verdicts save to the run's scorecard.</span>
+      <span class="spacer"></span>
+      <button class="btn btn-danger" id="l-clear">Clear library</button>
+    </div></div>
+    <div class="status" id="l-status"></div>
+    <div class="card-grid" id="l-list"></div>
+  </section>
+
+</main>
+<script type="module">
+const $ = s => document.querySelector(s);
+const el = h => { const d = document.createElement('div'); d.innerHTML = h; return d.firstElementChild; };
+const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
+async function api(p, o) { const r = await fetch('/api/' + p, o); const j = await r.json(); if (!r.ok) throw new Error(j.error || 'HTTP ' + r.status); return j; }
+const POST = b => ({ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(b) });
+
+document.querySelectorAll('.nav-link').forEach(b => b.onclick = () => {
+  document.querySelectorAll('.nav-link').forEach(x => x.classList.toggle('active', x === b));
+  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + b.dataset.tab));
+  if (b.dataset.tab === 'render') loadWorlds();
+  if (b.dataset.tab === 'library') loadLibrary();
+});
+
+function worldMeta(w) {
+  const facts = w.facts.map(f => `<span>${esc(f)}</span>`).join('');
+  const bk = w.backstory.map(e => `${e.display} ${e.label}`).join(' · ');
+  return `<div class="tag-row"><span class="tag branch">k=${w.k}</span>${w.rendered ? '<span class="tag rendered">rendered</span>' : ''}</div>
+    <h3>${esc(w.summary)}</h3><div class="steps">${facts}</div><p class="hint">lineage: ${esc(bk)}</p>`;
+}
+
+// GENERATE
+function gModeUI() {
+  const en = $('#g-mode').value === 'enumerate', kr = $('#g-kr').checked && !en;
+  $('#g-fk').style.display = kr ? 'none' : ''; $('#g-fkr').style.display = kr ? '' : 'none';
+  $('#g-fn').style.display = en ? 'none' : ''; $('#g-fs').style.display = en ? 'none' : '';
+  $('#g-fl').style.display = en ? '' : 'none';
+  $('#g-go').textContent = en ? 'Enumerate' : 'Generate';
+}
+$('#g-mode').onchange = gModeUI; $('#g-kr').onchange = gModeUI;
+$('#g-go').onclick = async () => {
+  $('#g-status').textContent = 'generating…';
+  const en = $('#g-mode').value === 'enumerate';
+  const body = en ? { mode:'enumerate', k:+$('#g-k').value, limit:+$('#g-limit').value }
+    : $('#g-kr').checked ? { mode:'sample', kLo:+$('#g-klo').value, kHi:+$('#g-khi').value, n:+$('#g-n').value, seed:+$('#g-seed').value }
+    : { mode:'sample', k:+$('#g-k').value, n:+$('#g-n').value, seed:+$('#g-seed').value };
+  try {
+    const { worlds } = await api('generate', POST(body));
+    $('#g-list').innerHTML = '';
+    worlds.forEach(w => $('#g-list').appendChild(el(`<div class="card world-card">${worldMeta(w)}</div>`)));
+    $('#g-status').textContent = `${worlds.length} worlds generated and saved — go to Render.`;
+  } catch (e) { $('#g-status').textContent = 'error: ' + e.message; $('#g-status').className = 'status error'; }
+};
+
+// RENDER
+async function loadForms() {
+  try { const { forms, default: def } = await api('forms');
+    $('#r-form').innerHTML = forms.map(f => `<option value="${f}"${f === def ? ' selected' : ''}>${f}</option>`).join(''); } catch {}
+}
+async function loadWorlds() {
+  $('#r-status').textContent = 'loading…';
+  try {
+    const { worlds } = await api('worlds');
+    const list = $('#r-list'); list.innerHTML = '';
+    if (!worlds.length) { $('#r-status').textContent = 'no worlds yet — generate some'; return; }
+    worlds.forEach(w => {
+      const card = el(`<div class="card world-card">${worldMeta(w)}
+        <div class="actions">${w.rendered ? '<span class="tag rendered">already in library</span>' : '<button class="btn btn-primary btn-small rb">Render</button>'}</div></div>`);
+      const rb = card.querySelector('.rb');
+      if (rb) rb.onclick = () => renderOne(w.id, rb, card);
+      list.appendChild(card);
+    });
+    const pend = worlds.filter(w => !w.rendered).length;
+    $('#r-status').textContent = `${worlds.length} worlds · ${pend} unrendered`;
+  } catch (e) { $('#r-status').textContent = 'error: ' + e.message; }
+}
+async function renderOne(worldId, btn, card) {
+  btn.disabled = true; btn.textContent = 'rendering…';
+  try {
+    await api('render', POST({ worldId, form: $('#r-form').value, model: $('#r-model').value }));
+    card.querySelector('.actions').innerHTML = '<span class="tag rendered">✓ rendered → Library</span>';
+    card.querySelector('.tag-row').insertAdjacentHTML('beforeend', '<span class="tag rendered">rendered</span>');
+  } catch (e) { btn.disabled = false; btn.textContent = 'Render'; alert('Render failed: ' + e.message); }
+}
+$('#r-refresh').onclick = loadWorlds;
+$('#r-all').onclick = async () => {
+  const { worlds } = await api('worlds'); const todo = worlds.filter(w => !w.rendered);
+  if (!todo.length) { $('#r-status').textContent = 'nothing to render'; return; }
+  for (let i = 0; i < todo.length; i++) {
+    $('#r-status').textContent = `rendering ${i + 1}/${todo.length}…`;
+    try { await api('render', POST({ worldId: todo[i].id, form: $('#r-form').value, model: $('#r-model').value })); } catch (e) {}
+  }
+  loadWorlds();
+};
+
+// LIBRARY
+async function loadLibrary() {
+  $('#l-status').textContent = 'loading…';
+  try {
+    const { items } = await api('library');
+    const list = $('#l-list'); list.innerHTML = '';
+    $('#l-count').textContent = `${items.length} artifacts`;
+    if (!items.length) { $('#l-status').textContent = 'library is empty — render some worlds'; return; }
+    $('#l-status').textContent = '';
+    items.forEach(r => {
+      const moves = (r.offGround || []).map(o => `${o.dimension}=${o.value}`).join(' · ');
+      const card = el(`<div class="card artifact">
+        <div class="tag-row"><span class="tag branch">k=${r.k}</span><span class="tag">${esc(r.form)}</span></div>
+        <h3>${esc(r.summary || '')}</h3>
+        <p class="hint">${esc(moves)}</p>
+        <div class="story-body">${esc(r.text)}</div>
+        <div class="verdicts">
+          <button class="vbtn ${r.verdict==='cohere'?'sel':''}" data-v="cohere">cohere</button>
+          <button class="vbtn ${r.verdict==='strain'?'sel':''}" data-v="strain">strain</button>
+          <button class="vbtn ${r.verdict==='incoherent'?'sel':''}" data-v="incoherent">incoherent</button>
+          <input class="note" placeholder="note (optional)" value="${esc(r.note)}">
+          <span class="saved"></span></div></div>`);
+      const note = card.querySelector('.note'), saved = card.querySelector('.saved');
+      card.querySelectorAll('.vbtn').forEach(b => b.onclick = async () => {
+        try { await api('verdict', POST({ tag: r.tag, verdict: b.dataset.v, note: note.value }));
+          card.querySelectorAll('.vbtn').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
+          saved.textContent = '✓ saved'; setTimeout(() => saved.textContent = '', 1500);
+        } catch (e) { alert('Save failed: ' + e.message); }
+      });
+      list.appendChild(card);
+    });
+  } catch (e) { $('#l-status').textContent = 'error: ' + e.message; }
+}
+$('#l-refresh').onclick = loadLibrary;
+
+// CLEAR
+async function clearWorldsUI() {
+  if (!confirm('Delete all saved generated worlds? (Rendered artifacts in the Library are kept.)')) return;
+  try {
+    const { cleared } = await api('clear-worlds', POST({}));
+    $('#g-list').innerHTML = ''; $('#r-list').innerHTML = '';
+    $('#g-status').textContent = `cleared ${cleared} saved worlds.`;
+    $('#r-status').textContent = 'no worlds — generate some';
+  } catch (e) { alert('Clear failed: ' + e.message); }
+}
+$('#g-clear').onclick = clearWorldsUI;
+$('#r-clear').onclick = clearWorldsUI;
+$('#l-clear').onclick = async () => {
+  if (!confirm('Delete all rendered artifacts and their verdicts from the library?')) return;
+  try { const { cleared } = await api('clear-library', POST({})); await loadLibrary(); $('#l-status').textContent = `cleared ${cleared} files.`; }
+  catch (e) { alert('Clear failed: ' + e.message); }
+};
+
+gModeUI(); loadForms();
+</script>
+</body>
+</html>
