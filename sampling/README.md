@@ -53,5 +53,5 @@ in a form. Current forms: `found-document` (default), `scene`, `testimony`.
 The pipeline runs end to end: sample → ground in backstory → render an artifact → judge. The
 live tuning work is the **render voice** — three levers (tone, lineage, grain) in the `SYSTEM`
 string of `render-config.js`, first-pass. The backstory `DIMENSION_TAG_MAP` and event tags are
-also provisional. Full decision log and open questions in [`CLAUDE.md`](CLAUDE.md); the
+also provisional. Full decision log and open questions in the root [`CLAUDE.md`](../CLAUDE.md); the
 render-form rationale and worked examples in [`BACKSTORY.md`](BACKSTORY.md).

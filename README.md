@@ -1,6 +1,6 @@
 # Monte-Carlo-Fiction — the world model
 
-*Experimental branch `dev-claude-redesign`. This branch replaced the earlier causal
+*Experimental branch `dev`. This branch replaced the earlier causal
 event-walking engine with a single unified world model. Everything lives under
 [`sampling/`](sampling/).*
 
@@ -77,4 +77,4 @@ sampling/
 
 - [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) — the World object + renderer contract (architecture).
 - [`sampling/BACKSTORY.md`](sampling/BACKSTORY.md) — events-as-backstory + the render-form redesign, with worked examples.
-- [`sampling/CLAUDE.md`](sampling/CLAUDE.md) — operating manual, decision log, open questions.
+- [`CLAUDE.md`](CLAUDE.md) — operating manual, decision log, and open questions.
