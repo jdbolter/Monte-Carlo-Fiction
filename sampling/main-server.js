@@ -1,152 +1,160 @@
-// =========================================
-// sampling/main-server.js — the main app (port 3000).
-//
-// Generate / Render / Library, over the unified world model. Reuses the same
-// world-building and rendering functions as everything else; kept separate from
-// the :4000 tuning UI on purpose. Zero dependencies.
-//
-//   npm run main     (or: node sampling/main-server.js)
-// =========================================
-
 import http from 'http';
-import { readFileSync, existsSync, readdirSync, unlinkSync } from 'fs';
-import { join, extname, dirname } from 'path';
+import { existsSync, readFileSync } from 'fs';
+import { extname, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { loadDimensions, sampleBatch } from './sampler.js';
-import { makeWorld, saveWorld, listWorlds, clearWorlds } from './world.js';
-import { enumerateExactK, renderAndSave, listRun, setVerdict, FORMS, DEFAULT_FORM } from './render-config.js';
+import { loadEnvFile } from './anthropic.js';
+import { listCorpora } from './history.js';
+import { clearGenerationDiagnostics, generateWorldBatch, DEFAULT_GENERATION_MODEL } from './world-generator.js';
+import { clearWorlds, listWorlds, loadWorld } from './world.js';
+import {
+  clearArtifacts,
+  DEFAULT_FORM,
+  DEFAULT_RENDER_MODEL,
+  FORMS,
+  listArtifacts,
+  renderedFormsByWorld,
+  renderAndSave,
+  setVerdict
+} from './render-world.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const PORT = process.env.MAIN_PORT || 3000;
-const LIB_DIR = join(__dirname, 'outputs', 'library');
+const BASE_PORT = Number(process.env.MAIN_PORT || 3000);
+loadEnvFile(join(__dirname, '..', '.env.local'));
 
-function loadEnv() {
-  const p = join(__dirname, '..', '.env.local');
-  if (!existsSync(p)) return;
-  for (const line of readFileSync(p, 'utf8').split('\n')) {
-    const t = line.trim(); if (!t || t.startsWith('#')) continue;
-    const i = t.indexOf('='); if (i === -1) continue;
-    const k = t.slice(0, i).trim(), v = t.slice(i + 1).trim();
-    if (!(k in process.env)) process.env[k] = v;
-  }
-}
-loadEnv();
+const MIME = {
+  '.html': 'text/html; charset=utf-8',
+  '.js': 'application/javascript; charset=utf-8',
+  '.css': 'text/css; charset=utf-8',
+  '.json': 'application/json; charset=utf-8'
+};
 
-const MIME = { '.html': 'text/html', '.js': 'application/javascript', '.css': 'text/css', '.json': 'application/json' };
 function readBody(req) {
   return new Promise((resolve, reject) => {
-    let d = ''; req.on('data', c => d += c);
-    req.on('end', () => { if (!d) return resolve({}); try { resolve(JSON.parse(d)); } catch (e) { reject(e); } });
+    let data = '';
+    req.on('data', chunk => {
+      data += chunk;
+      if (data.length > 1_000_000) reject(new Error('Request body is too large.'));
+    });
+    req.on('end', () => {
+      if (!data) return resolve({});
+      try { resolve(JSON.parse(data)); }
+      catch { reject(new Error('Request body must be valid JSON.')); }
+    });
     req.on('error', reject);
   });
 }
-function sendJson(res, code, obj) { res.statusCode = code; res.setHeader('Content-Type', 'application/json'); res.end(JSON.stringify(obj)); }
 
-// light summary of a world for the client
-function worldSummary(w) {
+function sendJson(res, status, payload) {
+  res.statusCode = status;
+  res.setHeader('Content-Type', 'application/json; charset=utf-8');
+  res.end(JSON.stringify(payload));
+}
+
+function worldForClient(world, formsMap) {
   return {
-    id: w.id, k: w.dimensions.k, summary: w.summary, seed: w.seed,
-    changed: w.dimensions.changed.map(c => ({ dimension: c.dimension, label: c.label, value: c.value, ground: c.ground, exclusive: c.exclusive })),
-    facts: w.facts,
-    backstory: w.backstory.events.map(e => ({ display: e.display, label: e.label, corpus: e.corpus })),
-    rendered: false
+    ...world,
+    renderedForms: [...(formsMap.get(world.id) || [])]
   };
 }
 
-async function handleApi(name, req, res) {
-  const dims = loadDimensions();
+async function handleApi(route, req, res) {
   const body = req.method === 'POST' ? await readBody(req) : {};
 
-  if (name === 'dimensions' && req.method === 'GET') return sendJson(res, 200, { dimensions: dims });
-  if (name === 'forms' && req.method === 'GET') return sendJson(res, 200, { forms: Object.keys(FORMS), default: DEFAULT_FORM });
-
-  // Generate + save Worlds (free). mode: 'sample' | 'enumerate'.
-  if (name === 'generate' && req.method === 'POST') {
-    let batch;
-    if (body.mode === 'enumerate') {
-      const all = enumerateExactK(dims, Number(body.k ?? 2));
-      const off = Number(body.offset || 0), lim = Number(body.limit || 20);
-      batch = all.slice(off, off + lim);
-    } else {
-      const kSpec = body.kLo != null ? [Number(body.kLo), Number(body.kHi)] : Number(body.k ?? 2);
-      batch = sampleBatch({ dims, kSpec, n: Number(body.n || 6), baseSeed: Number(body.seed || 1) });
-    }
-    const worlds = batch.map(s => makeWorld(s.config, dims, { seed: s.seed ?? null }));
-    worlds.forEach(saveWorld);
-    return sendJson(res, 200, { worlds: worlds.map(worldSummary) });
+  if (route === 'status' && req.method === 'GET') {
+    return sendJson(res, 200, { apiKeyConfigured: Boolean(process.env.ANTHROPIC_API_KEY) });
+  }
+  if (route === 'corpora' && req.method === 'GET') return sendJson(res, 200, { corpora: listCorpora() });
+  if (route === 'forms' && req.method === 'GET') {
+    return sendJson(res, 200, { forms: Object.keys(FORMS), default: DEFAULT_FORM });
   }
 
-  // List saved (generated) Worlds, flagged with whether they've been rendered.
-  if (name === 'worlds' && req.method === 'GET') {
-    const renderedTags = new Set(listRun(LIB_DIR).map(r => r.tag));
-    const worlds = listWorlds().map(w => {
-      const s = worldSummary(w);
-      // library tag = configTag(config) which is w.id minus the "w-" prefix
-      s.rendered = renderedTags.has(w.id.replace(/^w-/, ''));
-      return s;
-    }).sort((a, b) => a.k - b.k || a.id.localeCompare(b.id));
-    return sendJson(res, 200, { worlds });
+  if (route === 'generate' && req.method === 'POST') {
+    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
+    const corpusId = String(body.corpusId || '');
+    const scenarioBrief = String(body.scenarioBrief || '').trim();
+    if (!listCorpora().some(corpus => corpus.id === corpusId)) return sendJson(res, 400, { error: `Unknown history corpus: ${corpusId}` });
+    if (scenarioBrief.length < 40) return sendJson(res, 400, { error: 'Please provide a more complete divergence and endpoint brief.' });
+    const count = Math.max(1, Math.min(20, Number(body.count) || 1));
+    const model = String(body.model || DEFAULT_GENERATION_MODEL);
+    const result = await generateWorldBatch({ corpusId, scenarioBrief, count, model, save: true });
+    if (!result.worlds.length) return sendJson(res, 502, { error: result.errors.map(item => item.error).join('; ') || 'No worlds were generated.' });
+    const formsMap = renderedFormsByWorld();
+    return sendJson(res, 200, {
+      worlds: result.worlds.map(world => worldForClient(world, formsMap)),
+      errors: result.errors
+    });
   }
 
-  // Render a saved World into an artifact (costs API).
-  if (name === 'render' && req.method === 'POST') {
-    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY not set in .env.local' });
-    const world = listWorlds().find(w => w.id === body.worldId);
-    if (!world) return sendJson(res, 404, { error: `no such world: ${body.worldId}` });
-    try {
-      const sample = { config: world.dimensions.all, k: world.dimensions.k, seed: world.seed };
-      const record = await renderAndSave(sample, dims, LIB_DIR, { form: body.form || DEFAULT_FORM, model: body.model });
-      return sendJson(res, 200, record);
-    } catch (e) { return sendJson(res, 502, { error: e.message }); }
+  if (route === 'worlds' && req.method === 'GET') {
+    const formsMap = renderedFormsByWorld();
+    return sendJson(res, 200, { worlds: listWorlds().map(world => worldForClient(world, formsMap)) });
   }
 
-  // The library: everything rendered, with verdicts.
-  if (name === 'library' && req.method === 'GET') return sendJson(res, 200, { items: listRun(LIB_DIR) });
-
-  // Clear saved generated Worlds (the pool the Render tab draws from).
-  if (name === 'clear-worlds' && req.method === 'POST') return sendJson(res, 200, { cleared: clearWorlds() });
-
-  // Clear the library (rendered artifacts + scorecard).
-  if (name === 'clear-library' && req.method === 'POST') {
-    let n = 0;
-    if (existsSync(LIB_DIR)) for (const f of readdirSync(LIB_DIR)) { try { unlinkSync(join(LIB_DIR, f)); n++; } catch {} }
-    return sendJson(res, 200, { cleared: n });
+  if (route === 'render' && req.method === 'POST') {
+    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
+    const world = loadWorld(String(body.worldId || ''));
+    if (!world) return sendJson(res, 404, { error: `No such world: ${body.worldId}` });
+    const form = String(body.form || DEFAULT_FORM);
+    const model = String(body.model || DEFAULT_RENDER_MODEL);
+    const renderBrief = String(body.renderBrief || '').trim();
+    if (renderBrief.length > 2000) return sendJson(res, 400, { error: 'Render brief must be 2,000 characters or fewer.' });
+    try { return sendJson(res, 200, await renderAndSave(world, { form, model, renderBrief })); }
+    catch (error) { return sendJson(res, 502, { error: error.message }); }
   }
 
-  if (name === 'verdict' && req.method === 'POST') {
-    try { return sendJson(res, 200, setVerdict(LIB_DIR, body.tag, body.verdict, body.note || '')); }
-    catch (e) { return sendJson(res, 400, { error: e.message }); }
+  if (route === 'library' && req.method === 'GET') return sendJson(res, 200, { items: listArtifacts() });
+
+  if (route === 'verdict' && req.method === 'POST') {
+    try { return sendJson(res, 200, setVerdict(String(body.id || ''), String(body.verdict || ''), String(body.note || ''))); }
+    catch (error) { return sendJson(res, 400, { error: error.message }); }
   }
 
-  return sendJson(res, 404, { error: `No API route: ${name} (${req.method})` });
+  if (route === 'clear-all' && req.method === 'POST') {
+    return sendJson(res, 200, {
+      worlds: clearWorlds(),
+      artifacts: clearArtifacts(),
+      diagnostics: clearGenerationDiagnostics()
+    });
+  }
+
+  return sendJson(res, 404, { error: `No API route: ${route} (${req.method})` });
 }
 
 function serveStatic(pathname, res) {
-  let fp = join(__dirname, 'main', pathname === '/' ? 'index.html' : pathname);
-  if (!existsSync(fp)) fp = join(__dirname, 'main', 'index.html');
-  try { res.setHeader('Content-Type', MIME[extname(fp)] || 'application/octet-stream'); res.end(readFileSync(fp)); }
-  catch { res.statusCode = 404; res.end('Not found'); }
+  let path = join(__dirname, 'main', pathname === '/' ? 'index.html' : pathname);
+  if (!existsSync(path)) path = join(__dirname, 'main', 'index.html');
+  try {
+    res.setHeader('Content-Type', MIME[extname(path)] || 'application/octet-stream');
+    res.end(readFileSync(path));
+  } catch {
+    res.statusCode = 404;
+    res.end('Not found');
+  }
 }
 
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   if (url.pathname.startsWith('/api/')) {
-    try { await handleApi(url.pathname.replace('/api/', ''), req, res); }
-    catch (e) { sendJson(res, 500, { error: e.message }); }
+    try { await handleApi(url.pathname.slice('/api/'.length), req, res); }
+    catch (error) { sendJson(res, 500, { error: error.message }); }
     return;
   }
   serveStatic(url.pathname, res);
 });
 
-const BASE = Number(PORT); let attempt = BASE;
+let port = BASE_PORT;
 server.on('listening', () => {
-  const p = server.address().port;
-  console.log(`Monte-Carlo-Fiction main app at http://localhost:${p}`);
-  if (p !== BASE) console.log(`  (port ${BASE} in use — moved to ${p})`);
-  if (!process.env.ANTHROPIC_API_KEY) console.warn('  ANTHROPIC_API_KEY not set — generating works, rendering will fail.');
+  const actual = server.address().port;
+  console.log(`Monte-Carlo-Fiction at http://localhost:${actual}`);
+  if (actual !== BASE_PORT) console.log(`  (port ${BASE_PORT} was in use)`);
+  if (!process.env.ANTHROPIC_API_KEY) console.warn('  ANTHROPIC_API_KEY is not set — generation and rendering will fail.');
 });
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE' && attempt - BASE < 20) { attempt++; server.listen(attempt); return; }
-  console.error('[main-server] failed:', err); process.exit(1);
+server.on('error', error => {
+  if (error.code === 'EADDRINUSE' && port - BASE_PORT < 20) {
+    server.listen(++port);
+    return;
+  }
+  console.error(error);
+  process.exit(1);
 });
-server.listen(attempt);
+server.listen(port);

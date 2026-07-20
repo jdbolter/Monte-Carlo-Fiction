@@ -1,16 +1,13 @@
 {
   "name": "monte-carlo-fiction",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
-  "description": "Distant-writing world model: sample a space of possible media presents (changed dimensions) and ground each in real historical backstory, producing one World object that many renderers can turn into artifacts.",
+  "description": "Generate structured alternate-present worlds from researched historical corpora and user-supplied divergences, then render selected worlds into narrative forms.",
   "scripts": {
-    "sample": "node sampling/sampler.js",
-    "backstory": "node sampling/backstory.js",
-    "world": "node sampling/world.js",
-    "render": "node sampling/render-config.js",
+    "dev": "node sampling/main-server.js",
     "main": "node sampling/main-server.js",
-    "ui": "node sampling/server.js"
+    "test": "node --test"
   },
   "engines": {
     "node": ">=18"

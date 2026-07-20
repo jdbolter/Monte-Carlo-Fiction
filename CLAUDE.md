@@ -1,105 +1,74 @@
 # Monte-Carlo-Fiction — agent operating manual
 
-Read this at the start of a session. Branch `dev`.
+## Current architecture
 
-## What this project is now
+The project generates **model-authored structured alternate presents** from real historical
+corpora and user-authored scenario briefs. It no longer samples abstract dimensions or selects a
+backstory algorithmically.
 
-One **unified world model** for distant-writing / speculative media presents. The earlier
-causal event-walking engine has been retired (it converged on reality). A World has two
-ingredients — **changed dimensions + event backstory** — and is rendered into an **artifact**
-by a library of forms. Full architecture in [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md).
+The pipeline has three deliberate stages:
 
-Do not reintroduce a standalone dimension-sampler-without-history or a standalone causal
-forward-walk; they exist only fused, as one World.
+1. **Evidence** — `sampling/history/*.json`, stable historical event corpora.
+2. **World generation** — one Anthropic structured-output call per World. The history prefix is
+   explicitly cached; the variable scenario brief follows it. Worlds are generated sequentially
+   within a batch so the cache can be reused.
+3. **Rendering** — a separate model call turns a selected saved World into a narrative history,
+   fiction, scene, testimony, or found document. Renderers never regenerate the World.
 
-## Layout (everything under `sampling/`)
+World generation is no longer free or deterministic. Preserve the separation between compact
+structured generation and selective prose rendering.
 
-- `media-present/dimensions.json` — dimension table; each value carries a `gloss`
-  (designer-facing) and a `worldFact` (render-facing plain sentence).
-- `history/vr.json`, `history/silicon-valley.json` — research-built backstory corpora (real
-  events + tags). The only event source now.
-- `sampler.js` — free, deterministic, seeded, k-targeted sampling + enumeration.
-- `backstory.js` — selects grounding events per changed move (provisional `DIMENSION_TAG_MAP`,
-  balanced across moves, recency-biased, deduped).
-- `world.js` — `makeWorld(config, dims, opts)` assembles the World; `generateWorlds(...)` + CLI.
-- `render-config.js` — the renderer: World → artifact. Builds the prompt from `world.facts` +
-  `world.backstory`, forbids the dimension vocabulary, targets a `--form`
-  (found-document / scene / testimony). Retry/backoff, `--resume`, scorecard.
-- `main-server.js` + `main/` — the main app (Generate / Render / Library) on :3000.
-- `server.js` + `public/` — the tuning bench (sample→render→judge) on :4000.
+## Important files
 
-## Running
+- `sampling/history.js` — discovers and loads history corpora; computes corpus hashes.
+- `sampling/history/vr.json` — 68-event immersive/visual-media history.
+- `sampling/history/silicon-valley.json` — 56-event computing/capital history.
+- `sampling/world-schema.js` — Anthropic JSON schema plus application-level causal validation.
+- `sampling/world-generator.js` — cached prompt, structured-output request, correction retry, and
+  sequential batch generation.
+- `sampling/world.js` — saved World envelope and filesystem persistence.
+- `sampling/render-world.js` — render forms, prompt, artifact persistence, and verdicts.
+- `sampling/anthropic.js` — shared Messages API retry/backoff and usage normalization.
+- `sampling/main-server.js`, `sampling/main/index.html` — zero-dependency web application.
+- `test/alternate-present.test.js` — offline schema, cache-boundary, validation, and render tests.
 
+## Run and verify
+
+```bash
+npm run dev
+npm test
 ```
-npm run world -- --k-range 1 2 --n 3 --seed 4      # generate + inspect Worlds (free)
-npm run backstory -- --k 2 --seed 7                # inspect backstory selection (free)
-npm run render -- --k 2 --n 1 --seed 1 --form found-document   # render (needs ANTHROPIC_API_KEY)
-npm run render -- ... --dry-run                    # preview the prompt, spend nothing
-npm run main                                        # main app on :3000
-npm run ui                                          # tuning bench on :4000
-```
 
-World generation is free and deterministic (seed + table + corpora reproduce a World). Only
-rendering costs API calls; Sonnet 529-overloads during US working hours — the renderer retries,
-or pass `--model claude-haiku-4-5-20251001`.
+The app starts on port 3000 and tries the next 20 ports if necessary. `.env.local` must contain
+`ANTHROPIC_API_KEY` for generation or rendering. Do not print or commit the key.
 
-## The render prompt — three tuning levers (in `render-config.js` `SYSTEM`)
+## World rules
 
-- **tone** — no dystopian default; varied, lived-in register.
-- **lineage** — backstory is deep history; never depict old technology as current.
-- **grain** — world-facts are the dominant grain of the culture's media, not literal rules for
-  every message (news/weather still arrive normally).
+- The scenario divergence is a fiat; the generator infers necessary enablers rather than rejecting
+  it.
+- Real historical events are evidence and raw material, not a mandatory chronological path.
+- `sourceRefs` must exist in the selected corpus.
+- `causedBy` may reference assumptions or earlier timeline events only.
+- The endpoint must show mature descendants, not old divergence-era devices frozen in time.
+- Worlds retain a mixed media ecology and explicitly record continuities, costs, exclusions, and
+  unresolved tensions.
+- World fields use compact factual phrases rather than publication-ready prose. They contain no
+  characters, scenes, plots, or miniature story examples; those belong to rendering.
+- An optional render brief may guide focus, viewpoint, setting, tone, or emphasis, but may not
+  contradict the saved World.
+- Application metadata—not the model—supplies IDs, model name, corpus hash, prompt version,
+  original brief, generation time, and usage.
 
-Forms live in the `FORMS` map; `found-document` is the default and the strongest anti-jargon form.
+## Generated data
 
-## Key docs
+`sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. The web
+interface's Clear Everything action removes both together. Old pre-redesign ignored files may exist
+locally, but loaders ignore records whose schemas are not `alternate-present.v1` or `artifact.v1`.
 
-- `sampling/WORLD-CONTRACT.md` — the World object shape + renderer contract.
-- `sampling/BACKSTORY.md` — events-as-backstory + render-form redesign (worked examples).
+## Open work
 
-## Current dimension model
-
-The table has 9 dimensions. Five are **emphasis** dimensions, whose selected value is
-predominant rather than absolute: `attention_unit`, `sensory_register`, `resemblance`,
-`provisioning`, and `custody`. Four are **exclusive**: `authorship_distribution`,
-`literacy_floor`, `compulsion`, and `metering`. Only `resemblance` is ordered; the sampler
-treats all dimensions as nominal sets.
-
-`k` is the number of dimensions moved off ground. Enumeration currently yields 29 worlds at
-k=1 and 368 at k=2. **k=1–2 is the useful coherence band**: coherence depends more on whether
-the moves form a thematic bundle than on their count, and k=3 usually fragments.
-
-## Decision log
-
-- Dropped `fidelity_criterion` and `address`, reducing the table from 11 dimensions to 9.
-- Merged overlapping values: sensory haptic + proprioceptive; provisioning ads + purchase +
-  subscription; authorship caste + hereditary; and the two class-based compulsion bans.
-- Renamed values that incorrectly implied exclusivity, including sensory `visual-only` and
-  `auditory-only` to `visual-primary` and `auditory-primary`.
-- Added the explicit emphasis/exclusive distinction to the data and render prompt.
-- Retired the analytic/jargon essay as an end product. Artifact forms plus forbidden
-  scaffolding vocabulary are the current anti-jargon strategy.
-- Kept generated configs and costly renders out of Git; human judgments remain tracked as
-  research data.
-
-## Open threads
-
-- **Render quality is still being tuned** (tone/lineage/grain) on the :4000 bench — the levers
-  above are first-pass. The backstory `DIMENSION_TAG_MAP` and event tags are also provisional.
-- **Renderers as a library**: found-document/scene/testimony are the first entries; essay,
-  video/animation script, prose story come later. All consume the one World object.
-- **Coherence harness**: aggregate scorecard verdicts by dimension pair to empirically test
-  which combinations cohere. Sampling independence alone cannot provide this signal. Unbuilt.
-- **Selection at scale**: the model rationalizes almost anything fluently, so provocative-world
-  selection remains a human critical task. The complete k=2 space is bounded but still large.
-- **Domain expansion**: decide whether VR is a region of the media-present table or deserves a
-  theme-specific table. Silicon Valley likely fits the general table less well.
-- **Dimension refinement**: values, glosses, world facts, and exclusivity remain live rather
-  than frozen.
-
-## House rules
-
-- World generation never makes model calls; keep the free/deterministic layer clean.
-- Generated worlds/renders are gitignored (reproducible or costly); judgments (`scorecard.md`)
-  are tracked.
-- The dimension table, world-facts, and backstory bridge are live and provisional — expect edits.
+- Evaluate generated Worlds for causal quality and diversity across repeated briefs.
+- Tune schema field counts and generator instructions from real output.
+- Compare Sonnet, Haiku, and OpenAI models after an OpenAI provider is implemented.
+- Design future-world inputs: pivot-forward, endpoint-backcast, bounded corridor, and an optional
+  researched current-drivers corpus.

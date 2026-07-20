@@ -8,79 +8,79 @@
   :root {
     --bg:#131110; --bg-panel:#1b1816; --bg-card:#201c1a; --border:#3a332e;
     --text:#ece5da; --text-dim:#a89e91; --accent:#c8916e; --accent-2:#8ec89a;
-    --accent-3:#6e9ec8; --danger:#c86e6e;
+    --accent-3:#7fa8cf; --danger:#c86e6e;
     --font-serif:Georgia,'Iowan Old Style','Palatino Linotype',serif;
     --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
   }
   * { box-sizing:border-box; }
   body { margin:0; background:var(--bg); color:var(--text); font-family:var(--font-sans); line-height:1.5; }
-
-  .topbar { border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10;
-    background:rgba(19,17,16,0.92); backdrop-filter:blur(6px); }
-  .topbar-inner { max-width:1080px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
-  .brand { font-family:var(--font-serif); font-size:1.15rem; letter-spacing:.02em; background:none; border:none; color:var(--text); cursor:default; }
+  .topbar { border-bottom:1px solid var(--border); position:sticky; top:0; z-index:10; background:rgba(19,17,16,.94); backdrop-filter:blur(6px); }
+  .topbar-inner { max-width:1120px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:14px 24px; }
+  .brand { font-family:var(--font-serif); font-size:1.15rem; }
   .topnav { display:flex; gap:6px; }
   .nav-link { background:none; border:1px solid transparent; color:var(--text-dim); font:inherit; font-size:.92rem; padding:8px 14px; border-radius:6px; cursor:pointer; }
   .nav-link:hover { color:var(--text); border-color:var(--border); }
   .nav-link.active { color:var(--accent); border-color:var(--border); background:var(--bg-panel); }
-
-  main#app { max-width:1080px; margin:0 auto; padding:0 24px 80px; }
+  main { max-width:1120px; margin:0 auto; padding:0 24px 80px; }
   .screen { display:none; } .screen.active { display:block; }
-  .hero { padding:44px 0 26px; border-bottom:1px solid var(--border); margin-bottom:26px; }
-  .hero h1 { font-family:var(--font-serif); font-size:2.2rem; margin:0 0 10px; }
-  .hero .lede { color:var(--text-dim); max-width:640px; font-size:1.02rem; }
-  .section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:26px 0 16px; flex-wrap:wrap; }
+  .hero { padding:42px 0 25px; border-bottom:1px solid var(--border); margin-bottom:24px; }
+  .hero h1 { font-family:var(--font-serif); font-size:2.15rem; margin:0 0 10px; }
+  .hero .lede { color:var(--text-dim); max-width:760px; font-size:1.02rem; }
+  .section-heading { display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin:28px 0 16px; flex-wrap:wrap; }
   .section-heading h2 { font-family:var(--font-serif); margin:0; font-size:1.4rem; }
-  .muted { color:var(--text-dim); font-size:.9rem; }
-
-  .panel { background:var(--bg-panel); border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:20px; }
+  .muted, .hint { color:var(--text-dim); font-size:.86rem; }
+  .panel { background:var(--bg-panel); border:1px solid var(--border); border-radius:10px; padding:18px 20px; margin-bottom:18px; }
   .form-row { display:flex; align-items:flex-end; gap:14px; flex-wrap:wrap; }
-  .field { display:flex; flex-direction:column; gap:4px; }
-  .field label, .form-row > label { color:var(--text-dim); font-size:.82rem; }
-  input[type="number"], select { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:8px 10px; font:inherit; font-size:.92rem; width:82px; }
-  select { width:auto; }
-  .check { flex-direction:row; align-items:center; gap:6px; color:var(--text-dim); font-size:.85rem; }
+  .field { display:flex; flex-direction:column; gap:5px; }
+  .field.grow { flex:1 1 100%; }
+  .field label { color:var(--text-dim); font-size:.82rem; }
+  input, select, textarea { background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:6px; padding:9px 10px; font:inherit; font-size:.92rem; }
+  input[type=number] { width:80px; }
+  .field.grow input { width:100%; }
+  textarea { width:100%; min-height:170px; resize:vertical; line-height:1.5; }
+  textarea.render-brief { min-height:4.8em; }
   .btn { border:1px solid var(--border); background:var(--bg-card); color:var(--text); padding:9px 18px; border-radius:6px; cursor:pointer; font:inherit; font-size:.92rem; }
   .btn:hover { border-color:var(--accent); } .btn:disabled { opacity:.5; cursor:not-allowed; }
   .btn-primary { background:var(--accent); border-color:var(--accent); color:#201c1a; font-weight:600; }
-  .btn-small { padding:5px 12px; font-size:.82rem; }
+  .btn-small { padding:5px 11px; font-size:.8rem; }
   .btn-danger { border-color:var(--danger); color:var(--danger); }
-  .btn-danger:hover { background:var(--danger); color:#201c1a; border-color:var(--danger); }
+  .btn-danger:hover { background:var(--danger); color:#201c1a; }
   .spacer { flex:1; }
-  .status { margin:12px 2px; font-size:.9rem; color:var(--text-dim); min-height:1.2em; }
+  .status { margin:12px 2px 18px; min-height:1.3em; color:var(--text-dim); font-size:.9rem; }
   .status.error { color:var(--danger); }
-
-  .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); gap:16px; margin-top:8px; }
-  .card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px; transition:border-color .15s; }
-  .card:hover { border-color:var(--accent); }
-  .card h3 { margin:6px 0 8px; font-family:var(--font-serif); font-size:1.1rem; font-weight:600; }
+  .card-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(330px,1fr)); gap:16px; }
+  .card { background:var(--bg-card); border:1px solid var(--border); border-radius:10px; padding:18px; min-width:0; }
+  .card h3 { margin:7px 0 7px; font-family:var(--font-serif); font-size:1.16rem; }
+  .card p { margin:7px 0; }
   .tag-row { display:flex; gap:6px; flex-wrap:wrap; }
-  .tag { font-size:.72rem; padding:3px 8px; border-radius:100px; border:1px solid var(--border); color:var(--text-dim); }
-  .tag.branch { color:var(--accent); border-color:var(--accent); }
+  .tag { font-size:.71rem; padding:3px 8px; border-radius:100px; border:1px solid var(--border); color:var(--text-dim); }
+  .tag.primary { color:var(--accent); border-color:var(--accent); }
   .tag.rendered { color:var(--accent-2); border-color:var(--accent-2); }
-  .steps { margin:8px 0; font-size:.86rem; color:var(--text); }
-  .steps span { display:block; padding:2px 0; }
-  .steps span b { color:var(--accent); font-weight:600; }
-  .hint { color:var(--text-dim); font-size:.8rem; margin:8px 0 0; }
-  .actions { margin-top:12px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-
-  /* library artifact */
+  .tag.cache { color:var(--accent-3); border-color:var(--accent-3); }
+  .world-line { font-size:.86rem; margin:8px 0; }
+  .world-line b { color:var(--accent); }
+  .year-list { color:var(--text-dim); font-size:.79rem; line-height:1.6; }
+  .actions { margin-top:13px; display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
+  details { border-top:1px solid var(--border); margin-top:12px; padding-top:10px; }
+  summary { cursor:pointer; color:var(--text-dim); font-size:.83rem; }
+  .detail-section h4 { color:var(--accent); font-size:.82rem; text-transform:uppercase; letter-spacing:.05em; margin:14px 0 4px; }
+  .detail-section ul { margin:4px 0 8px 18px; padding:0; font-size:.84rem; }
+  pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; font-size:.72rem; max-height:430px; overflow:auto; }
   .artifact { grid-column:1/-1; }
-  .artifact .story-body { font-family:var(--font-serif); font-size:1.05rem; line-height:1.75; white-space:pre-wrap;
-    margin:12px 0; padding:16px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
-  .scene-label { display:inline-block; font-size:.72rem; text-transform:uppercase; letter-spacing:.05em; color:var(--accent); }
+  .story-body { font-family:var(--font-serif); font-size:1.04rem; line-height:1.75; white-space:pre-wrap; margin:14px 0; padding:17px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
   .verdicts { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
-  .vbtn { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:6px; padding:5px 11px; cursor:pointer; font:inherit; font-size:.85rem; }
+  .vbtn { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:6px; padding:5px 11px; cursor:pointer; font:inherit; font-size:.83rem; }
   .vbtn.sel[data-v=cohere] { background:var(--accent-2); color:#201c1a; border-color:var(--accent-2); }
   .vbtn.sel[data-v=strain] { background:var(--accent); color:#201c1a; border-color:var(--accent); }
   .vbtn.sel[data-v=incoherent] { background:var(--danger); color:#201c1a; border-color:var(--danger); }
-  .note { flex:1; min-width:170px; width:auto; }
+  .note { flex:1; min-width:190px; }
   .saved { color:var(--accent-2); font-size:.8rem; }
+  @media (max-width:650px) { .topbar-inner { align-items:flex-start; gap:8px; } .nav-link { padding:7px 9px; } main { padding-left:14px; padding-right:14px; } }
 </style>
 </head>
 <body>
 <div class="topbar"><div class="topbar-inner">
-  <button class="brand">Monte-Carlo-Fiction</button>
+  <div class="brand">Monte-Carlo-Fiction</div>
   <nav class="topnav">
     <button class="nav-link active" data-tab="generate">Generate</button>
     <button class="nav-link" data-tab="render">Render</button>
@@ -88,202 +88,267 @@
   </nav>
 </div></div>
 
-<main id="app">
-
-  <!-- GENERATE -->
+<main>
   <section class="screen active" id="screen-generate">
     <div class="hero">
-      <h1>Generate a world</h1>
-      <div class="lede">Each world is a media present that differs from ours in a few dimensions, grounded in the real history that led there. Generation is free and reproducible from a seed.</div>
+      <h1>Generate alternate presents</h1>
+      <div class="lede">Give the model a historical corpus and a divergence. It will construct a causal trajectory and a mature alternate present as structured JSON. Generation uses the API; repeated requests reuse the cached history corpus.</div>
     </div>
-    <div class="panel"><div class="form-row">
-      <div class="field"><label>mode</label><select id="g-mode">
-        <option value="sample">sample</option><option value="enumerate">enumerate (all at k)</option></select></div>
-      <div class="field" id="g-fk"><label>k</label><input type="number" id="g-k" value="2" min="1" max="9"></div>
-      <div class="field" id="g-fkr" style="display:none"><label>k range</label>
-        <span style="display:flex;gap:4px"><input type="number" id="g-klo" value="1" min="1" max="9"><input type="number" id="g-khi" value="2" min="1" max="9"></span></div>
-      <div class="field" id="g-fn"><label>count</label><input type="number" id="g-n" value="6" min="1" max="40"></div>
-      <div class="field" id="g-fs"><label>seed</label><input type="number" id="g-seed" value="1"></div>
-      <div class="field" id="g-fl" style="display:none"><label>limit</label><input type="number" id="g-limit" value="20" min="1" max="60"></div>
-      <label class="field check"><input type="checkbox" id="g-kr"> k-range</label>
-      <button class="btn btn-primary" id="g-go">Generate</button>
-      <span class="spacer"></span>
-      <button class="btn btn-danger" id="g-clear">Clear worlds</button>
-    </div></div>
-    <div class="status" id="g-status">Generated worlds are saved; write them up on the Render tab.</div>
+    <div class="panel">
+      <div class="form-row">
+        <div class="field"><label>history corpus</label><select id="g-corpus"></select></div>
+        <div class="field"><label>worlds</label><input type="number" id="g-count" value="3" min="1" max="20"></div>
+        <div class="field"><label>generation model</label><select id="g-model">
+          <option value="claude-sonnet-5">sonnet-5</option>
+          <option value="claude-haiku-4-5-20251001">haiku-4.5</option>
+          <option value="claude-opus-4-8">opus-4.8</option>
+        </select></div>
+        <span class="spacer"></span>
+        <button class="btn btn-danger clear-all">Clear everything</button>
+        <div class="field grow">
+          <label>scenario brief — describe the divergence, endpoint, horizon, and areas to emphasize</label>
+          <textarea id="g-brief">In 1990, VPL Research produces a VR system offering approximately the experiential quality that consumer Oculus systems achieved decades later: convincing stereoscopic imagery, low-latency head tracking, reliable interaction, and a sufficiently comfortable experience for sustained use. This must not be treated as an isolated miracle; infer the supporting technical and institutional changes it requires. By 2026, VR has largely fulfilled the 1990s promise that it would become the principal successor to the graphical user interface. Construct the resulting alternate present, focusing on entertainment and social media.</textarea>
+        </div>
+        <button class="btn btn-primary" id="g-go">Generate worlds</button>
+        <span class="hint">Worlds are generated sequentially so later calls can hit the prompt cache.</span>
+      </div>
+    </div>
+    <div class="status" id="g-status"></div>
     <div class="card-grid" id="g-list"></div>
   </section>
 
-  <!-- RENDER -->
   <section class="screen" id="screen-render">
-    <div class="section-heading"><h2>Render worlds into artifacts</h2><span class="muted" id="r-status"></span></div>
+    <div class="section-heading"><h2>Render selected worlds</h2><span class="muted" id="r-status"></span></div>
     <div class="panel"><div class="form-row">
       <div class="field"><label>form</label><select id="r-form"></select></div>
-      <div class="field"><label>model</label><select id="r-model">
+      <div class="field"><label>render model</label><select id="r-model">
         <option value="claude-sonnet-5">sonnet-5</option>
         <option value="claude-haiku-4-5-20251001">haiku-4.5</option>
-        <option value="claude-opus-4-8">opus-4.8</option></select></div>
+        <option value="claude-opus-4-8">opus-4.8</option>
+      </select></div>
       <button class="btn" id="r-refresh">Refresh</button>
-      <button class="btn btn-primary" id="r-all">Render all unrendered</button>
+      <button class="btn btn-primary" id="r-all">Render all missing this form</button>
       <span class="spacer"></span>
-      <button class="btn btn-danger" id="r-clear">Clear worlds</button>
+      <button class="btn btn-danger clear-all">Clear everything</button>
+      <div class="field grow">
+        <label>render brief (optional) — focus, viewpoint, setting, tone, or emphasis</label>
+        <textarea class="render-brief" id="r-brief" rows="3" maxlength="2000" placeholder="Leave blank to let the renderer choose, or describe the characters, situation, viewpoint, setting, tone, and emphasis you want."></textarea>
+      </div>
     </div></div>
     <div class="card-grid" id="r-list"></div>
   </section>
 
-  <!-- LIBRARY -->
   <section class="screen" id="screen-library">
-    <div class="section-heading"><h2>Library</h2><span class="muted" id="l-count"></span></div>
+    <div class="section-heading"><h2>Rendered library</h2><span class="muted" id="l-count"></span></div>
     <div class="panel"><div class="form-row">
       <button class="btn" id="l-refresh">Refresh</button>
-      <span class="hint">Read each artifact and judge it — verdicts save to the run's scorecard.</span>
+      <span class="hint">Judge the render; verdicts and notes are stored with the artifact.</span>
       <span class="spacer"></span>
-      <button class="btn btn-danger" id="l-clear">Clear library</button>
+      <button class="btn btn-danger clear-all">Clear everything</button>
     </div></div>
     <div class="status" id="l-status"></div>
     <div class="card-grid" id="l-list"></div>
   </section>
-
 </main>
-<script type="module">
-const $ = s => document.querySelector(s);
-const el = h => { const d = document.createElement('div'); d.innerHTML = h; return d.firstElementChild; };
-const esc = s => (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');
-async function api(p, o) { const r = await fetch('/api/' + p, o); const j = await r.json(); if (!r.ok) throw new Error(j.error || 'HTTP ' + r.status); return j; }
-const POST = b => ({ method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(b) });
 
-document.querySelectorAll('.nav-link').forEach(b => b.onclick = () => {
-  document.querySelectorAll('.nav-link').forEach(x => x.classList.toggle('active', x === b));
-  document.querySelectorAll('.screen').forEach(s => s.classList.toggle('active', s.id === 'screen-' + b.dataset.tab));
-  if (b.dataset.tab === 'render') loadWorlds();
-  if (b.dataset.tab === 'library') loadLibrary();
+<script type="module">
+const $ = selector => document.querySelector(selector);
+const esc = value => String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+const node = html => { const wrapper = document.createElement('div'); wrapper.innerHTML = html.trim(); return wrapper.firstElementChild; };
+const POST = body => ({ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
+async function api(route, options) {
+  const response = await fetch('/api/' + route, options);
+  const payload = await response.json();
+  if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`);
+  return payload;
+}
+const formLabel = form => form.replace(/-/g, ' ');
+
+document.querySelectorAll('.nav-link').forEach(button => button.onclick = () => {
+  document.querySelectorAll('.nav-link').forEach(item => item.classList.toggle('active', item === button));
+  document.querySelectorAll('.screen').forEach(screen => screen.classList.toggle('active', screen.id === 'screen-' + button.dataset.tab));
+  if (button.dataset.tab === 'generate') loadGenerated();
+  if (button.dataset.tab === 'render') loadRenderWorlds();
+  if (button.dataset.tab === 'library') loadLibrary();
 });
 
-function worldMeta(w) {
-  const facts = w.facts.map(f => `<span>${esc(f)}</span>`).join('');
-  const bk = w.backstory.map(e => `${e.display} ${e.label}`).join(' · ');
-  return `<div class="tag-row"><span class="tag branch">k=${w.k}</span>${w.rendered ? '<span class="tag rendered">rendered</span>' : ''}</div>
-    <h3>${esc(w.summary)}</h3><div class="steps">${facts}</div><p class="hint">lineage: ${esc(bk)}</p>`;
+function cacheTag(world) {
+  const usage = world.provenance?.usage || {};
+  if (usage.cacheReadInputTokens) return `<span class="tag cache">cache hit ${usage.cacheReadInputTokens.toLocaleString()} tokens</span>`;
+  if (usage.cacheCreationInputTokens) return `<span class="tag cache">cache created ${usage.cacheCreationInputTokens.toLocaleString()} tokens</span>`;
+  return '';
 }
 
-// GENERATE
-function gModeUI() {
-  const en = $('#g-mode').value === 'enumerate', kr = $('#g-kr').checked && !en;
-  $('#g-fk').style.display = kr ? 'none' : ''; $('#g-fkr').style.display = kr ? '' : 'none';
-  $('#g-fn').style.display = en ? 'none' : ''; $('#g-fs').style.display = en ? 'none' : '';
-  $('#g-fl').style.display = en ? '' : 'none';
-  $('#g-go').textContent = en ? 'Enumerate' : 'Generate';
+function worldDetails(world) {
+  const present = Object.entries(world.present || {}).map(([key, values]) =>
+    `<div class="detail-section"><h4>${esc(formLabel(key))}</h4><ul>${values.map(value => `<li>${esc(value)}</li>`).join('')}</ul></div>`
+  ).join('');
+  const json = { ...world }; delete json.renderedForms;
+  return `<details><summary>Inspect trajectory and endpoint</summary>
+      <div class="detail-section"><h4>Assumptions</h4><ul>${world.assumptions.map(a => `<li><b>${esc(a.plausibility)}</b> — ${esc(a.claim)} (${esc(a.timing)})</li>`).join('')}</ul></div>
+      <div class="detail-section"><h4>Timeline</h4><ul>${world.timeline.map(e => `<li><b>${e.year}</b> — ${esc(e.development)} <span class="muted">${esc(e.consequence)}</span></li>`).join('')}</ul></div>
+      ${present}
+      <div class="detail-section"><h4>Continuities</h4><ul>${world.continuities.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+    </details>
+    <details><summary>View or copy complete World JSON</summary><pre>${esc(JSON.stringify(json, null, 2))}</pre><button class="btn btn-small copy-json">Copy JSON</button></details>`;
 }
-$('#g-mode').onchange = gModeUI; $('#g-kr').onchange = gModeUI;
-$('#g-go').onclick = async () => {
-  $('#g-status').textContent = 'generating…';
-  const en = $('#g-mode').value === 'enumerate';
-  const body = en ? { mode:'enumerate', k:+$('#g-k').value, limit:+$('#g-limit').value }
-    : $('#g-kr').checked ? { mode:'sample', kLo:+$('#g-klo').value, kHi:+$('#g-khi').value, n:+$('#g-n').value, seed:+$('#g-seed').value }
-    : { mode:'sample', k:+$('#g-k').value, n:+$('#g-n').value, seed:+$('#g-seed').value };
+
+function worldCard(world, renderControls = false) {
+  const forms = world.renderedForms || [];
+  const years = world.timeline.map(event => event.year).join(' · ');
+  const target = world.premise.targetCondition ? `<p class="world-line"><b>Target:</b> ${esc(world.premise.targetCondition)}</p>` : '';
+  const card = node(`<article class="card">
+    <div class="tag-row"><span class="tag primary">${esc(world.domain)}</span><span class="tag">to ${world.horizonYear}</span>${cacheTag(world)}${forms.map(form => `<span class="tag rendered">${esc(formLabel(form))}</span>`).join('')}</div>
+    <h3>${esc(world.title)}</h3>
+    <p>${esc(world.summary)}</p>
+    <p class="world-line"><b>Divergence ${world.premise.divergence.year}:</b> ${esc(world.premise.divergence.change)}</p>
+    ${target}<p class="year-list">${esc(years)}</p>
+    ${worldDetails(world)}
+    ${renderControls ? '<div class="actions"><button class="btn btn-primary btn-small render-one">Render selected form</button><span class="render-note hint"></span></div>' : ''}
+  </article>`);
+  card.querySelector('.copy-json').onclick = async event => {
+    const json = card.querySelector('pre').textContent;
+    await navigator.clipboard.writeText(json);
+    event.currentTarget.textContent = 'Copied'; setTimeout(() => event.currentTarget.textContent = 'Copy JSON', 1200);
+  };
+  if (renderControls) {
+    const button = card.querySelector('.render-one');
+    const note = card.querySelector('.render-note');
+    const selectedForm = $('#r-form').value;
+    if (forms.includes(selectedForm)) note.textContent = 'already rendered; clicking replaces it';
+    button.onclick = () => renderOne(world.id, button, note);
+  }
+  return card;
+}
+
+async function loadCorpora() {
+  const { corpora } = await api('corpora');
+  $('#g-corpus').innerHTML = corpora.map(corpus => `<option value="${esc(corpus.id)}"${corpus.id === 'vr' ? ' selected' : ''}>${esc(corpus.id)} — ${corpus.eventCount} events, ${corpus.firstYear}–${corpus.lastYear}</option>`).join('');
+}
+
+async function loadForms() {
+  const { forms, default: defaultForm } = await api('forms');
+  $('#r-form').innerHTML = forms.map(form => `<option value="${esc(form)}"${form === defaultForm ? ' selected' : ''}>${esc(formLabel(form))}</option>`).join('');
+}
+
+async function loadGenerated() {
   try {
-    const { worlds } = await api('generate', POST(body));
+    const { worlds } = await api('worlds');
     $('#g-list').innerHTML = '';
-    worlds.forEach(w => $('#g-list').appendChild(el(`<div class="card world-card">${worldMeta(w)}</div>`)));
-    $('#g-status').textContent = `${worlds.length} worlds generated and saved — go to Render.`;
-  } catch (e) { $('#g-status').textContent = 'error: ' + e.message; $('#g-status').className = 'status error'; }
+    worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
+    if (!$('#g-status').textContent) $('#g-status').textContent = worlds.length ? `${worlds.length} saved world${worlds.length === 1 ? '' : 's'}.` : 'No alternate-present worlds have been generated yet.';
+  } catch (error) { $('#g-status').textContent = 'Error: ' + error.message; $('#g-status').className = 'status error'; }
+}
+
+$('#g-go').onclick = async () => {
+  const button = $('#g-go');
+  button.disabled = true;
+  $('#g-status').className = 'status';
+  $('#g-status').textContent = 'Generating structured worlds sequentially. A multi-world request may take several minutes…';
+  try {
+    const result = await api('generate', POST({
+      corpusId: $('#g-corpus').value,
+      count: Number($('#g-count').value),
+      model: $('#g-model').value,
+      scenarioBrief: $('#g-brief').value
+    }));
+    $('#g-list').innerHTML = '';
+    result.worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
+    const warning = result.errors.length ? ` ${result.errors.length} variant(s) failed validation.` : '';
+    $('#g-status').textContent = `${result.worlds.length} world${result.worlds.length === 1 ? '' : 's'} generated and saved.${warning}`;
+  } catch (error) {
+    $('#g-status').className = 'status error';
+    $('#g-status').textContent = 'Generation failed: ' + error.message;
+  } finally { button.disabled = false; }
 };
 
-// RENDER
-async function loadForms() {
-  try { const { forms, default: def } = await api('forms');
-    $('#r-form').innerHTML = forms.map(f => `<option value="${f}"${f === def ? ' selected' : ''}>${f}</option>`).join(''); } catch {}
-}
-async function loadWorlds() {
+async function loadRenderWorlds() {
   $('#r-status').textContent = 'loading…';
   try {
     const { worlds } = await api('worlds');
-    const list = $('#r-list'); list.innerHTML = '';
-    if (!worlds.length) { $('#r-status').textContent = 'no worlds yet — generate some'; return; }
-    worlds.forEach(w => {
-      const card = el(`<div class="card world-card">${worldMeta(w)}
-        <div class="actions">${w.rendered ? '<span class="tag rendered">already in library</span>' : '<button class="btn btn-primary btn-small rb">Render</button>'}</div></div>`);
-      const rb = card.querySelector('.rb');
-      if (rb) rb.onclick = () => renderOne(w.id, rb, card);
-      list.appendChild(card);
-    });
-    const pend = worlds.filter(w => !w.rendered).length;
-    $('#r-status').textContent = `${worlds.length} worlds · ${pend} unrendered`;
-  } catch (e) { $('#r-status').textContent = 'error: ' + e.message; }
+    $('#r-list').innerHTML = '';
+    worlds.forEach(world => $('#r-list').appendChild(worldCard(world, true)));
+    const form = $('#r-form').value;
+    const missing = worlds.filter(world => !(world.renderedForms || []).includes(form)).length;
+    $('#r-status').textContent = worlds.length ? `${worlds.length} worlds · ${missing} missing ${formLabel(form)}` : 'no worlds yet';
+  } catch (error) { $('#r-status').textContent = 'Error: ' + error.message; }
 }
-async function renderOne(worldId, btn, card) {
-  btn.disabled = true; btn.textContent = 'rendering…';
+
+async function renderOne(worldId, button, note) {
+  button.disabled = true; button.textContent = 'Rendering…'; note.textContent = '';
   try {
-    await api('render', POST({ worldId, form: $('#r-form').value, model: $('#r-model').value }));
-    card.querySelector('.actions').innerHTML = '<span class="tag rendered">✓ rendered → Library</span>';
-    card.querySelector('.tag-row').insertAdjacentHTML('beforeend', '<span class="tag rendered">rendered</span>');
-  } catch (e) { btn.disabled = false; btn.textContent = 'Render'; alert('Render failed: ' + e.message); }
-}
-$('#r-refresh').onclick = loadWorlds;
-$('#r-all').onclick = async () => {
-  const { worlds } = await api('worlds'); const todo = worlds.filter(w => !w.rendered);
-  if (!todo.length) { $('#r-status').textContent = 'nothing to render'; return; }
-  for (let i = 0; i < todo.length; i++) {
-    $('#r-status').textContent = `rendering ${i + 1}/${todo.length}…`;
-    try { await api('render', POST({ worldId: todo[i].id, form: $('#r-form').value, model: $('#r-model').value })); } catch (e) {}
+    await api('render', POST({ worldId, form:$('#r-form').value, model:$('#r-model').value, renderBrief:$('#r-brief').value }));
+    button.textContent = 'Rendered'; note.textContent = 'saved to Library';
+  } catch (error) {
+    button.disabled = false; button.textContent = 'Render selected form'; note.textContent = 'failed: ' + error.message;
   }
-  loadWorlds();
+}
+
+$('#r-form').onchange = loadRenderWorlds;
+$('#r-refresh').onclick = loadRenderWorlds;
+$('#r-all').onclick = async () => {
+  const button = $('#r-all'); button.disabled = true;
+  try {
+    const { worlds } = await api('worlds');
+    const form = $('#r-form').value;
+    const todo = worlds.filter(world => !(world.renderedForms || []).includes(form));
+    for (let i = 0; i < todo.length; i++) {
+      $('#r-status').textContent = `rendering ${i + 1}/${todo.length}…`;
+      try { await api('render', POST({ worldId:todo[i].id, form, model:$('#r-model').value, renderBrief:$('#r-brief').value })); } catch {}
+    }
+    await loadRenderWorlds();
+  } finally { button.disabled = false; }
 };
 
-// LIBRARY
 async function loadLibrary() {
   $('#l-status').textContent = 'loading…';
   try {
     const { items } = await api('library');
-    const list = $('#l-list'); list.innerHTML = '';
-    $('#l-count').textContent = `${items.length} artifacts`;
-    if (!items.length) { $('#l-status').textContent = 'library is empty — render some worlds'; return; }
-    $('#l-status').textContent = '';
-    items.forEach(r => {
-      const moves = (r.offGround || []).map(o => `${o.dimension}=${o.value}`).join(' · ');
-      const card = el(`<div class="card artifact">
-        <div class="tag-row"><span class="tag branch">k=${r.k}</span><span class="tag">${esc(r.form)}</span></div>
-        <h3>${esc(r.summary || '')}</h3>
-        <p class="hint">${esc(moves)}</p>
-        <div class="story-body">${esc(r.text)}</div>
+    $('#l-list').innerHTML = '';
+    $('#l-count').textContent = `${items.length} artifact${items.length === 1 ? '' : 's'}`;
+    $('#l-status').textContent = items.length ? '' : 'The library is empty.';
+    items.forEach(record => {
+      const renderBrief = record.renderBrief ? `<p class="hint"><b>Render brief:</b> ${esc(record.renderBrief)}</p>` : '';
+      const card = node(`<article class="card artifact">
+        <div class="tag-row"><span class="tag primary">${esc(formLabel(record.form))}</span><span class="tag">${record.horizonYear}</span><span class="tag">${esc(record.model)}</span></div>
+        <h3>${esc(record.worldTitle)}</h3><p class="hint">${esc(record.worldSummary)}</p>
+        ${renderBrief}
+        <div class="story-body">${esc(record.text)}</div>
         <div class="verdicts">
-          <button class="vbtn ${r.verdict==='cohere'?'sel':''}" data-v="cohere">cohere</button>
-          <button class="vbtn ${r.verdict==='strain'?'sel':''}" data-v="strain">strain</button>
-          <button class="vbtn ${r.verdict==='incoherent'?'sel':''}" data-v="incoherent">incoherent</button>
-          <input class="note" placeholder="note (optional)" value="${esc(r.note)}">
-          <span class="saved"></span></div></div>`);
+          <button class="vbtn ${record.verdict === 'cohere' ? 'sel' : ''}" data-v="cohere">cohere</button>
+          <button class="vbtn ${record.verdict === 'strain' ? 'sel' : ''}" data-v="strain">strain</button>
+          <button class="vbtn ${record.verdict === 'incoherent' ? 'sel' : ''}" data-v="incoherent">incoherent</button>
+          <input class="note" placeholder="note (optional)" value="${esc(record.note)}">
+          <span class="saved"></span>
+        </div>
+      </article>`);
       const note = card.querySelector('.note'), saved = card.querySelector('.saved');
-      card.querySelectorAll('.vbtn').forEach(b => b.onclick = async () => {
-        try { await api('verdict', POST({ tag: r.tag, verdict: b.dataset.v, note: note.value }));
-          card.querySelectorAll('.vbtn').forEach(x => x.classList.remove('sel')); b.classList.add('sel');
-          saved.textContent = '✓ saved'; setTimeout(() => saved.textContent = '', 1500);
-        } catch (e) { alert('Save failed: ' + e.message); }
+      card.querySelectorAll('.vbtn').forEach(button => button.onclick = async () => {
+        try {
+          await api('verdict', POST({ id:record.id, verdict:button.dataset.v, note:note.value }));
+          card.querySelectorAll('.vbtn').forEach(item => item.classList.remove('sel'));
+          button.classList.add('sel'); saved.textContent = 'saved'; setTimeout(() => saved.textContent = '', 1200);
+        } catch (error) { saved.textContent = error.message; }
       });
-      list.appendChild(card);
+      $('#l-list').appendChild(card);
     });
-  } catch (e) { $('#l-status').textContent = 'error: ' + e.message; }
+  } catch (error) { $('#l-status').textContent = 'Error: ' + error.message; }
 }
+
 $('#l-refresh').onclick = loadLibrary;
-
-// CLEAR
-async function clearWorldsUI() {
-  if (!confirm('Delete all saved generated worlds? (Rendered artifacts in the Library are kept.)')) return;
+document.querySelectorAll('.clear-all').forEach(button => button.onclick = async () => {
+  if (!confirm('Delete all generated worlds and all rendered artifacts?')) return;
   try {
-    const { cleared } = await api('clear-worlds', POST({}));
-    $('#g-list').innerHTML = ''; $('#r-list').innerHTML = '';
-    $('#g-status').textContent = `cleared ${cleared} saved worlds.`;
-    $('#r-status').textContent = 'no worlds — generate some';
-  } catch (e) { alert('Clear failed: ' + e.message); }
-}
-$('#g-clear').onclick = clearWorldsUI;
-$('#r-clear').onclick = clearWorldsUI;
-$('#l-clear').onclick = async () => {
-  if (!confirm('Delete all rendered artifacts and their verdicts from the library?')) return;
-  try { const { cleared } = await api('clear-library', POST({})); await loadLibrary(); $('#l-status').textContent = `cleared ${cleared} files.`; }
-  catch (e) { alert('Clear failed: ' + e.message); }
-};
+    const result = await api('clear-all', POST({}));
+    $('#g-list').innerHTML = ''; $('#r-list').innerHTML = ''; $('#l-list').innerHTML = '';
+    $('#g-status').className = 'status';
+    $('#g-status').textContent = `Cleared ${result.worlds} worlds and ${result.artifacts} artifacts.`;
+    $('#r-status').textContent = 'no worlds yet'; $('#l-count').textContent = '0 artifacts'; $('#l-status').textContent = 'The library is empty.';
+  } catch (error) { alert('Clear failed: ' + error.message); }
+});
 
-gModeUI(); loadForms();
+await Promise.all([loadCorpora(), loadForms()]);
+await loadGenerated();
 </script>
 </body>
 </html>

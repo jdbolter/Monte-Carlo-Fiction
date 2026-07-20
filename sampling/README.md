@@ -1,57 +1,64 @@
-# The world model — `sampling/`
+# Alternate-present generator — `sampling/`
 
-The whole system. A **World** = **changed dimensions + event backstory**, rendered into an
-**artifact**. (Overview and quick start are in the repo-root [`README.md`](../README.md); this
-note covers the internals.)
-
-- **ground** = our world's value for a dimension; **k** = number of dimensions off ground
-  (Hamming distance). k=0 is our present (a forecast); k=1–2 is where coherent, strange worlds
-  live — coherence depends on whether the changed dimensions form a *thematic bundle*, not on k.
-- A dimension is **exclusive** (its value strictly holds) or **emphasis** (predominant, not
-  absolute). Only `resemblance` is ordered.
-
-## Files
+Everything under this directory supports one flow:
 
 ```
-media-present/dimensions.json   9 dimensions; each value has a gloss (designer) + worldFact (render)
-history/vr.json                 immersive-media backstory corpus (~68 events, 1600s–2026)
-history/silicon-valley.json     computing/capital backstory corpus (~56 events, 1909–2024)
-sampler.js                      free, seeded, k-targeted sampling + enumeration
-backstory.js                    selects grounding events per changed move (DIMENSION_TAG_MAP)
-world.js                        makeWorld() — the unified World object; generateWorlds() + CLI
-render-config.js                renderer: World → artifact (FORMS, SYSTEM levers, retry, scorecard)
-main-server.js + main/          main app (Generate / Render / Library) on :3000
-server.js + public/             tuning bench (sample → render → judge) on :4000
-worlds/, outputs/               generated Worlds / rendered artifacts (gitignored; scorecard.md tracked)
+history corpus + scenario brief → alternate-present World JSON → selected render
 ```
 
-## Run
+## Modules
 
-```
-npm run world -- --k-range 1 2 --n 3 --seed 4        # generate + inspect Worlds (free)
-npm run backstory -- --k 2 --seed 7                  # backstory selection + reasons (free)
-npm run render -- --k 2 --n 5 --seed 1 --form found-document      # render (needs API key)
-npm run render -- ... --dry-run                      # preview the prompt, free
-npm run main        # main app :3000        npm run ui   # tuning bench :4000
-```
+| File | Responsibility |
+|---|---|
+| `history/*.json` | Stable researched event corpora supplied to the generator |
+| `history.js` | Corpus discovery, loading, event IDs, and hashes |
+| `world-schema.js` | Structured-output JSON schema and causal validation |
+| `world-generator.js` | Cached Anthropic prompt and sequential batch generation |
+| `world.js` | World envelope, IDs, persistence, listing, and clearing |
+| `render-world.js` | World-to-artifact render forms and artifact persistence |
+| `anthropic.js` | Shared API retry/backoff and usage normalization |
+| `main-server.js` | Local HTTP API and static server |
+| `main/index.html` | Generate / Render / Library interface |
+| `worlds/` | Gitignored generated Worlds |
+| `outputs/library/` | Gitignored rendered artifacts |
 
-## The World object (see `WORLD-CONTRACT.md`)
+## Prompt caching
 
-```
-{ id, domain, seed, provenance,
-  dimensions:{ all, changed:[{dimension,label,value,ground,exclusive,gloss,worldFact}], k },
-  facts:[ <plain sentence per changed move> ],
-  backstory:{ events:[...], brief },
-  summary }
-```
+The generation request contains two user content blocks. The first holds the complete history
+corpus and ends with an explicit five-minute cache breakpoint. The second holds the variable
+scenario brief, batch index, prior variant summaries, and any correction instructions. Batch
+generation is sequential because a cache entry becomes reusable only after the first response
+begins.
 
-Renderers consume `facts` + `backstory` (never the raw dimension ids) and produce an artifact
-in a form. Current forms: `found-document` (default), `scene`, `testimony`.
+Each World stores Anthropic's cache creation/read counters in `provenance.usage`, and the interface
+shows whether a request created or hit the cache.
 
-## Status & open questions
+## Validation
 
-The pipeline runs end to end: sample → ground in backstory → render an artifact → judge. The
-live tuning work is the **render voice** — three levers (tone, lineage, grain) in the `SYSTEM`
-string of `render-config.js`, first-pass. The backstory `DIMENSION_TAG_MAP` and event tags are
-also provisional. Full decision log and open questions in the root [`CLAUDE.md`](../CLAUDE.md); the
-render-form rationale and worked examples in [`BACKSTORY.md`](BACKSTORY.md).
+Anthropic's JSON structured-output feature guarantees field shape and types. Application validation
+then checks semantics the schema cannot enforce:
+
+- divergence occurs no later than the endpoint;
+- IDs are unique;
+- the timeline is chronological;
+- causal references point backward;
+- historical references exist in the selected corpus;
+- endpoint sections satisfy the compact item counts required by the World contract.
+
+One automatic correction request is allowed if semantic validation fails. If it fails again, that
+variant is reported as an error while other variants in the requested batch continue.
+
+## Rendering
+
+`render-world.js` sends only the completed World content, not the full history corpus. Current forms:
+
+- `narrative-history` — approximately 1,000 words;
+- `fiction` — approximately 1,000 words;
+- `found-document`, `scene`, and `testimony` — shorter diagnostic or design-fiction forms.
+
+The World contains no characters, scenes, plots, or miniature story examples. Fiction renderers
+invent them from endpoint facts and tensions. The interface provides an optional render brief for
+focus, viewpoint, setting, tone, or emphasis; a blank brief leaves those choices to the renderer.
+
+The render prompt explicitly prevents divergence-era technology from remaining culturally frozen
+and requires the endpoint's continuities and conflicts to remain visible.

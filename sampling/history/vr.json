@@ -1,6 +1,6 @@
 {
   "corpus": "immersive-visual-media",
-  "purpose": "Backstory pool for the sampling regime. A broad, researched history of immersive and visual media — the real shared past a divergent media-present can be grounded in. Lighter than the causal engine's events.json: no counterfactual outcomes or typed-state effects, just date, description, and thematic tags for backstory selection. Dates are established historical record; descriptions are the author's plain summaries. Expanded 2026-07-17 well beyond the 47-event causal vr-immersion theme.",
+  "purpose": "Historical evidence supplied to the alternate-present generator. A broad, researched history of immersive and visual media from which the model may retain, alter, displace, or build upon events after a user-specified divergence. Dates are established historical record; descriptions are the author's plain summaries.",
   "tagLegend": {
     "immersion": "envelopment, presence, filling the field of view/senses",
     "image": "still or moving pictorial image; visual fidelity",

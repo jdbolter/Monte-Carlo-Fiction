@@ -3,9 +3,7 @@ node_modules/
 .DS_Store
 *.log
 
-# Generated worlds and renders — reproducible from seed, or costly one-off model output;
-# not source. Judgments (scorecard.md) ARE tracked so verdicts get versioned.
+# Generated worlds and renders are model outputs, not source.
 sampling/worlds/*.json
 sampling/outputs/*/*.json
 sampling/outputs/*/worlds.md
-!sampling/outputs/*/scorecard.md
