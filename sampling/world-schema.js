@@ -1,5 +1,5 @@
 export const WORLD_SCHEMA_VERSION = 'alternate-present.v1';
-export const GENERATION_PROMPT_VERSION = 'alternate-present-v3';
+export const GENERATION_PROMPT_VERSION = 'alternate-present-v5';
 
 const stringArray = description => ({
   type: 'array',
@@ -8,7 +8,7 @@ const stringArray = description => ({
 });
 
 const presentSection = description => stringArray(
-  `${description} Supply two or three compact factual phrases about the endpoint only; do not repeat timeline developments.`
+  `${description} Prefer two or three compact factual phrases about the endpoint only; use a fourth only when needed for a distinct fact. Do not repeat timeline developments.`
 );
 
 export const GENERATED_WORLD_SCHEMA = {
@@ -63,7 +63,7 @@ export const GENERATED_WORLD_SCHEMA = {
     },
     timeline: {
       type: 'array',
-      description: 'Eight to ten chronological developments connecting the divergence to the endpoint.',
+      description: 'Exactly nine chronological developments connecting the divergence to the endpoint.',
       items: {
         type: 'object',
         additionalProperties: false,
@@ -124,8 +124,8 @@ export function validateGeneratedWorld(world, corpus) {
   if (!Array.isArray(world.assumptions) || world.assumptions.length < 3 || world.assumptions.length > 4) {
     errors.push('Three or four enabling assumptions are required.');
   }
-  if (!Array.isArray(world.timeline) || world.timeline.length < 8 || world.timeline.length > 10) {
-    errors.push('Eight to ten timeline developments are required.');
+  if (!Array.isArray(world.timeline) || world.timeline.length !== 9) {
+    errors.push('Exactly nine timeline developments are required.');
   }
 
   const knownCauses = new Set();
@@ -150,8 +150,8 @@ export function validateGeneratedWorld(world, corpus) {
   }
 
   for (const [key, values] of Object.entries(world.present || {})) {
-    if (!Array.isArray(values) || values.length < 2 || values.length > 3) {
-      errors.push(`present.${key} must contain two or three statements.`);
+    if (!Array.isArray(values) || values.length < 2 || values.length > 4) {
+      errors.push(`present.${key} must contain two to four phrases.`);
     }
   }
   if (!Array.isArray(world.continuities) || world.continuities.length !== 3) errors.push('Exactly three continuities are required.');

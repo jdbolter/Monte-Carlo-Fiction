@@ -4,7 +4,7 @@ import { extname, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { loadEnvFile } from './anthropic.js';
 import { listCorpora } from './history.js';
-import { clearGenerationDiagnostics, generateWorldBatch, DEFAULT_GENERATION_MODEL } from './world-generator.js';
+import { generateWorldBatch, DEFAULT_GENERATION_MODEL } from './world-generator.js';
 import { clearWorlds, listWorlds, loadWorld } from './world.js';
 import {
   clearArtifacts,
@@ -112,8 +112,7 @@ async function handleApi(route, req, res) {
   if (route === 'clear-all' && req.method === 'POST') {
     return sendJson(res, 200, {
       worlds: clearWorlds(),
-      artifacts: clearArtifacts(),
-      diagnostics: clearGenerationDiagnostics()
+      artifacts: clearArtifacts()
     });
   }
 

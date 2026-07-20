@@ -49,6 +49,8 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
 - Real historical events are evidence and raw material, not a mandatory chronological path.
 - `sourceRefs` must exist in the selected corpus.
 - `causedBy` may reference assumptions or earlier timeline events only.
+- Semantic violations are saved as World validation warnings and persistent diagnostic responses;
+  they do not trigger an automatic corrective model call or prevent saving.
 - The endpoint must show mature descendants, not old divergence-era devices frozen in time.
 - Worlds retain a mixed media ecology and explicitly record continuities, costs, exclusions, and
   unresolved tensions.

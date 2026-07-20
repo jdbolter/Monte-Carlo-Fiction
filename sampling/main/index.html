@@ -57,6 +57,7 @@
   .tag.primary { color:var(--accent); border-color:var(--accent); }
   .tag.rendered { color:var(--accent-2); border-color:var(--accent-2); }
   .tag.cache { color:var(--accent-3); border-color:var(--accent-3); }
+  .tag.warning { color:var(--danger); border-color:var(--danger); }
   .world-line { font-size:.86rem; margin:8px 0; }
   .world-line b { color:var(--accent); }
   .year-list { color:var(--text-dim); font-size:.79rem; line-height:1.6; }
@@ -179,16 +180,25 @@ function cacheTag(world) {
   return '';
 }
 
+function validationTag(world) {
+  const count = world.validation?.warnings?.length || 0;
+  return count ? `<span class="tag warning">${count} validation warning${count === 1 ? '' : 's'}</span>` : '';
+}
+
 function worldDetails(world) {
   const present = Object.entries(world.present || {}).map(([key, values]) =>
     `<div class="detail-section"><h4>${esc(formLabel(key))}</h4><ul>${values.map(value => `<li>${esc(value)}</li>`).join('')}</ul></div>`
   ).join('');
+  const warnings = world.validation?.warnings?.length
+    ? `<div class="detail-section"><h4>Validation warnings</h4><ul>${world.validation.warnings.map(value => `<li>${esc(value)}</li>`).join('')}</ul><p class="hint">Diagnostic: ${esc(world.validation.diagnosticFile)}</p></div>`
+    : '';
   const json = { ...world }; delete json.renderedForms;
   return `<details><summary>Inspect trajectory and endpoint</summary>
       <div class="detail-section"><h4>Assumptions</h4><ul>${world.assumptions.map(a => `<li><b>${esc(a.plausibility)}</b> — ${esc(a.claim)} (${esc(a.timing)})</li>`).join('')}</ul></div>
       <div class="detail-section"><h4>Timeline</h4><ul>${world.timeline.map(e => `<li><b>${e.year}</b> — ${esc(e.development)} <span class="muted">${esc(e.consequence)}</span></li>`).join('')}</ul></div>
       ${present}
       <div class="detail-section"><h4>Continuities</h4><ul>${world.continuities.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>
+      ${warnings}
     </details>
     <details><summary>View or copy complete World JSON</summary><pre>${esc(JSON.stringify(json, null, 2))}</pre><button class="btn btn-small copy-json">Copy JSON</button></details>`;
 }
@@ -198,7 +208,7 @@ function worldCard(world, renderControls = false) {
   const years = world.timeline.map(event => event.year).join(' · ');
   const target = world.premise.targetCondition ? `<p class="world-line"><b>Target:</b> ${esc(world.premise.targetCondition)}</p>` : '';
   const card = node(`<article class="card">
-    <div class="tag-row"><span class="tag primary">${esc(world.domain)}</span><span class="tag">to ${world.horizonYear}</span>${cacheTag(world)}${forms.map(form => `<span class="tag rendered">${esc(formLabel(form))}</span>`).join('')}</div>
+    <div class="tag-row"><span class="tag primary">${esc(world.domain)}</span><span class="tag">to ${world.horizonYear}</span>${cacheTag(world)}${validationTag(world)}${forms.map(form => `<span class="tag rendered">${esc(formLabel(form))}</span>`).join('')}</div>
     <h3>${esc(world.title)}</h3>
     <p>${esc(world.summary)}</p>
     <p class="world-line"><b>Divergence ${world.premise.divergence.year}:</b> ${esc(world.premise.divergence.change)}</p>
@@ -254,8 +264,10 @@ $('#g-go').onclick = async () => {
     }));
     $('#g-list').innerHTML = '';
     result.worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
-    const warning = result.errors.length ? ` ${result.errors.length} variant(s) failed validation.` : '';
-    $('#g-status').textContent = `${result.worlds.length} world${result.worlds.length === 1 ? '' : 's'} generated and saved.${warning}`;
+    const warning = result.errors.length ? ` ${result.errors.length} variant(s) failed generation.` : '';
+    const audited = result.worlds.filter(world => world.validation?.warnings?.length).length;
+    const auditNote = audited ? ` ${audited} saved with validation warnings.` : '';
+    $('#g-status').textContent = `${result.worlds.length} world${result.worlds.length === 1 ? '' : 's'} generated and saved.${warning}${auditNote}`;
   } catch (error) {
     $('#g-status').className = 'status error';
     $('#g-status').textContent = 'Generation failed: ' + error.message;

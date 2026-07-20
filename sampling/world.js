@@ -17,6 +17,11 @@ export function makeWorldRecord(content, metadata) {
     domain: metadata.corpusId,
     createdAt: generatedAt,
     ...content,
+    validation: {
+      status: metadata.validationWarnings?.length ? 'warnings' : 'valid',
+      warnings: metadata.validationWarnings || [],
+      diagnosticFile: metadata.validationDiagnostic || null
+    },
     provenance: {
       historyCorpus: metadata.corpusId,
       historyCorpusHash: metadata.corpusHash,

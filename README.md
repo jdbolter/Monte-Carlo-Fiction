@@ -59,7 +59,7 @@ Each World contains:
 
 - the divergence and optional requested endpoint;
 - enabling assumptions with qualitative plausibility;
-- an eight-to-ten-event causal timeline;
+- an exactly nine-event causal timeline;
 - a mature endpoint state covering technology, entertainment, social media, institutions,
   economics, access, and conflict;
 - continuities with actual history;
@@ -70,7 +70,9 @@ characters, scenes, and plots are invented only during rendering.
 
 Timeline events distinguish `retained`, `altered`, and `invented` developments. `sourceRefs` must
 match exact IDs in the selected historical corpus, and `causedBy` must point to assumptions or
-earlier timeline events. The application validates both rules before saving a World.
+earlier timeline events. The application audits these rules after generation. A World with semantic
+problems is still saved, visibly marked with warnings, and accompanied by a diagnostic file for
+later prompt and validator improvement. There is no automatic semantic-regeneration call.
 
 See [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) for the complete contract and
 [`sampling/README.md`](sampling/README.md) for the module map.

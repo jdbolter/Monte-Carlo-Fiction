@@ -35,6 +35,12 @@ World {
   continuities[]
   tensions[] { issue, description }
 
+  validation {
+    status: "valid" | "warnings"
+    warnings[]
+    diagnosticFile?
+  }
+
   provenance {
     historyCorpus, historyCorpusHash, scenarioBrief
     generatorModel, promptVersion, generatedAt
@@ -56,19 +62,22 @@ World {
 - **Continuities** prevent totalizing worlds in which one innovation replaces all media and social
   practices.
 - **Tensions** prevent automatic utopia or dystopia.
+- **Validation** preserves semantic audit warnings without discarding an otherwise renderable World
+  or purchasing an automatic corrective generation.
 - **Provenance** makes a costly, nondeterministic generation auditable.
 
 ## Compactness
 
 Compactness comes from bounded item counts, factual phrases, and avoiding duplicated prose, not
-abbreviated keys. The target is three or four assumptions, eight to ten timeline events, two or
-three phrases per endpoint section, exactly three continuities, and exactly three tensions. The
+abbreviated keys. The target is three or four assumptions, exactly nine timeline events, preferably
+two or three phrases per endpoint section (four when needed for a distinct fact), exactly three
+continuities, and exactly three tensions. The
 timeline records change; `present` records endpoint conditions and must not repeat the timeline.
 
 ## Model output versus application output
 
 The model produces only the content from `horizonYear` through `tensions`. The application
-adds the schema, ID, kind, domain, creation time, and provenance. The original scenario brief is
+adds the schema, ID, kind, domain, creation time, validation audit, and provenance. The original scenario brief is
 saved verbatim even though the model also normalizes it under `premise`.
 
 ## Future compatibility

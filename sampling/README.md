@@ -36,7 +36,7 @@ shows whether a request created or hit the cache.
 ## Validation
 
 Anthropic's JSON structured-output feature guarantees field shape and types. Application validation
-then checks semantics the schema cannot enforce:
+then audits semantics the schema cannot enforce:
 
 - divergence occurs no later than the endpoint;
 - IDs are unique;
@@ -45,8 +45,10 @@ then checks semantics the schema cannot enforce:
 - historical references exist in the selected corpus;
 - endpoint sections satisfy the compact item counts required by the World contract.
 
-One automatic correction request is allowed if semantic validation fails. If it fails again, that
-variant is reported as an error while other variants in the requested batch continue.
+Semantic warnings do not trigger another model call or prevent saving. They are attached to the
+World and written with the full response under `outputs/diagnostics/` for later analysis. These
+diagnostics persist when the interface's Clear Everything action removes Worlds and artifacts.
+Only unusable API results—such as truncation, refusal, or missing JSON—fail generation.
 
 ## Rendering
 

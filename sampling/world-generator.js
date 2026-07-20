@@ -1,5 +1,5 @@
 import { existsSync, mkdirSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { basename, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { anthropicMessages, usageSummary } from './anthropic.js';
 import { corpusHash, loadCorpus, loadCorpusSource } from './history.js';
@@ -53,24 +53,21 @@ The World record is compact source data, not reader-facing prose. Prefer short n
 
 Output discipline:
 - Infer all years from the scenario and causal logic. If the brief says "the present" without a year, use 2026.
-- Supply three or four assumptions and eight to ten chronological timeline developments.
-- Supply two or three compact factual phrases in each present section, followed by exactly three continuities and three tensions.
+- Supply three or four assumptions and exactly nine chronological timeline developments. Count them before returning the record.
+- Prefer two or three compact factual phrases in each present section; use a fourth only for a distinct fact that does not fit elsewhere. Follow them with exactly three continuities and three tensions.
 - Keep timeline development and consequence values distinct and usually under eighteen words each.
 - The timeline records change over time; present records endpoint conditions only. Never restate a timeline event in present.
 - causedBy may reference assumption ids or earlier timeline ids only.
+- Corpus event ids belong in sourceRefs, never in causedBy.
 - status is retained for a substantially unchanged real event, altered for a transformed real event, and invented for a counterfactual event without a direct real counterpart.
 - sourceRefs may be empty, especially for invented events.
 - Preserve causal and operational information, but remove explanatory wording a renderer can reconstruct.
 - Return only the structured World content required by the schema.`;
 
-export function buildGenerationRequest({ corpusSource, scenarioBrief, model, variationIndex, batchSize, priorWorlds = [], correctionErrors = [] }) {
+export function buildGenerationRequest({ corpusSource, scenarioBrief, model, variationIndex, batchSize, priorWorlds = [] }) {
   const prior = priorWorlds.length
     ? `\nOther variants already generated from this brief:\n${priorWorlds.map(world => `- ${world.title}: ${world.summary}`).join('\n')}\nChoose a materially different causal route or institutional settlement.`
     : '';
-  const correction = correctionErrors.length
-    ? `\nA previous attempt failed validation. Correct all of these problems:\n${correctionErrors.map(error => `- ${error}`).join('\n')}`
-    : '';
-
   return {
     model: model || DEFAULT_GENERATION_MODEL,
     max_tokens: 6000,
@@ -86,7 +83,7 @@ export function buildGenerationRequest({ corpusSource, scenarioBrief, model, var
         },
         {
           type: 'text',
-          text: `SCENARIO BRIEF\n${scenarioBrief}\n\nGenerate variant ${variationIndex} of ${batchSize}.${prior}${correction}`
+          text: `SCENARIO BRIEF\n${scenarioBrief}\n\nGenerate variant ${variationIndex} of ${batchSize}.${prior}`
         }
       ]
     }],
@@ -102,57 +99,44 @@ export function buildGenerationRequest({ corpusSource, scenarioBrief, model, var
 export async function generateWorld({ corpusId, scenarioBrief, model = DEFAULT_GENERATION_MODEL, variationIndex = 1, batchSize = 1, priorWorlds = [] }) {
   const corpus = loadCorpus(corpusId);
   const source = loadCorpusSource(corpusId);
-  let correctionErrors = [];
-
-  for (let attempt = 0; attempt < 2; attempt++) {
-    const request = buildGenerationRequest({
-      corpusSource: source,
-      scenarioBrief,
-      model,
-      variationIndex,
-      batchSize,
-      priorWorlds,
-      correctionErrors
+  const request = buildGenerationRequest({ corpusSource: source, scenarioBrief, model, variationIndex, batchSize, priorWorlds });
+  const response = await anthropicMessages(request);
+  if (response.stop_reason === 'max_tokens') {
+    const diagnosticPath = saveGenerationDiagnostic(response, {
+      reason: 'max_tokens', corpusId, scenarioBrief, model, variationIndex, batchSize,
+      attempt: 1, maxTokens: request.max_tokens
     });
-    const response = await anthropicMessages(request);
-    if (response.stop_reason === 'max_tokens') {
-      const diagnosticPath = saveGenerationDiagnostic(response, {
-        reason: 'max_tokens',
-        corpusId,
-        scenarioBrief,
-        model,
-        variationIndex,
-        batchSize,
-        attempt: attempt + 1,
-        maxTokens: request.max_tokens
-      });
-      throw new Error(`World generation was truncated at ${request.max_tokens} tokens. Diagnostic saved to ${diagnosticPath}.`);
-    }
-    if (response.stop_reason === 'refusal') throw new Error('The model refused the world-generation request.');
-
-    const text = response.content?.find(block => block.type === 'text')?.text;
-    if (!text) throw new Error('World generation returned no JSON text.');
-
-    let content;
-    try { content = JSON.parse(text); }
-    catch (error) { throw new Error(`Structured world JSON could not be parsed: ${error.message}`); }
-
-    correctionErrors = validateGeneratedWorld(content, corpus);
-    if (!correctionErrors.length) {
-      return makeWorldRecord(content, {
-        corpusId,
-        corpusHash: corpusHash(source),
-        scenarioBrief,
-        model,
-        promptVersion: GENERATION_PROMPT_VERSION,
-        batchIndex: variationIndex,
-        batchSize,
-        usage: usageSummary(response.usage)
-      });
-    }
+    throw new Error(`World generation was truncated at ${request.max_tokens} tokens. Diagnostic saved to ${diagnosticPath}.`);
   }
+  if (response.stop_reason === 'refusal') throw new Error('The model refused the world-generation request.');
 
-  throw new Error(`Generated world failed validation: ${correctionErrors.join('; ')}`);
+  const text = response.content?.find(block => block.type === 'text')?.text;
+  if (!text) throw new Error('World generation returned no JSON text.');
+
+  let content;
+  try { content = JSON.parse(text); }
+  catch (error) { throw new Error(`Structured world JSON could not be parsed: ${error.message}`); }
+
+  const validationWarnings = validateGeneratedWorld(content, corpus);
+  const diagnosticPath = validationWarnings.length
+    ? saveGenerationDiagnostic(response, {
+        reason: 'validation', errors: validationWarnings, corpusId, scenarioBrief, model,
+        variationIndex, batchSize, attempt: 1, maxTokens: request.max_tokens
+      })
+    : null;
+
+  return makeWorldRecord(content, {
+    corpusId,
+    corpusHash: corpusHash(source),
+    scenarioBrief,
+    model,
+    promptVersion: GENERATION_PROMPT_VERSION,
+    batchIndex: variationIndex,
+    batchSize,
+    usage: usageSummary(response.usage),
+    validationWarnings,
+    validationDiagnostic: diagnosticPath ? basename(diagnosticPath) : null
+  });
 }
 
 export async function generateWorldBatch({ corpusId, scenarioBrief, count = 1, model = DEFAULT_GENERATION_MODEL, save = true }) {
