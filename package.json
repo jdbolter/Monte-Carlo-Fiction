@@ -1,9 +1,9 @@
 {
   "name": "monte-carlo-fiction",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "private": true,
   "type": "module",
-  "description": "Generate structured alternate-present worlds from researched historical corpora and user-supplied divergences, then render selected worlds into narrative forms.",
+  "description": "Generate structured alternate presents and future scenarios from researched historical lineages, then render selected Worlds.",
   "scripts": {
     "dev": "node sampling/main-server.js",
     "main": "node sampling/main-server.js",

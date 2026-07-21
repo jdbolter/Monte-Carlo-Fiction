@@ -1,14 +1,15 @@
 # Monte-Carlo-Fiction
 
-An experiment in generating sets of structured alternate histories from researched historical
-corpora, then selectively rendering the most interesting worlds.
+An experiment in generating structured alternate presents and future scenarios from researched
+historical lineages, then selectively rendering the most interesting Worlds.
 
-The current implementation generates **alternate presents**. A user chooses a history corpus,
-writes a prose scenario brief describing a divergence and optional endpoint, and asks for one or
-more variants. Claude returns each variant as an enforced `alternate-present.v1` JSON object.
+The opening screen separates two experiments that share a core pipeline:
+
+- **Alternate Present** — a past divergence develops into a counterfactual present.
+- **Future Speculation** — the present develops toward a future horizon under one of four modes.
 
 ```
-historical corpus (cached) + scenario brief
+historical lineage (cached) + structured brief
     → model-generated World JSON
     → inspect and select
     → narrative history, fiction, scene, testimony, or found document
@@ -41,9 +42,10 @@ npm test
 
 ## Interface
 
-- **Generate** — choose `vr` or `silicon-valley`, enter a divergence/endpoint brief, and
-  generate up to 20 structured variants. Requests run sequentially so later calls can reuse the
-  cached history prefix.
+- **Choose experiment** — enter the Alternate Present or Future Speculation side of the app.
+- **Generate** — choose `vr` or `silicon-valley` as the historical lineage and generate up to 20
+  structured variants. Future generation supports pivot-forward, endpoint-backcast,
+  bounded-corridor, and open-exploration modes.
 - **Render** — inspect complete World JSON and render selected worlds. The primary forms are
   `narrative-history` and `fiction`; shorter diagnostic forms are also retained. An optional render
   brief can specify focus, viewpoint, setting, tone, or emphasis without changing the World.
@@ -55,9 +57,9 @@ history-corpus hash, model, prompt version, batch position, and API/cache token 
 
 ## World contents
 
-Each World contains:
+Both World contracts contain:
 
-- the divergence and optional requested endpoint;
+- a premise distinguishing supplied conditions from model inferences;
 - enabling assumptions with qualitative plausibility;
 - an exactly nine-event causal timeline;
 - a mature endpoint state covering technology, entertainment, social media, institutions,
@@ -68,18 +70,22 @@ Each World contains:
 World fields deliberately use compact factual phrases rather than publication-ready prose. Fictional
 characters, scenes, and plots are invented only during rendering.
 
-Timeline events distinguish `retained`, `altered`, and `invented` developments. `sourceRefs` must
+Alternate-present timeline events distinguish `retained`, `altered`, and `invented`; future events
+distinguish `continuation`, `adaptation`, and `novel`. `sourceRefs` must
 match exact IDs in the selected historical corpus, and `causedBy` must point to assumptions or
 earlier timeline events. The application audits these rules after generation. A World with semantic
 problems is still saved, visibly marked with warnings, and accompanied by a diagnostic file for
 later prompt and validator improvement. There is no automatic semantic-regeneration call.
 
-See [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) for the complete contract and
+See [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) and
+[`sampling/FUTURE-CONTRACT.md`](sampling/FUTURE-CONTRACT.md) for the contracts, and
 [`sampling/README.md`](sampling/README.md) for the module map.
 
-## Future worlds
+## Future modes
 
-Future speculation is deliberately not implemented yet. The likely extension will retain the same
-trajectory + endpoint World shape while supporting different premise directions: pivot-forward,
-endpoint-backcast, or a bounded corridor between a near-term pivot and a broad future condition.
-It may add a researched current-drivers corpus alongside historical lineage.
+- **Pivot forward** — user supplies a near-term pivot; the endpoint may emerge.
+- **Endpoint backcast** — user supplies the horizon condition; the model infers a pivot and prerequisites.
+- **Bounded corridor** — user supplies both pivot and target condition.
+- **Open exploration** — the brief and lineage bound the question; the model infers both.
+
+The interface activates, disables, and marks the pivot and target fields according to the mode.

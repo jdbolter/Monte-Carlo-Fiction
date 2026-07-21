@@ -2,16 +2,16 @@
 
 ## Current architecture
 
-The project generates **model-authored structured alternate presents** from real historical
-corpora and user-authored scenario briefs. It no longer samples abstract dimensions or selects a
-backstory algorithmically.
+The project generates **model-authored structured alternate presents and future scenarios** from
+real historical lineages and user-authored briefs. It no longer samples abstract dimensions or
+selects a backstory algorithmically.
 
 The pipeline has three deliberate stages:
 
 1. **Evidence** — `sampling/history/*.json`, stable historical event corpora.
-2. **World generation** — one Anthropic structured-output call per World. The history prefix is
-   explicitly cached; the variable scenario brief follows it. Worlds are generated sequentially
-   within a batch so the cache can be reused.
+2. **World generation** — one Anthropic structured-output call per World. Alternate presents use
+   `alternate-present.v1`; four future modes use `future.v1`. The lineage prefix is explicitly
+   cached and batch generation is sequential so it can be reused.
 3. **Rendering** — a separate model call turns a selected saved World into a narrative history,
    fiction, scene, testimony, or found document. Renderers never regenerate the World.
 
@@ -24,8 +24,10 @@ structured generation and selective prose rendering.
 - `sampling/history/vr.json` — 68-event immersive/visual-media history.
 - `sampling/history/silicon-valley.json` — 56-event computing/capital history.
 - `sampling/world-schema.js` — Anthropic JSON schema plus application-level causal validation.
-- `sampling/world-generator.js` — cached prompt, structured-output request, correction retry, and
+- `sampling/world-generator.js` — cached prompt, structured-output request, semantic audit, and
   sequential batch generation.
+- `sampling/future-schema.js`, `sampling/future-generator.js` — future contract, four modes, audit,
+  and cached sequential generation.
 - `sampling/world.js` — saved World envelope and filesystem persistence.
 - `sampling/render-world.js` — render forms, prompt, artifact persistence, and verdicts.
 - `sampling/anthropic.js` — shared Messages API retry/backoff and usage normalization.
@@ -60,17 +62,18 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
   contradict the saved World.
 - Application metadata—not the model—supplies IDs, model name, corpus hash, prompt version,
   original brief, generation time, and usage.
+- Future modes control which boundaries are supplied: pivot-forward, endpoint-backcast,
+  bounded-corridor, or open-exploration. All output timelines remain chronological and forward.
 
 ## Generated data
 
-`sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. The web
-interface's Clear Everything action removes both together. Old pre-redesign ignored files may exist
-locally, but loaders ignore records whose schemas are not `alternate-present.v1` or `artifact.v1`.
+`sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. Clear
+Everything removes Worlds and artifacts but preserves diagnostic responses. Loaders accept
+`alternate-present.v1`, `future.v1`, and `artifact.v1`.
 
 ## Open work
 
 - Evaluate generated Worlds for causal quality and diversity across repeated briefs.
 - Tune schema field counts and generator instructions from real output.
 - Compare Sonnet, Haiku, and OpenAI models after an OpenAI provider is implemented.
-- Design future-world inputs: pivot-forward, endpoint-backcast, bounded corridor, and an optional
-  researched current-drivers corpus.
+- Evaluate all four future modes and decide whether to add a researched current-drivers corpus.

@@ -1,9 +1,9 @@
-# Alternate-present generator — `sampling/`
+# World generators — `sampling/`
 
 Everything under this directory supports one flow:
 
 ```
-history corpus + scenario brief → alternate-present World JSON → selected render
+historical lineage + structured brief → alternate-present.v1 or future.v1 → selected render
 ```
 
 ## Modules
@@ -14,6 +14,8 @@ history corpus + scenario brief → alternate-present World JSON → selected re
 | `history.js` | Corpus discovery, loading, event IDs, and hashes |
 | `world-schema.js` | Structured-output JSON schema and causal validation |
 | `world-generator.js` | Cached Anthropic prompt and sequential batch generation |
+| `future-schema.js` | `future.v1` structured-output schema, modes, and semantic audit |
+| `future-generator.js` | Four-mode cached future generation |
 | `world.js` | World envelope, IDs, persistence, listing, and clearing |
 | `render-world.js` | World-to-artifact render forms and artifact persistence |
 | `anthropic.js` | Shared API retry/backoff and usage normalization |
@@ -24,9 +26,9 @@ history corpus + scenario brief → alternate-present World JSON → selected re
 
 ## Prompt caching
 
-The generation request contains two user content blocks. The first holds the complete history
+Each generation request contains two user content blocks. The first holds the complete history
 corpus and ends with an explicit five-minute cache breakpoint. The second holds the variable
-scenario brief, batch index, prior variant summaries, and any correction instructions. Batch
+scenario or future inputs, batch index, and prior variant summaries. Batch
 generation is sequential because a cache entry becomes reusable only after the first response
 begins.
 
@@ -62,5 +64,5 @@ The World contains no characters, scenes, plots, or miniature story examples. Fi
 invent them from endpoint facts and tensions. The interface provides an optional render brief for
 focus, viewpoint, setting, tone, or emphasis; a blank brief leaves those choices to the renderer.
 
-The render prompt explicitly prevents divergence-era technology from remaining culturally frozen
-and requires the endpoint's continuities and conflicts to remain visible.
+The renderer receives a normalized endpoint for either contract. It treats alternate trajectories
+as counterfactual history and future trajectories as coherent possibilities rather than predictions.

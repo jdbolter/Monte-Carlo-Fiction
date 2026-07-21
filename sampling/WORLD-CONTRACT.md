@@ -80,9 +80,4 @@ The model produces only the content from `horizonYear` through `tensions`. The a
 adds the schema, ID, kind, domain, creation time, validation audit, and provenance. The original scenario brief is
 saved verbatim even though the model also normalizes it under `premise`.
 
-## Future compatibility
-
-A future-world contract can probably preserve assumptions, timeline, endpoint state, continuities,
-tensions, and provenance. It will need a different premise object describing its
-generation direction and may rename `present` to `future`. That choice remains open until the first
-future experiments are compared.
+Future speculation uses the separate but parallel [`FUTURE-CONTRACT.md`](FUTURE-CONTRACT.md).

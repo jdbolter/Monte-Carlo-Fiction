@@ -5,6 +5,8 @@ import { fileURLToPath } from 'url';
 import { loadEnvFile } from './anthropic.js';
 import { listCorpora } from './history.js';
 import { generateWorldBatch, DEFAULT_GENERATION_MODEL } from './world-generator.js';
+import { generateFutureWorldBatch, DEFAULT_FUTURE_MODEL, normalizeFutureInput } from './future-generator.js';
+import { FUTURE_MODES } from './future-schema.js';
 import { clearWorlds, listWorlds, loadWorld } from './world.js';
 import {
   clearArtifacts,
@@ -58,10 +60,11 @@ function worldForClient(world, formsMap) {
 }
 
 function artifactsForClient() {
-  const domains = new Map(listWorlds().map(world => [world.id, world.domain]));
+  const worlds = new Map(listWorlds().map(world => [world.id, world]));
   return listArtifacts().map(artifact => ({
     ...artifact,
-    domain: artifact.domain || domains.get(artifact.worldId) || ''
+    domain: artifact.domain || worlds.get(artifact.worldId)?.domain || '',
+    worldKind: artifact.worldKind || worlds.get(artifact.worldId)?.kind || 'alternate-present'
   }));
 }
 
@@ -86,6 +89,36 @@ async function handleApi(route, req, res) {
     const model = String(body.model || DEFAULT_GENERATION_MODEL);
     const result = await generateWorldBatch({ corpusId, scenarioBrief, count, model, save: true });
     if (!result.worlds.length) return sendJson(res, 502, { error: result.errors.map(item => item.error).join('; ') || 'No worlds were generated.' });
+    const formsMap = renderedFormsByWorld();
+    return sendJson(res, 200, {
+      worlds: result.worlds.map(world => worldForClient(world, formsMap)),
+      errors: result.errors
+    });
+  }
+
+  if (route === 'generate-future' && req.method === 'POST') {
+    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
+    const corpusId = String(body.corpusId || '');
+    if (!listCorpora().some(corpus => corpus.id === corpusId)) return sendJson(res, 400, { error: `Unknown historical lineage: ${corpusId}` });
+    const input = normalizeFutureInput(body);
+    if (!FUTURE_MODES.includes(input.mode)) return sendJson(res, 400, { error: `Unknown future mode: ${input.mode}` });
+    if (!Number.isInteger(input.baseYear) || !Number.isInteger(input.horizonYear) || input.horizonYear <= input.baseYear) {
+      return sendJson(res, 400, { error: 'Future generation requires integer years with horizon year after base year.' });
+    }
+    if (input.brief.length < 40) return sendJson(res, 400, { error: 'Please provide a fuller future question and boundary brief.' });
+    if (input.mode === 'pivot-forward' && !input.pivot) return sendJson(res, 400, { error: 'Pivot forward requires a near-term pivot.' });
+    if (input.mode === 'endpoint-backcast' && !input.targetCondition) return sendJson(res, 400, { error: 'Endpoint backcast requires a target condition.' });
+    if (input.mode === 'bounded-corridor' && (!input.pivot || !input.targetCondition)) {
+      return sendJson(res, 400, { error: 'Bounded corridor requires both a pivot and a target condition.' });
+    }
+    if (input.mode === 'open-exploration') {
+      input.pivot = '';
+      input.targetCondition = '';
+    }
+    const count = Math.max(1, Math.min(20, Number(body.count) || 1));
+    const model = String(body.model || DEFAULT_FUTURE_MODEL);
+    const result = await generateFutureWorldBatch({ corpusId, input, count, model, save: true });
+    if (!result.worlds.length) return sendJson(res, 502, { error: result.errors.map(item => item.error).join('; ') || 'No future Worlds were generated.' });
     const formsMap = renderedFormsByWorld();
     return sendJson(res, 200, {
       worlds: result.worlds.map(world => worldForClient(world, formsMap)),

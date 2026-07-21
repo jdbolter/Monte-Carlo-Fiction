@@ -8,7 +8,7 @@ export const LIBRARY_DIR = join(__dirname, 'outputs', 'library');
 export const DEFAULT_RENDER_MODEL = 'claude-sonnet-5';
 
 export const FORMS = {
-  'narrative-history': `Write an accessible alternate narrative history of approximately 1,000 words. Trace the major stages from the divergence to the endpoint, with technology, institutions, public reception, entertainment, and social practices as the principal subjects. Introduce a few people where useful, but do not turn this into a character-centered short story. Explain unfamiliar innovations plainly: what they physically or operationally are, how people use them, and why they matter. End with a concrete account of the endpoint year.`,
+  'narrative-history': `Write an accessible trajectory narrative of approximately 1,000 words. Trace the major stages to the endpoint, with technology, institutions, public reception, entertainment, and social practices as the principal subjects. Introduce a few people where useful, but do not turn this into a character-centered short story. Explain unfamiliar innovations plainly: what they physically or operationally are, how people use them, and why they matter. End with a concrete account of the endpoint year.`,
   fiction: `Write approximately 1,000 words of fiction centered on an ordinary person living in the endpoint year. Invent characters, setting, situation, and plot from the world's endpoint facts and tensions. The world must emerge through action, material details, institutions, and friction rather than an explanatory lecture. Do not treat old devices from the causal timeline as current technology; depict their mature descendants.`,
   'found-document': `Write a single primary-source document from inside the endpoint year, about 300 words: a notice, listing, warranty, syllabus, obituary, memo, policy, review, or letter. It must read as genuine found material with no external framing.`,
   scene: `Write a single scene of approximately 500 words, with an ordinary person doing an ordinary thing in the endpoint year. Convey the world's institutions, mature technology, benefits, and friction through what happens. Begin inside the scene.`,
@@ -17,9 +17,9 @@ export const FORMS = {
 
 export const DEFAULT_FORM = 'narrative-history';
 
-const RENDER_SYSTEM_PROMPT = `You render a completed alternate-present World record into the requested form. The World is authoritative: do not change its divergence, causal sequence, endpoint conditions, continuities, or tensions, and do not add another major historical turn.
+const RENDER_SYSTEM_PROMPT = `You render a completed World record into the requested form. The World may be an alternate present built from a past divergence or a future scenario built from the present. It is authoritative: do not change its premise, causal sequence, endpoint conditions, continuities, or tensions, and do not add another major turn.
 
-The timeline describes historical ancestors. Never freeze the culture at its divergence point or depict an old device as current merely because it appears in the timeline. The endpoint must contain the mature technologies, institutions, media forms, conventions, and conflicts described under present.
+For an alternate-present World, narrate the timeline as counterfactual history. For a future World, narrate it as one coherent possibility rather than a prediction, using appropriately conditional framing without repeatedly disclaiming the exercise. Never freeze culture at the pivot or depict an early device as unchanged at the horizon. The endpoint must contain the mature technologies, institutions, media forms, conventions, and conflicts recorded in the World.
 
 Preserve the mixed ecology recorded under continuities. Do not make the central medium govern every message or eliminate every older medium. Avoid automatic utopia, dystopia, ominous science fiction, and frictionless promotional prose. Use the world's actual mixture of benefit, normality, exclusion, irritation, conflict, and pleasure.
 
@@ -31,13 +31,15 @@ Return only the requested artifact, without discussing the JSON, the exercise, o
 
 export function renderPayload(world) {
   return {
+    kind: world.kind || 'alternate-present',
     title: world.title,
     summary: world.summary,
+    baseYear: world.baseYear,
     horizonYear: world.horizonYear,
     premise: world.premise,
     assumptions: world.assumptions,
     timeline: world.timeline,
-    present: world.present,
+    endpoint: world.kind === 'future' ? world.endpoint : world.present,
     continuities: world.continuities,
     tensions: world.tensions
   };
@@ -45,6 +47,9 @@ export function renderPayload(world) {
 
 export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT_RENDER_MODEL, renderBrief = '' } = {}) {
   const task = FORMS[form] || FORMS[DEFAULT_FORM];
+  const kindDirection = world.kind === 'future'
+    ? 'This is a future scenario. Present its trajectory as a coherent possibility, not as established history or a confident prediction.'
+    : 'This is an alternate-present scenario. Present its trajectory as counterfactual history leading to the alternate present.';
   const brief = String(renderBrief || '').trim();
   const direction = brief
     ? `RENDER BRIEF\n${brief}\n\nUse this brief for choices of focus, viewpoint, setting, tone, or emphasis. It may not contradict the World record.`
@@ -56,7 +61,7 @@ export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT
     system: RENDER_SYSTEM_PROMPT,
     messages: [{
       role: 'user',
-      content: `${task}\n\n${direction}\n\nWORLD RECORD\n${JSON.stringify(renderPayload(world), null, 2)}`
+      content: `${task}\n\n${kindDirection}\n\n${direction}\n\nWORLD RECORD\n${JSON.stringify(renderPayload(world), null, 2)}`
     }]
   };
 }
@@ -82,6 +87,7 @@ export async function renderAndSave(world, options = {}) {
     worldId: world.id,
     worldTitle: world.title,
     worldSummary: world.summary,
+    worldKind: world.kind || 'alternate-present',
     domain: world.domain,
     horizonYear: world.horizonYear,
     form: rendered.form,
