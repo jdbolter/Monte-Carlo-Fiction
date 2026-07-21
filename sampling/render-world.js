@@ -82,6 +82,7 @@ export async function renderAndSave(world, options = {}) {
     worldId: world.id,
     worldTitle: world.title,
     worldSummary: world.summary,
+    domain: world.domain,
     horizonYear: world.horizonYear,
     form: rendered.form,
     model: rendered.model,

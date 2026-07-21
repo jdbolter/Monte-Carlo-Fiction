@@ -68,7 +68,15 @@
   .detail-section ul { margin:4px 0 8px 18px; padding:0; font-size:.84rem; }
   pre { white-space:pre-wrap; overflow-wrap:anywhere; background:var(--bg); border:1px solid var(--border); border-radius:6px; padding:12px; font-size:.72rem; max-height:430px; overflow:auto; }
   .artifact { grid-column:1/-1; }
+  .artifact-card { cursor:pointer; transition:border-color .15s, transform .15s; }
+  .artifact-card:hover { border-color:var(--accent); transform:translateY(-1px); }
+  .artifact-card .story-preview { color:var(--text-dim); display:-webkit-box; -webkit-line-clamp:5; -webkit-box-orient:vertical; overflow:hidden; }
   .story-body { font-family:var(--font-serif); font-size:1.04rem; line-height:1.75; white-space:pre-wrap; margin:14px 0; padding:17px 0; border-top:1px solid var(--border); border-bottom:1px solid var(--border); }
+  dialog { width:min(850px,calc(100vw - 28px)); max-height:calc(100vh - 40px); overflow:auto; color:var(--text); background:var(--bg-panel); border:1px solid var(--border); border-radius:12px; padding:22px; }
+  dialog::backdrop { background:rgba(0,0,0,.72); backdrop-filter:blur(3px); }
+  .dialog-head { display:flex; align-items:flex-start; justify-content:space-between; gap:18px; }
+  .dialog-head h2 { font-family:var(--font-serif); margin:7px 0; }
+  .dialog-close { flex:0 0 auto; }
   .verdicts { display:flex; gap:8px; align-items:center; flex-wrap:wrap; }
   .vbtn { border:1px solid var(--border); background:var(--bg); color:var(--text); border-radius:6px; padding:5px 11px; cursor:pointer; font:inherit; font-size:.83rem; }
   .vbtn.sel[data-v=cohere] { background:var(--accent-2); color:#201c1a; border-color:var(--accent-2); }
@@ -121,6 +129,7 @@
   <section class="screen" id="screen-render">
     <div class="section-heading"><h2>Render selected worlds</h2><span class="muted" id="r-status"></span></div>
     <div class="panel"><div class="form-row">
+      <div class="field"><label>theme</label><select id="r-corpus"></select></div>
       <div class="field"><label>form</label><select id="r-form"></select></div>
       <div class="field"><label>render model</label><select id="r-model">
         <option value="claude-sonnet-5">sonnet-5</option>
@@ -142,6 +151,7 @@
   <section class="screen" id="screen-library">
     <div class="section-heading"><h2>Rendered library</h2><span class="muted" id="l-count"></span></div>
     <div class="panel"><div class="form-row">
+      <div class="field"><label>theme</label><select id="l-corpus"></select></div>
       <button class="btn" id="l-refresh">Refresh</button>
       <span class="hint">Judge the render; verdicts and notes are stored with the artifact.</span>
       <span class="spacer"></span>
@@ -151,6 +161,16 @@
     <div class="card-grid" id="l-list"></div>
   </section>
 </main>
+
+<dialog id="artifact-dialog">
+  <div class="dialog-head">
+    <div><div class="tag-row" id="d-tags"></div><h2 id="d-title"></h2><p class="hint" id="d-summary"></p></div>
+    <button class="btn btn-small dialog-close" aria-label="Close">Close</button>
+  </div>
+  <div id="d-brief"></div>
+  <div class="story-body" id="d-story"></div>
+  <div class="verdicts" id="d-verdicts"></div>
+</dialog>
 
 <script type="module">
 const $ = selector => document.querySelector(selector);
@@ -164,6 +184,15 @@ async function api(route, options) {
   return payload;
 }
 const formLabel = form => form.replace(/-/g, ' ');
+const themeLabel = corpus => corpus === 'vr' ? 'VR' : corpus === 'silicon-valley' ? 'Silicon Valley' : formLabel(corpus);
+const DEFAULT_SCENARIO_BRIEFS = {
+  vr: `In 1990, VPL Research produces a VR system offering approximately the experiential quality that consumer Oculus systems achieved decades later: convincing stereoscopic imagery, low-latency head tracking, reliable interaction, and a sufficiently comfortable experience for sustained use. This must not be treated as an isolated miracle; infer the supporting technical and institutional changes it requires. By 2026, VR has largely fulfilled the 1990s promise that it would become the principal successor to the graphical user interface. Construct the resulting alternate present, focusing on entertainment and social media.`,
+  'silicon-valley': `In 1975, the Homebrew Computer Club develops into a durable cooperative institution rather than serving mainly as an incubator for private companies. Its norms of shared designs, user ownership, and community governance become the dominant model for the emerging personal-computer industry. This must not be treated as an isolated cultural preference; infer the supporting technical, financial, legal, and institutional changes it requires. By 2026, networked computing is widespread, but its major platforms and infrastructure are organized as cooperatives, public utilities, and open technical commons rather than investor-owned monopolies. Construct the resulting alternate present, focusing on work, communication, culture, and everyday economic life.`
+};
+let activeCorpus = 'vr';
+let allWorlds = [];
+let allArtifacts = [];
+const scenarioBriefs = { ...DEFAULT_SCENARIO_BRIEFS };
 
 document.querySelectorAll('.nav-link').forEach(button => button.onclick = () => {
   document.querySelectorAll('.nav-link').forEach(item => item.classList.toggle('active', item === button));
@@ -233,8 +262,23 @@ function worldCard(world, renderControls = false) {
 
 async function loadCorpora() {
   const { corpora } = await api('corpora');
-  $('#g-corpus').innerHTML = corpora.map(corpus => `<option value="${esc(corpus.id)}"${corpus.id === 'vr' ? ' selected' : ''}>${esc(corpus.id)} — ${corpus.eventCount} events, ${corpus.firstYear}–${corpus.lastYear}</option>`).join('');
+  const options = corpora.map(corpus => `<option value="${esc(corpus.id)}"${corpus.id === activeCorpus ? ' selected' : ''}>${esc(themeLabel(corpus.id))} — ${corpus.eventCount} events, ${corpus.firstYear}–${corpus.lastYear}</option>`).join('');
+  ['#g-corpus', '#r-corpus', '#l-corpus'].forEach(selector => { $(selector).innerHTML = options; });
 }
+
+function selectCorpus(corpusId) {
+  scenarioBriefs[activeCorpus] = $('#g-brief').value;
+  activeCorpus = corpusId;
+  ['#g-corpus', '#r-corpus', '#l-corpus'].forEach(selector => { $(selector).value = corpusId; });
+  $('#g-brief').value = scenarioBriefs[corpusId] || '';
+  showGenerated();
+  showRenderWorlds();
+  showLibrary();
+}
+
+['#g-corpus', '#r-corpus', '#l-corpus'].forEach(selector => {
+  $(selector).onchange = event => selectCorpus(event.target.value);
+});
 
 async function loadForms() {
   const { forms, default: defaultForm } = await api('forms');
@@ -244,10 +288,17 @@ async function loadForms() {
 async function loadGenerated() {
   try {
     const { worlds } = await api('worlds');
-    $('#g-list').innerHTML = '';
-    worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
-    if (!$('#g-status').textContent) $('#g-status').textContent = worlds.length ? `${worlds.length} saved world${worlds.length === 1 ? '' : 's'}.` : 'No alternate-present worlds have been generated yet.';
+    allWorlds = worlds;
+    showGenerated();
   } catch (error) { $('#g-status').textContent = 'Error: ' + error.message; $('#g-status').className = 'status error'; }
+}
+
+function showGenerated() {
+  if (!$('#g-list')) return;
+  const worlds = allWorlds.filter(world => world.domain === activeCorpus);
+  $('#g-list').innerHTML = '';
+  worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
+  $('#g-status').textContent = worlds.length ? `${worlds.length} saved ${themeLabel(activeCorpus)} world${worlds.length === 1 ? '' : 's'}.` : `No ${themeLabel(activeCorpus)} worlds have been generated yet.`;
 }
 
 $('#g-go').onclick = async () => {
@@ -262,8 +313,8 @@ $('#g-go').onclick = async () => {
       model: $('#g-model').value,
       scenarioBrief: $('#g-brief').value
     }));
-    $('#g-list').innerHTML = '';
-    result.worlds.forEach(world => $('#g-list').appendChild(worldCard(world)));
+    allWorlds = [...result.worlds, ...allWorlds.filter(world => !result.worlds.some(created => created.id === world.id))];
+    showGenerated();
     const warning = result.errors.length ? ` ${result.errors.length} variant(s) failed generation.` : '';
     const audited = result.worlds.filter(world => world.validation?.warnings?.length).length;
     const auditNote = audited ? ` ${audited} saved with validation warnings.` : '';
@@ -278,12 +329,19 @@ async function loadRenderWorlds() {
   $('#r-status').textContent = 'loading…';
   try {
     const { worlds } = await api('worlds');
-    $('#r-list').innerHTML = '';
-    worlds.forEach(world => $('#r-list').appendChild(worldCard(world, true)));
-    const form = $('#r-form').value;
-    const missing = worlds.filter(world => !(world.renderedForms || []).includes(form)).length;
-    $('#r-status').textContent = worlds.length ? `${worlds.length} worlds · ${missing} missing ${formLabel(form)}` : 'no worlds yet';
+    allWorlds = worlds;
+    showRenderWorlds();
   } catch (error) { $('#r-status').textContent = 'Error: ' + error.message; }
+}
+
+function showRenderWorlds() {
+  if (!$('#r-list') || !$('#r-form').value) return;
+  const worlds = allWorlds.filter(world => world.domain === activeCorpus);
+  $('#r-list').innerHTML = '';
+  worlds.forEach(world => $('#r-list').appendChild(worldCard(world, true)));
+  const form = $('#r-form').value;
+  const missing = worlds.filter(world => !(world.renderedForms || []).includes(form)).length;
+  $('#r-status').textContent = worlds.length ? `${worlds.length} ${themeLabel(activeCorpus)} worlds · ${missing} missing ${formLabel(form)}` : `no ${themeLabel(activeCorpus)} worlds yet`;
 }
 
 async function renderOne(worldId, button, note) {
@@ -303,7 +361,7 @@ $('#r-all').onclick = async () => {
   try {
     const { worlds } = await api('worlds');
     const form = $('#r-form').value;
-    const todo = worlds.filter(world => !(world.renderedForms || []).includes(form));
+    const todo = worlds.filter(world => world.domain === activeCorpus && !(world.renderedForms || []).includes(form));
     for (let i = 0; i < todo.length; i++) {
       $('#r-status').textContent = `rendering ${i + 1}/${todo.length}…`;
       try { await api('render', POST({ worldId:todo[i].id, form, model:$('#r-model').value, renderBrief:$('#r-brief').value })); } catch {}
@@ -316,42 +374,61 @@ async function loadLibrary() {
   $('#l-status').textContent = 'loading…';
   try {
     const { items } = await api('library');
-    $('#l-list').innerHTML = '';
-    $('#l-count').textContent = `${items.length} artifact${items.length === 1 ? '' : 's'}`;
-    $('#l-status').textContent = items.length ? '' : 'The library is empty.';
-    items.forEach(record => {
-      const renderBrief = record.renderBrief ? `<p class="hint"><b>Render brief:</b> ${esc(record.renderBrief)}</p>` : '';
-      const card = node(`<article class="card artifact">
-        <div class="tag-row"><span class="tag primary">${esc(formLabel(record.form))}</span><span class="tag">${record.horizonYear}</span><span class="tag">${esc(record.model)}</span></div>
-        <h3>${esc(record.worldTitle)}</h3><p class="hint">${esc(record.worldSummary)}</p>
-        ${renderBrief}
-        <div class="story-body">${esc(record.text)}</div>
-        <div class="verdicts">
-          <button class="vbtn ${record.verdict === 'cohere' ? 'sel' : ''}" data-v="cohere">cohere</button>
-          <button class="vbtn ${record.verdict === 'strain' ? 'sel' : ''}" data-v="strain">strain</button>
-          <button class="vbtn ${record.verdict === 'incoherent' ? 'sel' : ''}" data-v="incoherent">incoherent</button>
-          <input class="note" placeholder="note (optional)" value="${esc(record.note)}">
-          <span class="saved"></span>
-        </div>
-      </article>`);
-      const note = card.querySelector('.note'), saved = card.querySelector('.saved');
-      card.querySelectorAll('.vbtn').forEach(button => button.onclick = async () => {
-        try {
-          await api('verdict', POST({ id:record.id, verdict:button.dataset.v, note:note.value }));
-          card.querySelectorAll('.vbtn').forEach(item => item.classList.remove('sel'));
-          button.classList.add('sel'); saved.textContent = 'saved'; setTimeout(() => saved.textContent = '', 1200);
-        } catch (error) { saved.textContent = error.message; }
-      });
-      $('#l-list').appendChild(card);
-    });
+    allArtifacts = items;
+    showLibrary();
   } catch (error) { $('#l-status').textContent = 'Error: ' + error.message; }
 }
+
+function showLibrary() {
+  if (!$('#l-list')) return;
+  const items = allArtifacts.filter(record => record.domain === activeCorpus);
+  $('#l-list').innerHTML = '';
+  $('#l-count').textContent = `${items.length} ${themeLabel(activeCorpus)} artifact${items.length === 1 ? '' : 's'}`;
+  $('#l-status').textContent = items.length ? '' : `The ${themeLabel(activeCorpus)} library is empty.`;
+  items.forEach(record => {
+    const verdict = record.verdict ? `<span class="tag rendered">${esc(record.verdict)}</span>` : '';
+    const card = node(`<article class="card artifact-card" tabindex="0" role="button" aria-label="Read ${esc(record.worldTitle)}">
+      <div class="tag-row"><span class="tag primary">${esc(formLabel(record.form))}</span><span class="tag">${record.horizonYear}</span>${verdict}</div>
+      <h3>${esc(record.worldTitle)}</h3><p class="hint">${esc(record.worldSummary)}</p>
+      <p class="story-preview">${esc(record.text)}</p>
+      <div class="actions"><button class="btn btn-small read-artifact">Read full text</button></div>
+    </article>`);
+    const open = () => openArtifact(record);
+    card.onclick = open;
+    card.onkeydown = event => { if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); open(); } };
+    $('#l-list').appendChild(card);
+  });
+}
+
+function openArtifact(record) {
+  const dialog = $('#artifact-dialog');
+  $('#d-tags').innerHTML = `<span class="tag primary">${esc(formLabel(record.form))}</span><span class="tag">${esc(themeLabel(record.domain))}</span><span class="tag">${record.horizonYear}</span><span class="tag">${esc(record.model)}</span>`;
+  $('#d-title').textContent = record.worldTitle;
+  $('#d-summary').textContent = record.worldSummary;
+  $('#d-brief').innerHTML = record.renderBrief ? `<p class="hint"><b>Render brief:</b> ${esc(record.renderBrief)}</p>` : '';
+  $('#d-story').textContent = record.text;
+  $('#d-verdicts').innerHTML = `<button class="vbtn ${record.verdict === 'cohere' ? 'sel' : ''}" data-v="cohere">cohere</button><button class="vbtn ${record.verdict === 'strain' ? 'sel' : ''}" data-v="strain">strain</button><button class="vbtn ${record.verdict === 'incoherent' ? 'sel' : ''}" data-v="incoherent">incoherent</button><input class="note" placeholder="note (optional)" value="${esc(record.note)}"><span class="saved"></span>`;
+  const note = $('#d-verdicts .note'), saved = $('#d-verdicts .saved');
+  $('#d-verdicts').querySelectorAll('.vbtn').forEach(button => button.onclick = async () => {
+    try {
+      await api('verdict', POST({ id:record.id, verdict:button.dataset.v, note:note.value }));
+      record.verdict = button.dataset.v; record.note = note.value;
+      $('#d-verdicts').querySelectorAll('.vbtn').forEach(item => item.classList.remove('sel'));
+      button.classList.add('sel'); saved.textContent = 'saved'; showLibrary();
+    } catch (error) { saved.textContent = error.message; }
+  });
+  dialog.showModal();
+}
+
+$('#artifact-dialog .dialog-close').onclick = () => $('#artifact-dialog').close();
+$('#artifact-dialog').onclick = event => { if (event.target === $('#artifact-dialog')) $('#artifact-dialog').close(); };
 
 $('#l-refresh').onclick = loadLibrary;
 document.querySelectorAll('.clear-all').forEach(button => button.onclick = async () => {
   if (!confirm('Delete all generated worlds and all rendered artifacts?')) return;
   try {
     const result = await api('clear-all', POST({}));
+    allWorlds = []; allArtifacts = [];
     $('#g-list').innerHTML = ''; $('#r-list').innerHTML = ''; $('#l-list').innerHTML = '';
     $('#g-status').className = 'status';
     $('#g-status').textContent = `Cleared ${result.worlds} worlds and ${result.artifacts} artifacts.`;

@@ -57,6 +57,14 @@ function worldForClient(world, formsMap) {
   };
 }
 
+function artifactsForClient() {
+  const domains = new Map(listWorlds().map(world => [world.id, world.domain]));
+  return listArtifacts().map(artifact => ({
+    ...artifact,
+    domain: artifact.domain || domains.get(artifact.worldId) || ''
+  }));
+}
+
 async function handleApi(route, req, res) {
   const body = req.method === 'POST' ? await readBody(req) : {};
 
@@ -102,7 +110,7 @@ async function handleApi(route, req, res) {
     catch (error) { return sendJson(res, 502, { error: error.message }); }
   }
 
-  if (route === 'library' && req.method === 'GET') return sendJson(res, 200, { items: listArtifacts() });
+  if (route === 'library' && req.method === 'GET') return sendJson(res, 200, { items: artifactsForClient() });
 
   if (route === 'verdict' && req.method === 'POST') {
     try { return sendJson(res, 200, setVerdict(String(body.id || ''), String(body.verdict || ''), String(body.note || ''))); }
