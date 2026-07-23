@@ -6,12 +6,17 @@ Everything under this directory supports one flow:
 historical lineage + structured brief → alternate-history.v1 or future.v1 → selected render
 ```
 
+See [`HISTORY-CORPUS-CONTRACT.md`](HISTORY-CORPUS-CONTRACT.md) before adding a timeline. A valid
+file is auto-discovered and needs no registry or interface change.
+
 ## Modules
 
 | File | Responsibility |
 |---|---|
 | `history/*.json` | Stable researched event corpora, with optional experiment eligibility |
 | `history.js` | Corpus discovery, loading, event IDs, and hashes |
+| `HISTORY-CORPUS-CONTRACT.md` | Authoritative corpus format, template, and research guidance |
+| `validate-corpora.js` | Offline validation for all discovered corpus files |
 | `world-schema.js` | Structured-output JSON schema and causal validation |
 | `world-generator.js` | Cached Anthropic prompt and sequential batch generation |
 | `future-schema.js` | `future.v1` structured-output schema, modes, and semantic audit |

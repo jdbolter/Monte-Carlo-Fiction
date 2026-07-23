@@ -21,6 +21,9 @@ structured generation and selective prose rendering.
 ## Important files
 
 - `sampling/history.js` — discovers and loads history corpora; computes corpus hashes.
+- `sampling/HISTORY-CORPUS-CONTRACT.md` — authoritative input format, copyable template, research
+  guidance, and installation procedure for new historical timelines.
+- `sampling/validate-corpora.js` — validates every discovered corpus without making an API call.
 - `sampling/history/vr.json` — 68-event immersive/visual-media history.
 - `sampling/history/silicon-valley.json` — 56-event computing/capital history.
 - `sampling/history/digital-media.json` — 70-event history of the computer as a digital medium,
@@ -43,6 +46,7 @@ structured generation and selective prose rendering.
 ```bash
 npm run dev
 npm test
+npm run validate:corpora
 ```
 
 The app starts on port 3000 and tries the next 20 ports if necessary. `.env.local` must contain
@@ -77,6 +81,41 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
 - Future modes control which boundaries are supplied: pivot-forward, endpoint-backcast,
   bounded-corridor, or open-exploration. All output timelines remain chronological and forward.
 
+## History corpus rules
+
+Treat [`sampling/HISTORY-CORPUS-CONTRACT.md`](sampling/HISTORY-CORPUS-CONTRACT.md) as
+authoritative. In particular:
+
+- A corpus is input evidence, not a generated World, branch tree, list of outcomes, or render.
+- Its filename is its stable ID and must match `[a-z0-9-]+.json`.
+- Required top-level fields are non-empty `corpus`, `purpose`, and `events`.
+- `displayName`, `sourceNote`, `sources`, and `tagLegend` are optional but recommended as
+  appropriate.
+- `experiments`, when supplied, is a non-empty allowlist containing `alternate-history`, `future`,
+  or both. Omission enables both.
+- Every event requires a unique lowercase kebab-case `id`, integer `year`, non-empty `display`,
+  `label`, and `description`, plus a string array `tags`.
+- Event IDs are durable because Worlds cite them in `sourceRefs`. Never rename or recycle an ID
+  without accepting that saved Worlds may no longer resolve their historical evidence.
+- Put events in nondecreasing chronological order; multiple events may share a year.
+- Use factual received history. Do not embed counterfactual branches, future predictions,
+  characters, scenes, or endpoint conditions in event descriptions.
+- Favor causal coverage—institutions, capabilities, economics, laws, reception, resistance,
+  failures, harms, and context—over exhaustive chronology. Roughly 40–80 events is a useful range,
+  not a validation rule.
+- The full corpus source is sent verbatim as the cached prompt prefix. Keep it informative but
+  compact because its size affects input and cache-creation tokens.
+- Adding a valid file requires no registry or UI edit. Unknown corpora receive generic blank
+  interface drafts; curated defaults may still be added to `DEFAULT_HISTORY_DRAFTS` or
+  `DEFAULT_FUTURE_DRAFTS`.
+- Always run `npm run validate:corpora` and `npm test` after adding or changing a corpus.
+
+The corpus contract is domain-neutral. The current World endpoint schema and portions of its prompt
+are still media-oriented (`technicalSystem`, `entertainment`, `socialMedia`,
+`institutionsAndEconomy`, `accessAndConflict`). Do not silently claim full domain neutrality.
+Political, military, scientific, or biographical corpora may reveal the need for endpoint profiles
+or a more general World contract.
+
 ## Generated data
 
 `sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. Clear
@@ -89,3 +128,5 @@ Everything removes Worlds and artifacts but preserves diagnostic responses. Load
 - Tune schema field counts and generator instructions from real output.
 - Compare Sonnet, Haiku, and OpenAI models after an OpenAI provider is implemented.
 - Evaluate all four future modes and decide whether to add a researched current-drivers corpus.
+- Evaluate WWII output to determine how the media-oriented endpoint should be generalized for
+  political and military histories.

@@ -1,5 +1,6 @@
 {
   "corpus": "silicon-valley-computing-capital",
+  "displayName": "Silicon Valley",
   "purpose": "Historical evidence supplied to the alternate-history generator. A researched history of Silicon Valley and computing as institutions, capital, networks, and openness from which the model may retain, alter, displace, or build upon events after a user-specified divergence. Dates are established historical record; descriptions are the author's plain summaries.",
   "events": [
     { "id": "federal-telegraph", "year": 1909, "display": "1909", "label": "Federal Telegraph Corporation", "tags": ["network","patronage-military","institution-platform"], "description": "Founded near Stanford with university backing and a Navy contract, Federal Telegraph seeds the Bay Area's radio-electronics industry and the university-industry-military bond." },

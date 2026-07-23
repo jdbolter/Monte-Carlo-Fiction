@@ -18,9 +18,9 @@ historical lineage (cached) + structured brief
 
 World generation now uses a model call because the central task is causal speculation: deciding
 which real events survive, which change, what enabling conditions are required, and how the
-technology and its culture mature across decades. The historical corpora remain the stable shared
-evidence. Compact structured worlds are generated first; longer prose is purchased only for worlds
-worth rendering.
+institutions, practices, technologies, conflicts, and cultures develop across time. The historical
+corpora remain the stable shared evidence. Compact structured worlds are generated first; longer
+prose is purchased only for worlds worth rendering.
 
 ## Run
 
@@ -41,10 +41,17 @@ Run the offline tests with:
 npm test
 ```
 
+Validate every installed history corpus with:
+
+```bash
+npm run validate:corpora
+```
+
 ## Interface
 
 - **Choose experiment** — enter the Alternate History or Future Speculation side of the app.
-- **Generate** — choose a historical lineage and generate up to 20 structured variants. Alternate
+- **Generate** — choose a historical lineage and generate one structured World by default, or up
+  to 20 variants. Alternate
   History includes `digital-media`, `vr`, `silicon-valley`, and a 67-event `world-war-ii`
   chronology covering 1933–1950. Future Speculation uses the first three lineages; corpus
   eligibility is declared in the corpus data, so the two lists can diverge. Future generation
@@ -85,6 +92,43 @@ At render time, the application resolves only the corpus events cited by the Wor
 histories use them to explain path dependence and transformation. Fiction uses the resulting
 historical forces indirectly through mature technologies, institutions, habits, infrastructure,
 and conflicts rather than recounting background history.
+
+## Adding a historical timeline
+
+New corpora are automatically discovered from `sampling/history/<corpus-id>.json`; no registry or
+interface edit is required. The filename must use lowercase letters, numbers, and hyphens.
+
+At minimum, a corpus supplies:
+
+- `corpus`, `purpose`, and a non-empty `events` array;
+- an optional `displayName`;
+- an optional `experiments` allowlist containing `alternate-history`, `future`, or both—omitting it
+  enables both experiments;
+- unique event IDs in lowercase kebab-case;
+- for every event, integer `year`, human-readable `display`, `label`, `tags`, and a concise factual
+  `description`.
+
+Event IDs are a durable API: generated Worlds cite them exactly in `sourceRefs`, so do not rename
+them after Worlds have been saved. Arrange events chronologically; same-year events are allowed.
+Use reputable secondary histories and reference timelines to establish a received narrative, and
+select causal anchors rather than trying to include every date. Roughly 40–80 events has worked
+well, but no count is enforced.
+
+After adding a file, run:
+
+```bash
+npm run validate:corpora
+npm test
+```
+
+The complete specification, copyable JSON template, research guidance, automatic UI-default
+behavior, and compatibility caveats are in
+[`sampling/HISTORY-CORPUS-CONTRACT.md`](sampling/HISTORY-CORPUS-CONTRACT.md).
+
+The corpus input format is domain-neutral, but the current generated-World endpoint remains partly
+oriented toward media and technology: technical systems, entertainment, social media,
+institutions/economy, and access/conflict. WWII and other non-media corpora therefore also test
+whether the World schema should acquire domain-specific endpoint profiles.
 
 See [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) and
 [`sampling/FUTURE-CONTRACT.md`](sampling/FUTURE-CONTRACT.md) for the contracts, and

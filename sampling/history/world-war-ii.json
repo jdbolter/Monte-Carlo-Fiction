@@ -1,5 +1,6 @@
 {
   "corpus": "world-war-ii-and-aftermath",
+  "displayName": "World War II",
   "purpose": "A received global history of the origins, conduct, atrocities, political transformations, and immediate aftermath of the Second World War. It begins with the Nazi seizure of power in 1933 and runs through the consolidation of the early Cold War and outbreak of the Korean War in 1950. Events are selected as causal anchors for alternate history, not as an exhaustive military chronology.",
   "experiments": ["alternate-history"],
   "sourceNote": "The chronology synthesizes established scholarly overviews, museum reference histories, and institutional historical summaries. It is intended as a sound basis for counterfactual construction rather than original archival research. The Holocaust is treated as integral to the war's political and military history, not as a separate sidebar.",

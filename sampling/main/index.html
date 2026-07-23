@@ -229,8 +229,9 @@ const node = html => { const wrapper = document.createElement('div'); wrapper.in
 const POST = body => ({ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
 async function api(route, options) { const response = await fetch('/api/' + route, options); const payload = await response.json(); if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`); return payload; }
 
+let corpusCatalog = [];
 const KIND_LABELS = { 'alternate-history':'Alternate History', future:'Future Speculation' };
-const themeLabel = corpus => corpus === 'vr' ? 'VR' : corpus === 'silicon-valley' ? 'Silicon Valley' : corpus === 'digital-media' ? 'Digital Media' : corpus === 'world-war-ii' ? 'World War II' : corpus.replace(/-/g, ' ');
+const themeLabel = corpus => corpusCatalog.find(item=>item.id===corpus)?.displayName || corpus.split('-').map(word=>word.charAt(0).toUpperCase()+word.slice(1)).join(' ');
 const DEFAULT_HISTORY_DRAFTS = {
   vr: {
     startYear:1990, endYear:2026,
@@ -281,7 +282,7 @@ const MODE_UI = {
 
 let activeKind = null;
 const activeCorpus = { 'alternate-history':'vr', future:'vr' };
-let allWorlds = [], allArtifacts = [], formIds = [], corpusCatalog = [], defaultForm = 'narrative-history';
+let allWorlds = [], allArtifacts = [], formIds = [], defaultForm = 'narrative-history';
 const historyDrafts = structuredClone(DEFAULT_HISTORY_DRAFTS);
 const futureDrafts = structuredClone(DEFAULT_FUTURE_DRAFTS);
 
@@ -384,9 +385,19 @@ function syncCorpusSelectors() {
   $('#l-corpus').innerHTML=corpusOptions(activeKind,activeCorpus[activeKind]);
 }
 function saveHistoryDraft(corpus) { if (!corpus) return; historyDrafts[corpus]={ startYear:Number($('#p-start').value),endYear:Number($('#p-end').value),brief:$('#p-brief').value }; }
-function loadHistoryDraft(corpus) { const d=historyDrafts[corpus]; $('#p-start').value=d.startYear; $('#p-end').value=d.endYear; $('#p-brief').value=d.brief; }
+function loadHistoryDraft(corpus) {
+  const meta=corpusCatalog.find(item=>item.id===corpus);
+  const firstYear=meta?.firstYear || new Date().getFullYear()-20;
+  const d=historyDrafts[corpus] ||= { startYear:firstYear,endYear:Math.max(firstYear+1,meta?.lastYear || firstYear+20),brief:'' };
+  $('#p-start').value=d.startYear; $('#p-end').value=d.endYear; $('#p-brief').value=d.brief;
+}
 function saveFutureDraft(corpus) { if (!corpus) return; futureDrafts[corpus]={ mode:$('#f-mode').value,baseYear:Number($('#f-base').value),horizonYear:Number($('#f-horizon').value),scope:$('#f-scope').value,brief:$('#f-brief').value,pivot:$('#f-pivot').value,target:$('#f-target').value }; }
-function loadFutureDraft(corpus) { const d=futureDrafts[corpus]; $('#f-mode').value=d.mode; $('#f-base').value=d.baseYear; $('#f-horizon').value=d.horizonYear; $('#f-scope').value=d.scope; $('#f-brief').value=d.brief; $('#f-pivot').value=d.pivot; $('#f-target').value=d.target; updateFutureMode(); }
+function loadFutureDraft(corpus) {
+  const meta=corpusCatalog.find(item=>item.id===corpus);
+  const baseYear=Math.max(new Date().getFullYear(),meta?.lastYear || 0);
+  const d=futureDrafts[corpus] ||= { mode:'open-exploration',baseYear,horizonYear:baseYear+20,scope:'',brief:'',pivot:'',target:'' };
+  $('#f-mode').value=d.mode; $('#f-base').value=d.baseYear; $('#f-horizon').value=d.horizonYear; $('#f-scope').value=d.scope; $('#f-brief').value=d.brief; $('#f-pivot').value=d.pivot; $('#f-target').value=d.target; updateFutureMode();
+}
 
 $('#p-corpus').onchange = event => { saveHistoryDraft(activeCorpus['alternate-history']); activeCorpus['alternate-history']=event.target.value; loadHistoryDraft(event.target.value); syncCorpusSelectors(); showGenerated(); };
 $('#f-corpus').onchange = event => { saveFutureDraft(activeCorpus.future); activeCorpus.future=event.target.value; loadFutureDraft(event.target.value); syncCorpusSelectors(); showGenerated(); };

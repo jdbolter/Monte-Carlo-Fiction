@@ -3,7 +3,8 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, readFileSync, rmSync } from 'fs';
 import { dirname, join } from 'path';
 import { tmpdir } from 'os';
-import { loadCorpus, loadCorpusSource, listCorpora } from '../sampling/history.js';
+import { fileURLToPath } from 'url';
+import { loadCorpus, loadCorpusSource, listCorpora, validateCorpus } from '../sampling/history.js';
 import { buildGenerationRequest, clearGenerationDiagnostics, normalizeAlternateHistoryInput, saveGenerationDiagnostic } from '../sampling/world-generator.js';
 import { LEGACY_WORLD_SCHEMA_VERSION, validateGeneratedWorld } from '../sampling/world-schema.js';
 import { buildRenderRequest, renderPayload } from '../sampling/render-world.js';
@@ -74,6 +75,13 @@ test('history corpora are discovered and loadable', () => {
   assert.equal(war.events.at(-1).year, 1950);
   assert.deepEqual(corpora.find(corpus => corpus.id === 'world-war-ii').experiments, ['alternate-history']);
   assert.ok(corpora.filter(corpus => corpus.id !== 'world-war-ii').every(corpus => corpus.experiments.includes('future')));
+});
+
+test('documented history-corpus template satisfies the loader contract', () => {
+  const documentation = readFileSync(join(dirname(fileURLToPath(import.meta.url)), '..', 'sampling', 'HISTORY-CORPUS-CONTRACT.md'), 'utf8');
+  const template = documentation.match(/## Copyable minimum\s+```json\s+([\s\S]*?)```/)?.[1];
+  assert.ok(template, 'documented JSON template should be present');
+  assert.deepEqual(validateCorpus(JSON.parse(template), 'example-domain'), []);
 });
 
 test('valid generated content passes causal validation', () => {
