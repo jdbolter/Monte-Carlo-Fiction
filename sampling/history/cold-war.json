@@ -1,0 +1,890 @@
+{
+  "corpus": "cold-war-1945-1993",
+  "displayName": "The Cold War",
+  "purpose": "A received global history of the Cold War, from the collapse of the Grand Alliance at the end of the Second World War through the disintegration of the Soviet Union and its immediate aftermath in 1993. Events are selected as causal anchors for alternate history across superpower diplomacy, the nuclear arms race and its control, proxy wars, ideological and economic competition, domestic repression, dissent and resistance, and the eventual unraveling of the Soviet bloc. It is not an exhaustive chronology of every crisis or campaign.",
+  "experiments": [
+    "alternate-history"
+  ],
+  "sourceNote": "The chronology synthesizes established scholarly overviews, government historical offices, and reference timelines. It is intended as a sound basis for counterfactual construction rather than original archival research. Dates use the conventional anchor year; ranges and uncertainty are preserved in the display field.",
+  "sources": [
+    {
+      "title": "The Cold War: A World History",
+      "author": "Odd Arne Westad",
+      "publisher": "Basic Books"
+    },
+    {
+      "title": "The Cold War: A New History",
+      "author": "John Lewis Gaddis",
+      "publisher": "Penguin"
+    },
+    {
+      "title": "Milestones in the History of U.S. Foreign Relations",
+      "publisher": "Office of the Historian, U.S. Department of State",
+      "url": "https://history.state.gov/milestones"
+    },
+    {
+      "title": "The Cold War (reference timeline)",
+      "publisher": "National Museum of American Diplomacy",
+      "url": "https://diplomacy.state.gov"
+    },
+    {
+      "title": "Postwar: A History of Europe Since 1945",
+      "author": "Tony Judt",
+      "publisher": "Penguin"
+    }
+  ],
+  "tagLegend": {
+    "diplomacy": "summits, treaties, negotiations, and formal settlements",
+    "containment": "the US strategy of resisting the expansion of Soviet influence",
+    "alliance": "military blocs, pacts, and their formation or division",
+    "nuclear": "nuclear weapons, testing, and deterrence",
+    "arms-race": "competitive military and technological buildup",
+    "arms-control": "treaties and agreements limiting or reducing weapons",
+    "proxy-war": "armed conflicts fought through client states and movements",
+    "espionage": "intelligence, spying, and covert action",
+    "ideology": "doctrine, propaganda, and belief systems",
+    "repression": "domestic political repression and persecution",
+    "resistance": "dissent, uprisings, and opposition movements",
+    "economy": "economic systems, aid, trade, and crisis",
+    "decolonization": "the end of empires and non-aligned and third-world politics",
+    "space-race": "competition in spaceflight and rocketry",
+    "detente": "the relaxation of superpower tensions",
+    "crisis": "acute confrontations carrying the risk of war",
+    "reform": "liberalization, glasnost, and perestroika",
+    "collapse": "the disintegration of the Soviet bloc and Union"
+  },
+  "events": [
+    {
+      "id": "yalta-conference",
+      "year": 1945,
+      "display": "February 1945",
+      "label": "Yalta Conference",
+      "tags": [
+        "diplomacy"
+      ],
+      "description": "Roosevelt, Churchill, and Stalin plan the postwar order, agreeing on occupation zones, free elections in liberated Europe, and Soviet entry into the Pacific war. Rival interpretations of the vague accords soon become a source of distrust."
+    },
+    {
+      "id": "hiroshima-nagasaki",
+      "year": 1945,
+      "display": "6 and 9 August 1945",
+      "label": "Atomic Bombings of Japan",
+      "tags": [
+        "nuclear",
+        "arms-race"
+      ],
+      "description": "The United States drops atomic bombs on Hiroshima and Nagasaki, ending the Pacific war and inaugurating the nuclear age with a temporary American monopoly on the decisive new weapon."
+    },
+    {
+      "id": "potsdam-conference",
+      "year": 1945,
+      "display": "July–August 1945",
+      "label": "Potsdam Conference",
+      "tags": [
+        "diplomacy"
+      ],
+      "description": "The victors set terms for occupied Germany and postwar Europe as wartime cooperation gives way to visible friction over reparations, Poland, and the political future of Eastern Europe."
+    },
+    {
+      "id": "long-telegram",
+      "year": 1946,
+      "display": "February 1946",
+      "label": "Kennan's Long Telegram",
+      "tags": [
+        "containment",
+        "ideology"
+      ],
+      "description": "US diplomat George Kennan argues that Soviet hostility is rooted in ideology and insecurity and can be met by patient, firm containment, supplying the intellectual basis of American Cold War strategy."
+    },
+    {
+      "id": "iron-curtain-speech",
+      "year": 1946,
+      "display": "March 1946",
+      "label": "Churchill's Iron Curtain Speech",
+      "tags": [
+        "ideology"
+      ],
+      "description": "Speaking in Fulton, Missouri, Churchill declares that an iron curtain has descended across Europe, giving public shape to the emerging division of the continent into rival camps."
+    },
+    {
+      "id": "truman-doctrine",
+      "year": 1947,
+      "display": "March 1947",
+      "label": "Truman Doctrine",
+      "tags": [
+        "containment",
+        "ideology"
+      ],
+      "description": "President Truman pledges US support to peoples resisting subjugation, initially aiding Greece and Turkey, and commits the United States to containing communism worldwide."
+    },
+    {
+      "id": "marshall-plan",
+      "year": 1947,
+      "display": "June 1947",
+      "label": "Marshall Plan Announced",
+      "tags": [
+        "economy",
+        "containment"
+      ],
+      "description": "The United States offers large-scale aid to rebuild Western European economies, binding recipients to American markets and blunting the appeal of communist parties. The Soviet bloc refuses to participate."
+    },
+    {
+      "id": "national-security-act",
+      "year": 1947,
+      "display": "July 1947",
+      "label": "US National Security Act",
+      "tags": [
+        "containment",
+        "espionage"
+      ],
+      "description": "US legislation creates the Central Intelligence Agency, the National Security Council, and a unified defense establishment, building the permanent institutions of American Cold War policy."
+    },
+    {
+      "id": "cominform-founded",
+      "year": 1947,
+      "display": "September 1947",
+      "label": "Cominform Established",
+      "tags": [
+        "ideology",
+        "alliance"
+      ],
+      "description": "Stalin founds the Communist Information Bureau to coordinate European communist parties and enforce a two-camp view of the world, tightening Soviet control over the bloc."
+    },
+    {
+      "id": "czech-coup",
+      "year": 1948,
+      "display": "February 1948",
+      "label": "Czechoslovak Communist Coup",
+      "tags": [
+        "repression"
+      ],
+      "description": "Communists seize full power in Czechoslovakia, extinguishing the last coalition government in Eastern Europe and hardening Western fears of further Soviet advances."
+    },
+    {
+      "id": "tito-stalin-split",
+      "year": 1948,
+      "display": "June 1948",
+      "label": "Tito–Stalin Split",
+      "tags": [
+        "ideology",
+        "resistance"
+      ],
+      "description": "Yugoslavia is expelled from the Cominform after Tito resists Soviet dominance, proving that communist states could break with Moscow and opening a path toward non-alignment."
+    },
+    {
+      "id": "berlin-blockade-airlift",
+      "year": 1948,
+      "display": "June 1948 – May 1949",
+      "label": "Berlin Blockade and Airlift",
+      "tags": [
+        "crisis"
+      ],
+      "description": "The Soviet Union blockades West Berlin; a sustained Western airlift supplies the city until the blockade is lifted, the first great confrontation of the Cold War and a symbol of Western resolve."
+    },
+    {
+      "id": "nato-founded",
+      "year": 1949,
+      "display": "April 1949",
+      "label": "NATO Founded",
+      "tags": [
+        "alliance"
+      ],
+      "description": "Twelve Western nations sign the North Atlantic Treaty, committing to collective defense and permanently tying American military power to the security of Western Europe."
+    },
+    {
+      "id": "comecon-founded",
+      "year": 1949,
+      "display": "January 1949",
+      "label": "Comecon Established",
+      "tags": [
+        "economy",
+        "alliance"
+      ],
+      "description": "The Soviet Union organizes the Council for Mutual Economic Assistance to integrate the economies of its satellites, formalizing a separate Eastern economic bloc."
+    },
+    {
+      "id": "soviet-atomic-bomb",
+      "year": 1949,
+      "display": "August 1949",
+      "label": "Soviet Union Tests an Atomic Bomb",
+      "tags": [
+        "nuclear",
+        "arms-race"
+      ],
+      "description": "The first Soviet atomic test ends the American nuclear monopoly years ahead of Western expectations and sets the conditions for a sustained nuclear arms race."
+    },
+    {
+      "id": "two-german-states",
+      "year": 1949,
+      "display": "May–October 1949",
+      "label": "Two German States Founded",
+      "tags": [
+        "alliance"
+      ],
+      "description": "The Federal Republic of Germany and the German Democratic Republic are established in the western and Soviet occupation zones, entrenching a divided Germany at the center of Europe."
+    },
+    {
+      "id": "prc-founded",
+      "year": 1949,
+      "display": "October 1949",
+      "label": "People's Republic of China Founded",
+      "tags": [
+        "ideology",
+        "decolonization"
+      ],
+      "description": "Communist forces win the Chinese civil war and proclaim the People's Republic while the Nationalists retreat to Taiwan, transforming Asian and global politics and alarming Washington."
+    },
+    {
+      "id": "nsc-68",
+      "year": 1950,
+      "display": "April 1950",
+      "label": "NSC-68 and Rearmament",
+      "tags": [
+        "containment",
+        "arms-race"
+      ],
+      "description": "A secret US policy paper calls for a massive military buildup to meet the Soviet threat, shifting containment from a mainly economic and political effort toward large-scale rearmament."
+    },
+    {
+      "id": "korean-war",
+      "year": 1950,
+      "display": "June 1950 – July 1953",
+      "label": "Korean War",
+      "tags": [
+        "proxy-war",
+        "crisis"
+      ],
+      "description": "North Korea invades the South; a US-led United Nations force and later Chinese armies turn the divided peninsula into the first major armed conflict of the Cold War, ending in an armistice near the original border."
+    },
+    {
+      "id": "mccarthyism",
+      "year": 1950,
+      "display": "1950–1954",
+      "label": "McCarthyism and the Red Scare",
+      "tags": [
+        "repression",
+        "espionage"
+      ],
+      "description": "Fear of communist subversion drives loyalty investigations, blacklists, and Senator McCarthy's public hearings in the United States, showing how the Cold War reshaped domestic politics and civil liberties."
+    },
+    {
+      "id": "rosenberg-case",
+      "year": 1951,
+      "display": "1951–1953",
+      "label": "Rosenberg Atomic Espionage Case",
+      "tags": [
+        "espionage",
+        "repression"
+      ],
+      "description": "Julius and Ethel Rosenberg are convicted and executed for passing atomic secrets to the Soviet Union, dramatizing wartime nuclear espionage and the intensity of American anticommunist anxiety."
+    },
+    {
+      "id": "us-hydrogen-bomb",
+      "year": 1952,
+      "display": "November 1952",
+      "label": "United States Tests a Hydrogen Bomb",
+      "tags": [
+        "nuclear",
+        "arms-race"
+      ],
+      "description": "The first American thermonuclear test yields explosive power far beyond fission weapons, escalating the arms race toward city-destroying bombs and provoking a Soviet counterpart within a year."
+    },
+    {
+      "id": "stalin-death",
+      "year": 1953,
+      "display": "March 1953",
+      "label": "Death of Stalin",
+      "tags": [
+        "reform"
+      ],
+      "description": "Stalin's death opens a succession struggle in the Soviet Union and a cautious thaw, making possible the Korean armistice and the first tentative easing of the harshest repression."
+    },
+    {
+      "id": "east-german-uprising",
+      "year": 1953,
+      "display": "June 1953",
+      "label": "East German Uprising",
+      "tags": [
+        "resistance",
+        "repression"
+      ],
+      "description": "Workers' protests in East Germany spread into a broad revolt that Soviet tanks suppress, the first of several risings that revealed the fragility of Soviet control over its satellites."
+    },
+    {
+      "id": "dien-bien-phu-geneva",
+      "year": 1954,
+      "display": "1954",
+      "label": "Dien Bien Phu and the Geneva Accords",
+      "tags": [
+        "decolonization",
+        "proxy-war"
+      ],
+      "description": "French defeat in Indochina and the Geneva settlement partition Vietnam pending elections, ending French empire in the region and drawing the United States toward a widening commitment in Southeast Asia."
+    },
+    {
+      "id": "warsaw-pact",
+      "year": 1955,
+      "display": "May 1955",
+      "label": "Warsaw Pact Formed",
+      "tags": [
+        "alliance"
+      ],
+      "description": "In response to West German rearmament and NATO membership, the Soviet Union and its satellites form a rival military alliance, formalizing the bloc structure of Cold War Europe."
+    },
+    {
+      "id": "bandung-conference",
+      "year": 1955,
+      "display": "April 1955",
+      "label": "Bandung Conference",
+      "tags": [
+        "decolonization",
+        "diplomacy"
+      ],
+      "description": "Newly independent Asian and African states meet at Bandung to assert solidarity and independence from both blocs, seeding the Non-Aligned Movement and a distinct third-world politics."
+    },
+    {
+      "id": "secret-speech",
+      "year": 1956,
+      "display": "February 1956",
+      "label": "Khrushchev's Secret Speech",
+      "tags": [
+        "reform",
+        "ideology"
+      ],
+      "description": "Khrushchev denounces Stalin's crimes and cult of personality before the Party Congress, launching de-Stalinization and unsettling communist parties and satellites across the bloc."
+    },
+    {
+      "id": "hungarian-revolution",
+      "year": 1956,
+      "display": "October–November 1956",
+      "label": "Hungarian Revolution",
+      "tags": [
+        "resistance",
+        "repression"
+      ],
+      "description": "A national uprising installs a reform government that declares neutrality and withdrawal from the Warsaw Pact; Soviet forces crush it, setting the limits of permissible change in the bloc."
+    },
+    {
+      "id": "suez-crisis",
+      "year": 1956,
+      "display": "October–November 1956",
+      "label": "Suez Crisis",
+      "tags": [
+        "decolonization",
+        "crisis"
+      ],
+      "description": "Britain, France, and Israel attack Egypt over the nationalized Suez Canal but withdraw under US and Soviet pressure, exposing the decline of European empires and the primacy of the superpowers."
+    },
+    {
+      "id": "sputnik",
+      "year": 1957,
+      "display": "October 1957",
+      "label": "Sputnik Launched",
+      "tags": [
+        "space-race",
+        "arms-race"
+      ],
+      "description": "The Soviet Union orbits the first artificial satellite, alarming the West about a possible missile gap and igniting a space race that fused prestige, science, and intercontinental rocketry."
+    },
+    {
+      "id": "cuban-revolution",
+      "year": 1959,
+      "display": "January 1959",
+      "label": "Cuban Revolution",
+      "tags": [
+        "proxy-war",
+        "ideology"
+      ],
+      "description": "Fidel Castro's forces overthrow the Cuban government and move toward the Soviet camp, placing a communist ally ninety miles from Florida and reshaping US policy in the Western Hemisphere."
+    },
+    {
+      "id": "u2-incident",
+      "year": 1960,
+      "display": "May 1960",
+      "label": "U-2 Incident",
+      "tags": [
+        "espionage",
+        "crisis"
+      ],
+      "description": "The Soviet Union shoots down an American U-2 spy plane and captures its pilot, wrecking a planned Paris summit and hardening relations after a brief period of thaw."
+    },
+    {
+      "id": "sino-soviet-split",
+      "year": 1960,
+      "display": "1960–1961",
+      "label": "Sino-Soviet Split",
+      "tags": [
+        "ideology"
+      ],
+      "description": "Ideological and strategic disputes rupture the alliance between Moscow and Beijing, fracturing the communist world into rival centers and reshaping the global balance for decades."
+    },
+    {
+      "id": "bay-of-pigs",
+      "year": 1961,
+      "display": "April 1961",
+      "label": "Bay of Pigs Invasion",
+      "tags": [
+        "proxy-war",
+        "espionage"
+      ],
+      "description": "A CIA-backed invasion by Cuban exiles fails disastrously, humiliating the United States, entrenching Castro, and pushing Cuba further into Soviet protection."
+    },
+    {
+      "id": "gagarin-spaceflight",
+      "year": 1961,
+      "display": "April 1961",
+      "label": "First Human Spaceflight",
+      "tags": [
+        "space-race"
+      ],
+      "description": "Soviet cosmonaut Yuri Gagarin becomes the first human in orbit, a propaganda triumph that spurs the United States to commit to landing a man on the Moon."
+    },
+    {
+      "id": "berlin-wall",
+      "year": 1961,
+      "display": "August 1961",
+      "label": "Berlin Wall Built",
+      "tags": [
+        "crisis",
+        "repression"
+      ],
+      "description": "East Germany seals off West Berlin with a wall to stop the hemorrhage of refugees, stabilizing the German front of the Cold War while creating its most potent symbol of division."
+    },
+    {
+      "id": "cuban-missile-crisis",
+      "year": 1962,
+      "display": "October 1962",
+      "label": "Cuban Missile Crisis",
+      "tags": [
+        "crisis",
+        "nuclear"
+      ],
+      "description": "The discovery of Soviet nuclear missiles in Cuba brings the superpowers to the brink of nuclear war; a negotiated withdrawal, paired with a secret US pledge on missiles in Turkey, ends the closest call of the Cold War."
+    },
+    {
+      "id": "partial-test-ban-treaty",
+      "year": 1963,
+      "display": "August 1963",
+      "label": "Partial Test Ban Treaty",
+      "tags": [
+        "arms-control",
+        "detente"
+      ],
+      "description": "The United States, Soviet Union, and Britain ban atmospheric, underwater, and space nuclear tests, the first major arms-control accord and an early product of post-crisis caution."
+    },
+    {
+      "id": "gulf-of-tonkin",
+      "year": 1964,
+      "display": "August 1964",
+      "label": "Gulf of Tonkin and US Escalation",
+      "tags": [
+        "proxy-war"
+      ],
+      "description": "Reported clashes off Vietnam prompt a US congressional resolution authorizing wider military action, opening the way to full American intervention in the Vietnam War."
+    },
+    {
+      "id": "china-atomic-bomb",
+      "year": 1964,
+      "display": "October 1964",
+      "label": "China Tests an Atomic Bomb",
+      "tags": [
+        "nuclear",
+        "arms-race"
+      ],
+      "description": "The People's Republic of China detonates its first nuclear device, joining the nuclear club, complicating superpower calculations, and deepening the Sino-Soviet rift."
+    },
+    {
+      "id": "khrushchev-ousted",
+      "year": 1964,
+      "display": "October 1964",
+      "label": "Khrushchev Ousted",
+      "tags": [
+        "reform"
+      ],
+      "description": "Soviet leaders remove Khrushchev and install Brezhnev, ending the reformist thaw and beginning a long era of conservative stability, military buildup, and bureaucratic stagnation."
+    },
+    {
+      "id": "vietnam-escalation",
+      "year": 1965,
+      "display": "1965",
+      "label": "Americanization of the Vietnam War",
+      "tags": [
+        "proxy-war"
+      ],
+      "description": "The United States commits large ground forces and a sustained bombing campaign to defend South Vietnam, turning a proxy conflict into a major war that would strain American society and finances."
+    },
+    {
+      "id": "npt-signed",
+      "year": 1968,
+      "display": "July 1968",
+      "label": "Nuclear Non-Proliferation Treaty",
+      "tags": [
+        "arms-control"
+      ],
+      "description": "A landmark treaty commits signatories to prevent the spread of nuclear weapons and to pursue disarmament, creating the central legal framework for limiting the nuclear club."
+    },
+    {
+      "id": "prague-spring",
+      "year": 1968,
+      "display": "August 1968",
+      "label": "Prague Spring Crushed",
+      "tags": [
+        "resistance",
+        "repression"
+      ],
+      "description": "Warsaw Pact forces invade Czechoslovakia to end its reform movement; the Brezhnev Doctrine asserts Moscow's right to intervene against liberalization, disillusioning communists worldwide."
+    },
+    {
+      "id": "tet-offensive",
+      "year": 1968,
+      "display": "January–February 1968",
+      "label": "Tet Offensive",
+      "tags": [
+        "proxy-war",
+        "resistance"
+      ],
+      "description": "A massive coordinated assault across South Vietnam, though militarily costly to its attackers, shatters American confidence in a near victory and turns US public opinion against the war."
+    },
+    {
+      "id": "apollo-moon-landing",
+      "year": 1969,
+      "display": "July 1969",
+      "label": "Apollo 11 Moon Landing",
+      "tags": [
+        "space-race"
+      ],
+      "description": "American astronauts land on the Moon, giving the United States a decisive symbolic victory in the space race and a demonstration of technological and organizational power."
+    },
+    {
+      "id": "sino-soviet-border-clash",
+      "year": 1969,
+      "display": "March 1969",
+      "label": "Sino-Soviet Border Clashes",
+      "tags": [
+        "crisis"
+      ],
+      "description": "Armed clashes along the Ussuri River bring China and the Soviet Union close to war, pushing Beijing toward an eventual opening with the United States."
+    },
+    {
+      "id": "nixon-china",
+      "year": 1972,
+      "display": "February 1972",
+      "label": "Nixon Visits China",
+      "tags": [
+        "diplomacy",
+        "detente"
+      ],
+      "description": "President Nixon's visit to Beijing begins a rapprochement between the United States and the People's Republic, creating a triangular diplomacy that pressures Moscow and reorders the Cold War."
+    },
+    {
+      "id": "salt-i-abm",
+      "year": 1972,
+      "display": "May 1972",
+      "label": "SALT I and ABM Treaty",
+      "tags": [
+        "arms-control",
+        "detente"
+      ],
+      "description": "US and Soviet leaders sign the first Strategic Arms Limitation accords and a treaty restricting missile defenses, institutionalizing détente and mutual nuclear vulnerability."
+    },
+    {
+      "id": "paris-peace-accords",
+      "year": 1973,
+      "display": "January 1973",
+      "label": "Paris Peace Accords",
+      "tags": [
+        "proxy-war",
+        "diplomacy"
+      ],
+      "description": "An agreement ends direct US military involvement in Vietnam and withdraws American forces, leaving the divided country's fate to be decided by continued fighting."
+    },
+    {
+      "id": "yom-kippur-oil-crisis",
+      "year": 1973,
+      "display": "October 1973",
+      "label": "Yom Kippur War and Oil Crisis",
+      "tags": [
+        "proxy-war",
+        "economy"
+      ],
+      "description": "An Arab-Israeli war draws in superpower clients and triggers an Arab oil embargo, straining détente and revealing the economic vulnerability of the industrialized West."
+    },
+    {
+      "id": "fall-of-saigon",
+      "year": 1975,
+      "display": "April 1975",
+      "label": "Fall of Saigon",
+      "tags": [
+        "proxy-war"
+      ],
+      "description": "North Vietnamese forces capture Saigon and reunify Vietnam under communist rule, a defeat that shook American confidence and shaped a generation's view of foreign intervention."
+    },
+    {
+      "id": "helsinki-accords",
+      "year": 1975,
+      "display": "August 1975",
+      "label": "Helsinki Accords",
+      "tags": [
+        "diplomacy",
+        "resistance"
+      ],
+      "description": "European and North American states accept existing borders and pledge to respect human rights; the rights provisions unexpectedly empower dissident movements across the Eastern bloc."
+    },
+    {
+      "id": "angola-proxy-war",
+      "year": 1975,
+      "display": "1975–1976",
+      "label": "Angolan Civil War Internationalized",
+      "tags": [
+        "proxy-war",
+        "decolonization"
+      ],
+      "description": "The end of Portuguese empire in Angola opens a civil war in which Soviet and Cuban support faces Western-backed rivals, extending superpower rivalry into post-colonial Africa."
+    },
+    {
+      "id": "salt-ii-signed",
+      "year": 1979,
+      "display": "June 1979",
+      "label": "SALT II Signed",
+      "tags": [
+        "arms-control"
+      ],
+      "description": "The United States and Soviet Union sign a second strategic arms accord, but rising tensions prevent US ratification, marking the fraying of détente."
+    },
+    {
+      "id": "nato-dual-track",
+      "year": 1979,
+      "display": "December 1979",
+      "label": "NATO Dual-Track Decision",
+      "tags": [
+        "alliance",
+        "arms-race"
+      ],
+      "description": "NATO agrees to deploy new intermediate-range missiles in Western Europe while offering arms-control talks, provoking a Soviet counter-buildup and a wave of Western peace protests."
+    },
+    {
+      "id": "soviet-afghanistan-invasion",
+      "year": 1979,
+      "display": "December 1979",
+      "label": "Soviet Invasion of Afghanistan",
+      "tags": [
+        "proxy-war",
+        "crisis"
+      ],
+      "description": "Soviet forces intervene to prop up a communist government in Afghanistan, ending détente, prompting Western sanctions and boycotts, and beginning a long, draining guerrilla war."
+    },
+    {
+      "id": "solidarity-poland",
+      "year": 1980,
+      "display": "August 1980",
+      "label": "Solidarity Movement in Poland",
+      "tags": [
+        "resistance",
+        "economy"
+      ],
+      "description": "Strikes at the Gdansk shipyard produce Solidarity, the first independent mass trade union in the Soviet bloc, a durable challenge to communist authority rooted in workers and the Church."
+    },
+    {
+      "id": "martial-law-poland",
+      "year": 1981,
+      "display": "December 1981",
+      "label": "Martial Law in Poland",
+      "tags": [
+        "repression"
+      ],
+      "description": "Poland's government imposes martial law and bans Solidarity to forestall Soviet intervention, driving the opposition underground while leaving communist legitimacy fatally weakened."
+    },
+    {
+      "id": "reagan-sdi-evil-empire",
+      "year": 1983,
+      "display": "March 1983",
+      "label": "Reagan's SDI and Evil Empire Speech",
+      "tags": [
+        "arms-race",
+        "ideology"
+      ],
+      "description": "President Reagan denounces the Soviet Union as an evil empire and proposes a space-based missile defense, intensifying rhetoric and pressuring Soviet resources at a moment of economic weakness."
+    },
+    {
+      "id": "able-archer-war-scare",
+      "year": 1983,
+      "display": "November 1983",
+      "label": "Able Archer War Scare",
+      "tags": [
+        "crisis",
+        "nuclear"
+      ],
+      "description": "A NATO command exercise, misread by a fearful Soviet leadership as possible cover for a first strike, brings the superpowers to an underappreciated moment of nuclear danger."
+    },
+    {
+      "id": "gorbachev-leadership",
+      "year": 1985,
+      "display": "March 1985",
+      "label": "Gorbachev Becomes Soviet Leader",
+      "tags": [
+        "reform"
+      ],
+      "description": "Mikhail Gorbachev takes power determined to revive a stagnant system, launching glasnost and perestroika and seeking to relax tensions in order to reform at home."
+    },
+    {
+      "id": "chernobyl-disaster",
+      "year": 1986,
+      "display": "April 1986",
+      "label": "Chernobyl Disaster",
+      "tags": [
+        "reform",
+        "crisis"
+      ],
+      "description": "The explosion at a Soviet nuclear plant spreads radiation across Europe; the initial cover-up and eventual disclosure test glasnost and expose the failures of the Soviet system."
+    },
+    {
+      "id": "reykjavik-summit",
+      "year": 1986,
+      "display": "October 1986",
+      "label": "Reykjavik Summit",
+      "tags": [
+        "diplomacy",
+        "arms-control"
+      ],
+      "description": "Reagan and Gorbachev nearly agree to abolish nuclear weapons before deadlocking over missile defense, a startling near-breakthrough that set the stage for real arms reductions."
+    },
+    {
+      "id": "inf-treaty",
+      "year": 1987,
+      "display": "December 1987",
+      "label": "INF Treaty",
+      "tags": [
+        "arms-control",
+        "detente"
+      ],
+      "description": "The United States and Soviet Union agree to eliminate an entire class of intermediate-range nuclear missiles, the first treaty to abolish rather than merely limit a category of weapons."
+    },
+    {
+      "id": "soviet-afghan-withdrawal",
+      "year": 1989,
+      "display": "February 1989",
+      "label": "Soviet Withdrawal from Afghanistan",
+      "tags": [
+        "proxy-war"
+      ],
+      "description": "The Soviet Union completes its withdrawal from Afghanistan after a costly decade of war, signaling the retreat of Soviet power and emboldening reform across the bloc."
+    },
+    {
+      "id": "revolutions-of-1989",
+      "year": 1989,
+      "display": "1989",
+      "label": "Revolutions of 1989",
+      "tags": [
+        "resistance",
+        "collapse"
+      ],
+      "description": "Semi-free elections in Poland, an opened Hungarian border, and mass protests topple communist governments across Eastern Europe as Moscow declines to intervene, unraveling the bloc within months."
+    },
+    {
+      "id": "fall-of-berlin-wall",
+      "year": 1989,
+      "display": "November 1989",
+      "label": "Fall of the Berlin Wall",
+      "tags": [
+        "collapse"
+      ],
+      "description": "East Germany opens its borders and crowds breach the Berlin Wall, the defining image of the Cold War's end and a prelude to German reunification."
+    },
+    {
+      "id": "malta-summit",
+      "year": 1989,
+      "display": "December 1989",
+      "label": "Malta Summit",
+      "tags": [
+        "diplomacy",
+        "collapse"
+      ],
+      "description": "Meeting off Malta, Bush and Gorbachev declare an end to superpower hostility, effectively announcing that the Cold War is over even as the Soviet bloc continues to dissolve."
+    },
+    {
+      "id": "german-reunification",
+      "year": 1990,
+      "display": "October 1990",
+      "label": "German Reunification",
+      "tags": [
+        "collapse",
+        "diplomacy"
+      ],
+      "description": "East and West Germany unite within NATO after negotiated Soviet consent, ending the central territorial division of the Cold War in Europe."
+    },
+    {
+      "id": "warsaw-pact-dissolved",
+      "year": 1991,
+      "display": "July 1991",
+      "label": "Warsaw Pact Dissolved",
+      "tags": [
+        "alliance",
+        "collapse"
+      ],
+      "description": "The Eastern military alliance is formally disbanded as its members turn westward, dismantling the institutional framework of the Soviet bloc."
+    },
+    {
+      "id": "start-i-signed",
+      "year": 1991,
+      "display": "July 1991",
+      "label": "START I Signed",
+      "tags": [
+        "arms-control"
+      ],
+      "description": "The United States and Soviet Union agree to substantial reductions in strategic nuclear arsenals, converting the easing of tensions into deep, verifiable cuts."
+    },
+    {
+      "id": "august-coup",
+      "year": 1991,
+      "display": "August 1991",
+      "label": "August Coup in Moscow",
+      "tags": [
+        "collapse",
+        "resistance"
+      ],
+      "description": "Hardliners briefly seize power to halt reform and preserve the Union; popular resistance in Moscow defeats them, fatally discrediting the Communist Party and accelerating the Union's breakup."
+    },
+    {
+      "id": "soviet-dissolution",
+      "year": 1991,
+      "display": "December 1991",
+      "label": "Dissolution of the Soviet Union",
+      "tags": [
+        "collapse"
+      ],
+      "description": "The Soviet Union is formally dissolved into fifteen independent states and Gorbachev resigns, ending both the USSR and the Cold War order it had anchored."
+    },
+    {
+      "id": "russia-shock-therapy",
+      "year": 1992,
+      "display": "1992",
+      "label": "Russian Economic Shock Therapy",
+      "tags": [
+        "economy",
+        "collapse"
+      ],
+      "description": "Post-Soviet Russia frees prices and begins rapid privatization, producing steep inflation, collapsing output, and social dislocation that shaped the troubled birth of the new state."
+    },
+    {
+      "id": "start-ii-signed",
+      "year": 1993,
+      "display": "January 1993",
+      "label": "START II Signed",
+      "tags": [
+        "arms-control"
+      ],
+      "description": "The United States and Russia agree to further deep cuts in strategic nuclear weapons, extending Cold War arms control into the post-Soviet era."
+    },
+    {
+      "id": "russian-constitutional-crisis",
+      "year": 1993,
+      "display": "October 1993",
+      "label": "Russian Constitutional Crisis",
+      "tags": [
+        "collapse",
+        "crisis"
+      ],
+      "description": "A violent standoff between President Yeltsin and the parliament ends with tanks shelling the legislature, revealing the instability of Russia's post-Soviet order in the immediate aftermath of the Cold War."
+    }
+  ]
+}

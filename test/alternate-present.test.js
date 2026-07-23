@@ -66,7 +66,7 @@ function sampleContent() {
 test('history corpora are discovered and loadable', () => {
   const corpora = listCorpora();
   const ids = corpora.map(corpus => corpus.id);
-  assert.deepEqual(ids, ['digital-media', 'silicon-valley', 'vr', 'world-war-ii']);
+  assert.deepEqual(ids, ['cold-war', 'digital-media', 'silicon-valley', 'vr', 'world-war-ii']);
   assert.equal(loadCorpus('digital-media').events.length, 70);
   assert.ok(loadCorpus('vr').events.length > 50);
   const war = loadCorpus('world-war-ii');
@@ -74,7 +74,8 @@ test('history corpora are discovered and loadable', () => {
   assert.equal(war.events[0].year, 1933);
   assert.equal(war.events.at(-1).year, 1950);
   assert.deepEqual(corpora.find(corpus => corpus.id === 'world-war-ii').experiments, ['alternate-history']);
-  assert.ok(corpora.filter(corpus => corpus.id !== 'world-war-ii').every(corpus => corpus.experiments.includes('future')));
+  assert.deepEqual(corpora.find(corpus => corpus.id === 'cold-war').experiments, ['alternate-history']);
+  assert.ok(corpora.filter(corpus => !['world-war-ii', 'cold-war'].includes(corpus.id)).every(corpus => corpus.experiments.includes('future')));
 });
 
 test('documented history-corpus template satisfies the loader contract', () => {
