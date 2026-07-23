@@ -1,11 +1,12 @@
 # Monte-Carlo-Fiction
 
-An experiment in generating structured alternate presents and future scenarios from researched
+An experiment in generating structured alternate histories and future scenarios from researched
 historical lineages, then selectively rendering the most interesting Worlds.
 
 The opening screen separates two experiments that share a core pipeline:
 
-- **Alternate Present** — a past divergence develops into a counterfactual present.
+- **Alternate History** — history diverges in a specified starting year and develops through a
+  specified ending year, which may be past, present, or future.
 - **Future Speculation** — the present develops toward a future horizon under one of four modes.
 
 ```
@@ -42,10 +43,12 @@ npm test
 
 ## Interface
 
-- **Choose experiment** — enter the Alternate Present or Future Speculation side of the app.
-- **Generate** — choose `vr` or `silicon-valley` as the historical lineage and generate up to 20
-  structured variants. Future generation supports pivot-forward, endpoint-backcast,
-  bounded-corridor, and open-exploration modes.
+- **Choose experiment** — enter the Alternate History or Future Speculation side of the app.
+- **Generate** — choose a historical lineage and generate up to 20 structured variants. Alternate
+  History includes `digital-media`, `vr`, `silicon-valley`, and a 67-event `world-war-ii`
+  chronology covering 1933–1950. Future Speculation uses the first three lineages; corpus
+  eligibility is declared in the corpus data, so the two lists can diverge. Future generation
+  supports pivot-forward, endpoint-backcast, bounded-corridor, and open-exploration modes.
 - **Render** — inspect complete World JSON and render selected worlds. The primary forms are
   `narrative-history` and `fiction`; shorter diagnostic forms are also retained. An optional render
   brief can specify focus, viewpoint, setting, tone, or emphasis without changing the World.
@@ -71,7 +74,7 @@ Both World contracts contain:
 World fields deliberately use compact factual phrases rather than publication-ready prose. Fictional
 characters, scenes, and plots are invented only during rendering.
 
-Alternate-present timeline events distinguish `retained`, `altered`, and `invented`; future events
+Alternate-history timeline events distinguish `retained`, `altered`, and `invented`; future events
 distinguish `continuation`, `adaptation`, and `novel`. `sourceRefs` must
 match exact IDs in the selected historical corpus, and `causedBy` must point to assumptions or
 earlier timeline events. The application audits these rules after generation. A World with semantic

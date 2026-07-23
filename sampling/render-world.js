@@ -18,9 +18,9 @@ export const FORMS = {
 
 export const DEFAULT_FORM = 'narrative-history';
 
-const RENDER_SYSTEM_PROMPT = `You render a completed World record into the requested form. The World may be an alternate present built from a past divergence or a future scenario built from the present. It is authoritative: do not change its premise, causal sequence, endpoint conditions, continuities, or tensions, and do not add another major turn.
+const RENDER_SYSTEM_PROMPT = `You render a completed World record into the requested form. The World may be an alternate history built from a divergence or a future scenario built from the present. It is authoritative: do not change its premise, causal sequence, endpoint conditions, continuities, or tensions, and do not add another major turn.
 
-For an alternate-present World, narrate the timeline as counterfactual history. For a future World, narrate it as one coherent possibility rather than a prediction, using appropriately conditional framing without repeatedly disclaiming the exercise. Never freeze culture at the pivot or depict an early device as unchanged at the horizon. The endpoint must contain the mature technologies, institutions, media forms, conventions, and conflicts recorded in the World.
+For an alternate-history World, narrate the timeline as counterfactual history across its recorded years. Do not assume its endpoint is the actual present. For a future World, narrate it as one coherent possibility rather than a prediction, using appropriately conditional framing without repeatedly disclaiming the exercise. Never freeze culture at the pivot or depict an early device as unchanged at the horizon. The endpoint must contain the mature technologies, institutions, media forms, conventions, and conflicts recorded in the World.
 
 Preserve the mixed ecology recorded under continuities. Do not make the central medium govern every message or eliminate every older medium. Avoid automatic utopia, dystopia, ominous science fiction, and frictionless promotional prose. Use the world's actual mixture of benefit, normality, exclusion, irritation, conflict, and pleasure.
 
@@ -32,16 +32,16 @@ Return only the requested artifact, without discussing the JSON, the exercise, o
 
 export function renderPayload(world) {
   return {
-    kind: world.kind || 'alternate-present',
+    kind: world.kind || 'alternate-history',
     title: world.title,
     summary: world.summary,
-    baseYear: world.baseYear,
+    baseYear: world.kind === 'future' ? world.baseYear : (world.startYear ?? world.premise?.divergence?.year),
     horizonYear: world.horizonYear,
     premise: world.premise,
     assumptions: world.assumptions,
     historicalForces: world.historicalForces,
     timeline: world.timeline,
-    endpoint: world.kind === 'future' ? world.endpoint : world.present,
+    endpoint: world.endpoint || world.present,
     continuities: world.continuities,
     tensions: world.tensions
   };
@@ -64,7 +64,7 @@ export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT
   const task = FORMS[form] || FORMS[DEFAULT_FORM];
   const kindDirection = world.kind === 'future'
     ? 'This is a future scenario. Present its trajectory as a coherent possibility, not as established history or a confident prediction.'
-    : 'This is an alternate-present scenario. Present its trajectory as counterfactual history leading to the alternate present.';
+    : `This is an alternate history from ${world.startYear ?? world.premise?.divergence?.year} through ${world.horizonYear}. Present its trajectory as counterfactual history ending in the specified year, which must not be silently treated as the actual present.`;
   const brief = String(renderBrief || '').trim();
   const direction = brief
     ? `RENDER BRIEF\n${brief}\n\nUse this brief for choices of focus, viewpoint, setting, tone, or emphasis. It may not contradict the World record.`
@@ -106,7 +106,7 @@ export async function renderAndSave(world, options = {}) {
     worldId: world.id,
     worldTitle: world.title,
     worldSummary: world.summary,
-    worldKind: world.kind || 'alternate-present',
+    worldKind: world.kind || 'alternate-history',
     domain: world.domain,
     horizonYear: world.horizonYear,
     form: rendered.form,

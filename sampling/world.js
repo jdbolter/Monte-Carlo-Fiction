@@ -2,16 +2,16 @@ import { randomUUID } from 'crypto';
 import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFileSync } from 'fs';
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
-import { WORLD_SCHEMA_VERSION } from './world-schema.js';
+import { LEGACY_WORLD_SCHEMA_VERSION, WORLD_SCHEMA_VERSION } from './world-schema.js';
 import { FUTURE_WORLD_SCHEMA_VERSION } from './future-schema.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const WORLD_DIR = join(__dirname, 'worlds');
-export const SUPPORTED_WORLD_SCHEMAS = new Set([WORLD_SCHEMA_VERSION, FUTURE_WORLD_SCHEMA_VERSION]);
+export const SUPPORTED_WORLD_SCHEMAS = new Set([WORLD_SCHEMA_VERSION, LEGACY_WORLD_SCHEMA_VERSION, FUTURE_WORLD_SCHEMA_VERSION]);
 
 export function makeWorldRecord(content, metadata) {
   const generatedAt = metadata.generatedAt || new Date().toISOString();
-  const kind = metadata.kind || 'alternate-present';
+  const kind = metadata.kind || 'alternate-history';
   const schema = metadata.schema || WORLD_SCHEMA_VERSION;
   const prefix = kind === 'future' ? 'future' : 'alt';
   const id = `${prefix}-${metadata.corpusId}-${Date.now().toString(36)}-${randomUUID().slice(0, 8)}`;

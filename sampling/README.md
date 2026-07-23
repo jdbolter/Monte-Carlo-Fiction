@@ -3,14 +3,14 @@
 Everything under this directory supports one flow:
 
 ```
-historical lineage + structured brief → alternate-present.v1 or future.v1 → selected render
+historical lineage + structured brief → alternate-history.v1 or future.v1 → selected render
 ```
 
 ## Modules
 
 | File | Responsibility |
 |---|---|
-| `history/*.json` | Stable researched event corpora supplied to the generator |
+| `history/*.json` | Stable researched event corpora, with optional experiment eligibility |
 | `history.js` | Corpus discovery, loading, event IDs, and hashes |
 | `world-schema.js` | Structured-output JSON schema and causal validation |
 | `world-generator.js` | Cached Anthropic prompt and sequential batch generation |
@@ -40,7 +40,7 @@ shows whether a request created or hit the cache.
 Anthropic's JSON structured-output feature guarantees field shape and types. Application validation
 then audits semantics the schema cannot enforce:
 
-- divergence occurs no later than the endpoint;
+- alternate-history start/divergence and ending years match the supplied boundaries;
 - IDs are unique;
 - the timeline is chronological;
 - causal references point backward;

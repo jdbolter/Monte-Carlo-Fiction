@@ -4,7 +4,7 @@ import { extname, dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { loadEnvFile } from './anthropic.js';
 import { listCorpora } from './history.js';
-import { generateWorldBatch, DEFAULT_GENERATION_MODEL } from './world-generator.js';
+import { generateWorldBatch, DEFAULT_GENERATION_MODEL, normalizeAlternateHistoryInput } from './world-generator.js';
 import { generateFutureWorldBatch, DEFAULT_FUTURE_MODEL, normalizeFutureInput } from './future-generator.js';
 import { FUTURE_MODES } from './future-schema.js';
 import { clearWorlds, listWorlds, loadWorld } from './world.js';
@@ -64,7 +64,7 @@ function artifactsForClient() {
   return listArtifacts().map(artifact => ({
     ...artifact,
     domain: artifact.domain || worlds.get(artifact.worldId)?.domain || '',
-    worldKind: artifact.worldKind || worlds.get(artifact.worldId)?.kind || 'alternate-present'
+    worldKind: artifact.worldKind || worlds.get(artifact.worldId)?.kind || 'alternate-history'
   }));
 }
 
@@ -80,14 +80,21 @@ async function handleApi(route, req, res) {
   }
 
   if (route === 'generate' && req.method === 'POST') {
-    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
     const corpusId = String(body.corpusId || '');
-    const scenarioBrief = String(body.scenarioBrief || '').trim();
-    if (!listCorpora().some(corpus => corpus.id === corpusId)) return sendJson(res, 400, { error: `Unknown history corpus: ${corpusId}` });
-    if (scenarioBrief.length < 40) return sendJson(res, 400, { error: 'Please provide a more complete divergence and endpoint brief.' });
+    const input = normalizeAlternateHistoryInput(body);
+    const corpus = listCorpora().find(item => item.id === corpusId);
+    if (!corpus) return sendJson(res, 400, { error: `Unknown history corpus: ${corpusId}` });
+    if (!corpus.experiments.includes('alternate-history')) {
+      return sendJson(res, 400, { error: `${corpus.name} is not available for Alternate History.` });
+    }
+    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
+    if (!Number.isInteger(input.startYear) || !Number.isInteger(input.endYear) || input.endYear <= input.startYear) {
+      return sendJson(res, 400, { error: 'Alternate History requires integer years with the ending year after the starting year.' });
+    }
+    if (input.scenarioBrief.length < 40) return sendJson(res, 400, { error: 'Please provide a more complete divergence and endpoint brief.' });
     const count = Math.max(1, Math.min(20, Number(body.count) || 1));
     const model = String(body.model || DEFAULT_GENERATION_MODEL);
-    const result = await generateWorldBatch({ corpusId, scenarioBrief, count, model, save: true });
+    const result = await generateWorldBatch({ corpusId, input, count, model, save: true });
     if (!result.worlds.length) return sendJson(res, 502, { error: result.errors.map(item => item.error).join('; ') || 'No worlds were generated.' });
     const formsMap = renderedFormsByWorld();
     return sendJson(res, 200, {
@@ -97,9 +104,13 @@ async function handleApi(route, req, res) {
   }
 
   if (route === 'generate-future' && req.method === 'POST') {
-    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
     const corpusId = String(body.corpusId || '');
-    if (!listCorpora().some(corpus => corpus.id === corpusId)) return sendJson(res, 400, { error: `Unknown historical lineage: ${corpusId}` });
+    const corpus = listCorpora().find(item => item.id === corpusId);
+    if (!corpus) return sendJson(res, 400, { error: `Unknown historical lineage: ${corpusId}` });
+    if (!corpus.experiments.includes('future')) {
+      return sendJson(res, 400, { error: `${corpus.name} is not available for Future Speculation.` });
+    }
+    if (!process.env.ANTHROPIC_API_KEY) return sendJson(res, 400, { error: 'ANTHROPIC_API_KEY is not set in .env.local.' });
     const input = normalizeFutureInput(body);
     if (!FUTURE_MODES.includes(input.mode)) return sendJson(res, 400, { error: `Unknown future mode: ${input.mode}` });
     if (!Number.isInteger(input.baseYear) || !Number.isInteger(input.horizonYear) || input.horizonYear <= input.baseYear) {

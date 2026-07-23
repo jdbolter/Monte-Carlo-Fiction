@@ -1,0 +1,609 @@
+{
+  "corpus": "world-war-ii-and-aftermath",
+  "purpose": "A received global history of the origins, conduct, atrocities, political transformations, and immediate aftermath of the Second World War. It begins with the Nazi seizure of power in 1933 and runs through the consolidation of the early Cold War and outbreak of the Korean War in 1950. Events are selected as causal anchors for alternate history, not as an exhaustive military chronology.",
+  "experiments": ["alternate-history"],
+  "sourceNote": "The chronology synthesizes established scholarly overviews, museum reference histories, and institutional historical summaries. It is intended as a sound basis for counterfactual construction rather than original archival research. The Holocaust is treated as integral to the war's political and military history, not as a separate sidebar.",
+  "sources": [
+    {
+      "title": "The Second World War",
+      "author": "Antony Beevor",
+      "publisher": "Weidenfeld & Nicolson / Little, Brown"
+    },
+    {
+      "title": "A World at Arms: A Global History of World War II",
+      "author": "Gerhard L. Weinberg",
+      "publisher": "Cambridge University Press"
+    },
+    {
+      "title": "The Second World War",
+      "author": "Richard Overy",
+      "publisher": "Penguin"
+    },
+    {
+      "title": "The Holocaust and World War II: Key Dates",
+      "publisher": "United States Holocaust Memorial Museum",
+      "url": "https://encyclopedia.ushmm.org/content/en/article/the-holocaust-and-world-war-ii-key-dates"
+    },
+    {
+      "title": "World War II Dates and Timeline",
+      "publisher": "United States Holocaust Memorial Museum",
+      "url": "https://encyclopedia.ushmm.org/content/en/article/world-war-ii-key-dates"
+    },
+    {
+      "title": "The Berlin Airlift, 1948–1949",
+      "publisher": "Office of the Historian, U.S. Department of State",
+      "url": "https://history.state.gov/milestones/1945-1952/berlin-airlift"
+    },
+    {
+      "title": "History of the United Nations",
+      "publisher": "United Nations",
+      "url": "https://www.un.org/en/about-us/history-of-the-un"
+    }
+  ],
+  "tagLegend": {
+    "authoritarianism": "dictatorship, political repression, and one-party rule",
+    "fascism": "fascist ideology, regimes, and movements",
+    "antisemitism": "anti-Jewish exclusion, persecution, and violence",
+    "genocide": "systematic mass murder and its legal recognition",
+    "mass-atrocity": "large-scale violence against civilians or prisoners",
+    "diplomacy": "alliances, conferences, treaties, and failed settlements",
+    "appeasement": "concessions intended to avert a wider war",
+    "rearmament": "military expansion and preparation",
+    "occupation": "conquest and rule of civilian populations",
+    "resistance": "armed or civil opposition to occupation and dictatorship",
+    "land-war": "major ground campaigns and turning points",
+    "air-war": "air power, strategic bombing, and air defense",
+    "naval-war": "sea power, amphibious operations, and naval turning points",
+    "pacific": "war in East Asia and the Pacific",
+    "eastern-front": "war between Nazi Germany and the Soviet Union",
+    "western-front": "war in western Europe",
+    "mediterranean": "war in North Africa, Italy, and the Mediterranean",
+    "technology": "military or organizational technologies with strategic effects",
+    "nuclear": "atomic weapons and the nuclear international order",
+    "home-front": "mobilization, production, rationing, and civilian life",
+    "mass-displacement": "refugees, forced migration, and population transfer",
+    "war-crimes-law": "prosecution and codification of international crimes",
+    "international-order": "institutions and rules created after the war",
+    "decolonization": "erosion of empire and movements toward independence",
+    "cold-war": "formation of the postwar US-Soviet conflict",
+    "economic-order": "reconstruction, aid, and postwar economic institutions"
+  },
+  "events": [
+    {
+      "id": "hitler-appointed-chancellor",
+      "year": 1933,
+      "display": "30 January 1933",
+      "label": "Hitler Appointed German Chancellor",
+      "tags": ["authoritarianism", "fascism"],
+      "description": "President Paul von Hindenburg appoints Adolf Hitler chancellor. Nazi leaders use control of the state, emergency powers, and political violence to dismantle the Weimar Republic."
+    },
+    {
+      "id": "enabling-act-dachau",
+      "year": 1933,
+      "display": "March 1933",
+      "label": "Enabling Act and Dachau",
+      "tags": ["authoritarianism", "antisemitism"],
+      "description": "The Enabling Act lets Hitler's cabinet legislate without parliament, while Dachau opens as the first permanent Nazi concentration camp, institutionalizing dictatorship and terror."
+    },
+    {
+      "id": "germany-leaves-league",
+      "year": 1933,
+      "display": "October 1933",
+      "label": "Germany Leaves the League of Nations",
+      "tags": ["diplomacy", "rearmament"],
+      "description": "Germany withdraws from the League of Nations and disarmament conference, signaling rejection of the Versailles security order and clearing political space for rearmament."
+    },
+    {
+      "id": "night-long-knives",
+      "year": 1934,
+      "display": "30 June–2 July 1934",
+      "label": "Night of the Long Knives",
+      "tags": ["authoritarianism", "fascism"],
+      "description": "Hitler orders the murder of SA leaders and other political opponents, securing army support and demonstrating that extrajudicial killing is a tool of government."
+    },
+    {
+      "id": "hitler-fuhrer",
+      "year": 1934,
+      "display": "August 1934",
+      "label": "Hitler Becomes Führer",
+      "tags": ["authoritarianism", "fascism"],
+      "description": "After Hindenburg's death, Hitler merges the offices of president and chancellor; Germany's armed forces swear personal loyalty to him."
+    },
+    {
+      "id": "german-rearmament",
+      "year": 1935,
+      "display": "March 1935",
+      "label": "Open German Rearmament",
+      "tags": ["rearmament", "diplomacy"],
+      "description": "Germany announces conscription and an air force in open violation of Versailles. Britain, France, and Italy protest but do not reverse the change."
+    },
+    {
+      "id": "nuremberg-laws",
+      "year": 1935,
+      "display": "September 1935",
+      "label": "Nuremberg Laws",
+      "tags": ["antisemitism", "authoritarianism"],
+      "description": "Nazi racial laws strip German Jews of citizenship and prohibit marriage or sexual relations between Jews and people classified as German, converting antisemitism into a comprehensive legal order."
+    },
+    {
+      "id": "italy-invades-ethiopia",
+      "year": 1935,
+      "display": "October 1935–May 1936",
+      "label": "Italy Invades Ethiopia",
+      "tags": ["fascism", "occupation", "diplomacy"],
+      "description": "Fascist Italy conquers Ethiopia despite League of Nations sanctions, exposing the weakness of collective security and pushing Mussolini closer to Hitler."
+    },
+    {
+      "id": "rhineland-remilitarized",
+      "year": 1936,
+      "display": "7 March 1936",
+      "label": "Rhineland Remilitarized",
+      "tags": ["rearmament", "appeasement", "diplomacy"],
+      "description": "German troops enter the demilitarized Rhineland. France and Britain do not intervene, giving Hitler a major strategic and political victory at limited immediate cost."
+    },
+    {
+      "id": "spanish-civil-war",
+      "year": 1936,
+      "display": "1936–1939",
+      "label": "Spanish Civil War",
+      "tags": ["fascism", "technology", "air-war"],
+      "description": "Germany and Italy support Franco's Nationalists while the Soviet Union aids the Republic. The war internationalizes ideological conflict and provides experience in air attack, armor, and propaganda."
+    },
+    {
+      "id": "axis-anti-comintern",
+      "year": 1936,
+      "display": "October–November 1936",
+      "label": "Rome–Berlin Axis and Anti-Comintern Pact",
+      "tags": ["diplomacy", "fascism"],
+      "description": "Germany and Italy proclaim their political alignment, while Germany and Japan sign the Anti-Comintern Pact directed against international communism and the Soviet Union."
+    },
+    {
+      "id": "japan-invades-china",
+      "year": 1937,
+      "display": "July 1937",
+      "label": "Sino-Japanese War Expands",
+      "tags": ["pacific", "occupation", "land-war"],
+      "description": "Fighting near Beijing expands into full-scale war between Japan and China, creating the largest Asian theater of the conflict that becomes the Second World War."
+    },
+    {
+      "id": "nanjing-massacre",
+      "year": 1937,
+      "display": "December 1937–January 1938",
+      "label": "Nanjing Massacre",
+      "tags": ["pacific", "occupation", "mass-atrocity"],
+      "description": "After capturing China's capital, Japanese forces murder civilians and prisoners of war and commit widespread sexual violence, emblematic of the occupation's brutality."
+    },
+    {
+      "id": "anschluss",
+      "year": 1938,
+      "display": "March 1938",
+      "label": "Anschluss with Austria",
+      "tags": ["occupation", "appeasement", "antisemitism"],
+      "description": "German forces enter Austria and annex it to the Reich. The takeover meets no foreign military resistance and rapidly extends Nazi persecution to Austrian Jews and opponents."
+    },
+    {
+      "id": "munich-agreement",
+      "year": 1938,
+      "display": "September 1938",
+      "label": "Munich Agreement",
+      "tags": ["appeasement", "diplomacy", "occupation"],
+      "description": "Britain and France accept German annexation of Czechoslovakia's Sudetenland without Czechoslovak participation, hoping territorial concession will avert war."
+    },
+    {
+      "id": "kristallnacht",
+      "year": 1938,
+      "display": "9–10 November 1938",
+      "label": "Kristallnacht",
+      "tags": ["antisemitism", "authoritarianism"],
+      "description": "Nazi-organized pogroms destroy synagogues and Jewish businesses across Germany and Austria; about 30,000 Jewish men are sent to concentration camps."
+    },
+    {
+      "id": "czechoslovakia-dismembered",
+      "year": 1939,
+      "display": "March 1939",
+      "label": "Germany Dismembers Czechoslovakia",
+      "tags": ["occupation", "appeasement", "diplomacy"],
+      "description": "Germany occupies the Czech lands and establishes a protectorate, while Slovakia becomes a dependent state. The action demonstrates that Hitler's aims extend beyond uniting German-speaking territory."
+    },
+    {
+      "id": "anglo-french-polish-guarantee",
+      "year": 1939,
+      "display": "March 1939",
+      "label": "Britain and France Guarantee Poland",
+      "tags": ["diplomacy", "appeasement"],
+      "description": "Britain and France pledge support for Polish independence, marking a shift from territorial accommodation toward deterrence of further German expansion."
+    },
+    {
+      "id": "molotov-ribbentrop-pact",
+      "year": 1939,
+      "display": "23 August 1939",
+      "label": "Nazi–Soviet Pact",
+      "tags": ["diplomacy", "occupation"],
+      "description": "Germany and the Soviet Union sign a nonaggression pact with a secret protocol dividing much of eastern Europe into spheres of influence."
+    },
+    {
+      "id": "invasion-of-poland",
+      "year": 1939,
+      "display": "1 September 1939",
+      "label": "Germany Invades Poland",
+      "tags": ["land-war", "occupation", "western-front"],
+      "description": "Germany attacks Poland using coordinated air and ground forces. Britain and France declare war two days later, beginning the European war."
+    },
+    {
+      "id": "soviet-invasion-poland",
+      "year": 1939,
+      "display": "17 September 1939",
+      "label": "Soviet Union Invades Eastern Poland",
+      "tags": ["land-war", "occupation", "mass-displacement"],
+      "description": "The Red Army enters eastern Poland under the Nazi–Soviet arrangement; Poland is partitioned and both occupying powers impose repression, deportation, and killing."
+    },
+    {
+      "id": "winter-war",
+      "year": 1939,
+      "display": "November 1939–March 1940",
+      "label": "Soviet–Finnish Winter War",
+      "tags": ["land-war", "diplomacy"],
+      "description": "The Soviet Union invades Finland. Finnish resistance inflicts heavy losses but Finland cedes territory, while the Red Army's poor performance shapes German strategic estimates."
+    },
+    {
+      "id": "denmark-norway-invaded",
+      "year": 1940,
+      "display": "April 1940",
+      "label": "Germany Invades Denmark and Norway",
+      "tags": ["land-war", "naval-war", "occupation"],
+      "description": "Germany rapidly occupies Denmark and attacks Norway, securing access to Swedish iron ore routes and Atlantic bases despite an Allied intervention."
+    },
+    {
+      "id": "fall-of-france-dunkirk",
+      "year": 1940,
+      "display": "May–June 1940",
+      "label": "Fall of France and Dunkirk Evacuation",
+      "tags": ["western-front", "land-war", "occupation"],
+      "description": "German forces break through the Ardennes, defeat France and the Low Countries, and drive British and Allied troops to evacuation at Dunkirk. Vichy France replaces the defeated republic in the unoccupied south."
+    },
+    {
+      "id": "battle-of-britain",
+      "year": 1940,
+      "display": "July–October 1940",
+      "label": "Battle of Britain",
+      "tags": ["air-war", "western-front", "technology"],
+      "description": "The Royal Air Force, aided by radar, command systems, and pilots from several countries, denies Germany air superiority and prevents a planned invasion of Britain."
+    },
+    {
+      "id": "tripartite-pact",
+      "year": 1940,
+      "display": "September 1940",
+      "label": "Tripartite Pact",
+      "tags": ["diplomacy", "fascism", "pacific"],
+      "description": "Germany, Italy, and Japan formalize the Axis alliance, linking wars and ambitions in Europe and Asia while seeking to deter the United States."
+    },
+    {
+      "id": "warsaw-ghetto-sealed",
+      "year": 1940,
+      "display": "November 1940",
+      "label": "Warsaw Ghetto Sealed",
+      "tags": ["antisemitism", "occupation", "genocide"],
+      "description": "German authorities confine hundreds of thousands of Jews behind walls in Warsaw under conditions of overcrowding, starvation, forced labor, and disease."
+    },
+    {
+      "id": "italy-invades-greece",
+      "year": 1940,
+      "display": "October 1940–April 1941",
+      "label": "Italian Invasion of Greece and German Balkan Campaign",
+      "tags": ["mediterranean", "land-war", "occupation"],
+      "description": "Italy's failed invasion of Greece prompts German intervention in Yugoslavia and Greece, extending Axis occupation across the Balkans before the attack on the Soviet Union."
+    },
+    {
+      "id": "lend-lease",
+      "year": 1941,
+      "display": "March 1941",
+      "label": "United States Adopts Lend-Lease",
+      "tags": ["diplomacy", "home-front", "economic-order"],
+      "description": "The United States authorizes large-scale material aid to countries fighting the Axis, becoming the Allies' principal industrial supplier before formally entering the war."
+    },
+    {
+      "id": "operation-barbarossa",
+      "year": 1941,
+      "display": "22 June 1941",
+      "label": "Germany Invades the Soviet Union",
+      "tags": ["eastern-front", "land-war", "occupation", "genocide"],
+      "description": "Germany and its European allies launch Operation Barbarossa. The campaign is conceived as a racial and ideological war of annihilation as well as a military conquest."
+    },
+    {
+      "id": "mass-shootings-eastern-europe",
+      "year": 1941,
+      "display": "Summer–autumn 1941",
+      "label": "Mass Shootings Escalate in Occupied Soviet Territory",
+      "tags": ["genocide", "antisemitism", "occupation"],
+      "description": "SS and police units, assisted by military authorities and local collaborators, murder Jewish communities and other targeted civilians in mass shootings, including about 34,000 Jews at Babyn Yar."
+    },
+    {
+      "id": "atlantic-charter",
+      "year": 1941,
+      "display": "August 1941",
+      "label": "Atlantic Charter",
+      "tags": ["diplomacy", "international-order", "decolonization"],
+      "description": "Roosevelt and Churchill announce principles for a postwar order, including self-government, economic cooperation, and collective security, creating promises later contested by colonized peoples."
+    },
+    {
+      "id": "pearl-harbor",
+      "year": 1941,
+      "display": "7 December 1941",
+      "label": "Japan Attacks Pearl Harbor",
+      "tags": ["pacific", "naval-war", "air-war"],
+      "description": "Japan attacks the US Pacific Fleet at Pearl Harbor while opening offensives across Southeast Asia and the Pacific, transforming separate regional wars into a fully global conflict."
+    },
+    {
+      "id": "united-states-enters-war",
+      "year": 1941,
+      "display": "8–11 December 1941",
+      "label": "United States Enters the War",
+      "tags": ["diplomacy", "home-front", "pacific"],
+      "description": "The United States declares war on Japan; Germany and Italy then declare war on the United States, bringing American military and industrial power into both principal theaters."
+    },
+    {
+      "id": "wannsee-final-solution",
+      "year": 1942,
+      "display": "20 January 1942",
+      "label": "Wannsee Conference and the 'Final Solution'",
+      "tags": ["genocide", "antisemitism", "occupation"],
+      "description": "Senior officials coordinate the deportation of European Jews to killing sites, integrating ministries, railways, police, occupation governments, and SS agencies into continent-wide genocide."
+    },
+    {
+      "id": "fall-of-singapore",
+      "year": 1942,
+      "display": "15 February 1942",
+      "label": "Fall of Singapore",
+      "tags": ["pacific", "occupation", "decolonization"],
+      "description": "Japanese forces capture Britain's major Asian base, shattering claims of European military invincibility and accelerating political change across colonial Asia."
+    },
+    {
+      "id": "battle-of-midway",
+      "year": 1942,
+      "display": "June 1942",
+      "label": "Battle of Midway",
+      "tags": ["pacific", "naval-war", "technology"],
+      "description": "US carrier forces, aided by intelligence and codebreaking, sink four Japanese carriers and halt Japan's advance in the central Pacific."
+    },
+    {
+      "id": "el-alamein-operation-torch",
+      "year": 1942,
+      "display": "October–November 1942",
+      "label": "El Alamein and Operation Torch",
+      "tags": ["mediterranean", "land-war", "diplomacy"],
+      "description": "British victory at El Alamein and Anglo-American landings in French North Africa put Axis armies under pressure from east and west and establish a major US ground presence."
+    },
+    {
+      "id": "stalingrad",
+      "year": 1943,
+      "display": "February 1943",
+      "label": "German Surrender at Stalingrad",
+      "tags": ["eastern-front", "land-war"],
+      "description": "The encircled German Sixth Army surrenders after months of urban combat, a catastrophic Axis defeat and decisive shift in the momentum of the eastern war."
+    },
+    {
+      "id": "warsaw-ghetto-uprising",
+      "year": 1943,
+      "display": "April–May 1943",
+      "label": "Warsaw Ghetto Uprising",
+      "tags": ["resistance", "genocide", "occupation"],
+      "description": "Jewish fighters resist German forces deporting the ghetto's remaining inhabitants. The uprising is crushed, but becomes a lasting symbol of armed resistance to annihilation."
+    },
+    {
+      "id": "axis-defeat-north-africa",
+      "year": 1943,
+      "display": "May 1943",
+      "label": "Axis Defeat in North Africa",
+      "tags": ["mediterranean", "land-war"],
+      "description": "Axis forces in Tunisia surrender, ending the North African campaign and opening the central Mediterranean to Allied invasion."
+    },
+    {
+      "id": "italy-invasion-armistice",
+      "year": 1943,
+      "display": "July–September 1943",
+      "label": "Invasion of Italy and Italian Armistice",
+      "tags": ["mediterranean", "land-war", "resistance"],
+      "description": "Allied forces invade Sicily and mainland Italy; Mussolini falls and Italy signs an armistice, but Germany occupies much of the country and the fighting continues."
+    },
+    {
+      "id": "tehran-conference",
+      "year": 1943,
+      "display": "November–December 1943",
+      "label": "Tehran Conference",
+      "tags": ["diplomacy", "international-order"],
+      "description": "Roosevelt, Churchill, and Stalin coordinate strategy, confirm a cross-Channel invasion, and begin negotiating the political shape of postwar Europe."
+    },
+    {
+      "id": "d-day",
+      "year": 1944,
+      "display": "6 June 1944",
+      "label": "D-Day Landings",
+      "tags": ["western-front", "land-war", "naval-war"],
+      "description": "Allied forces land in Normandy and establish a western front in occupied France, supported by enormous air, naval, logistical, and resistance efforts."
+    },
+    {
+      "id": "operation-bagration",
+      "year": 1944,
+      "display": "June–August 1944",
+      "label": "Operation Bagration",
+      "tags": ["eastern-front", "land-war"],
+      "description": "A massive Soviet offensive destroys Germany's Army Group Centre and carries the Red Army through Belarus toward Poland and Germany."
+    },
+    {
+      "id": "warsaw-uprising",
+      "year": 1944,
+      "display": "August–October 1944",
+      "label": "Warsaw Uprising",
+      "tags": ["resistance", "occupation", "eastern-front"],
+      "description": "The Polish Home Army rises against German occupation as Soviet forces approach. Germany crushes the uprising and destroys much of Warsaw while the Red Army remains outside the city."
+    },
+    {
+      "id": "liberation-death-marches",
+      "year": 1944,
+      "display": "1944–1945",
+      "label": "Camp Liberation and Death Marches",
+      "tags": ["genocide", "mass-displacement", "occupation"],
+      "description": "Advancing Allied armies uncover camps and evidence of mass murder, while the SS evacuates prisoners toward Germany in deadly forced marches intended to preserve control and conceal crimes."
+    },
+    {
+      "id": "yalta-conference",
+      "year": 1945,
+      "display": "February 1945",
+      "label": "Yalta Conference",
+      "tags": ["diplomacy", "international-order", "cold-war"],
+      "description": "The Allied leaders negotiate occupation zones in Germany, Soviet entry into the war against Japan, the United Nations, and contested arrangements for governments and elections in liberated Europe."
+    },
+    {
+      "id": "germany-surrenders",
+      "year": 1945,
+      "display": "8 May 1945",
+      "label": "War Ends in Europe",
+      "tags": ["western-front", "eastern-front", "occupation"],
+      "description": "After Soviet forces take Berlin and Hitler dies, Germany surrenders unconditionally. Allied occupation begins amid devastation, displacement, and emerging disagreement over Europe's future."
+    },
+    {
+      "id": "potsdam-conference",
+      "year": 1945,
+      "display": "July–August 1945",
+      "label": "Potsdam Conference",
+      "tags": ["diplomacy", "occupation", "cold-war"],
+      "description": "Truman, Stalin, and Churchill or Attlee agree on broad occupation policies for Germany and issue surrender terms to Japan, while tensions within the former alliance become increasingly visible."
+    },
+    {
+      "id": "atomic-bombs",
+      "year": 1945,
+      "display": "6 and 9 August 1945",
+      "label": "Atomic Bombings of Hiroshima and Nagasaki",
+      "tags": ["nuclear", "pacific", "technology"],
+      "description": "The United States uses atomic bombs against Hiroshima and Nagasaki, killing large numbers immediately and through later effects and inaugurating the nuclear age."
+    },
+    {
+      "id": "japan-surrenders",
+      "year": 1945,
+      "display": "15 August–2 September 1945",
+      "label": "Japan Surrenders",
+      "tags": ["pacific", "occupation", "nuclear"],
+      "description": "After the atomic bombings and Soviet entry into the war against Japan, Japan accepts surrender terms; the formal surrender ends the Second World War."
+    },
+    {
+      "id": "united-nations-founded",
+      "year": 1945,
+      "display": "24 October 1945",
+      "label": "United Nations Comes into Existence",
+      "tags": ["international-order", "diplomacy"],
+      "description": "The UN Charter enters into force, establishing a new collective-security organization whose structure reflects both wartime cooperation and great-power privilege."
+    },
+    {
+      "id": "nuremberg-trials",
+      "year": 1945,
+      "display": "November 1945–October 1946",
+      "label": "International Military Tribunal at Nuremberg",
+      "tags": ["war-crimes-law", "genocide", "international-order"],
+      "description": "Leading Nazi officials are tried for crimes against peace, war crimes, and crimes against humanity, establishing important precedents for individual responsibility under international law."
+    },
+    {
+      "id": "postwar-displacement",
+      "year": 1945,
+      "display": "1945–1950",
+      "label": "Refugees, Expulsions, and Population Transfers",
+      "tags": ["mass-displacement", "occupation", "genocide"],
+      "description": "Millions of survivors, former forced laborers, prisoners, refugees, and expelled ethnic Germans move across a devastated continent as occupation authorities struggle with repatriation and resettlement."
+    },
+    {
+      "id": "japan-occupation-reforms",
+      "year": 1946,
+      "display": "1945–1947",
+      "label": "Occupation Reforms Japan",
+      "tags": ["occupation", "international-order", "pacific"],
+      "description": "Under Allied occupation, Japan demilitarizes and adopts political, social, land, and constitutional reforms, including a new constitution that takes effect in 1947."
+    },
+    {
+      "id": "iron-curtain-truman-doctrine",
+      "year": 1947,
+      "display": "1946–1947",
+      "label": "Cold War Blocs Take Shape",
+      "tags": ["cold-war", "diplomacy"],
+      "description": "Churchill's 'Iron Curtain' speech and the Truman Doctrine articulate a widening division between Soviet-dominated eastern Europe and a US-led policy of containment."
+    },
+    {
+      "id": "indian-independence",
+      "year": 1947,
+      "display": "August 1947",
+      "label": "India and Pakistan Become Independent",
+      "tags": ["decolonization", "mass-displacement"],
+      "description": "British India is partitioned into independent India and Pakistan, marking a decisive contraction of European empire while triggering mass migration and communal violence."
+    },
+    {
+      "id": "marshall-plan",
+      "year": 1948,
+      "display": "1947–1948",
+      "label": "Marshall Plan",
+      "tags": ["economic-order", "cold-war", "diplomacy"],
+      "description": "The United States launches large-scale aid for European recovery, helping reconstruct western European economies while tying them more closely to a US-led economic and strategic order."
+    },
+    {
+      "id": "israel-and-first-arab-israeli-war",
+      "year": 1948,
+      "display": "1947–1949",
+      "label": "Israel Founded and First Arab–Israeli War",
+      "tags": ["international-order", "mass-displacement", "decolonization"],
+      "description": "The end of the British Mandate, Israel's declaration of independence, and war with neighboring Arab states create a new state and a large Palestinian refugee population, establishing an enduring regional conflict."
+    },
+    {
+      "id": "berlin-blockade-airlift",
+      "year": 1948,
+      "display": "June 1948–May 1949",
+      "label": "Berlin Blockade and Airlift",
+      "tags": ["cold-war", "diplomacy", "technology"],
+      "description": "The Soviet Union blocks land access to western sectors of Berlin; the Western Allies sustain the city by air until the blockade is lifted, hardening Europe's political division."
+    },
+    {
+      "id": "genocide-convention-udhr",
+      "year": 1948,
+      "display": "9–10 December 1948",
+      "label": "Genocide Convention and Universal Declaration of Human Rights",
+      "tags": ["war-crimes-law", "genocide", "international-order"],
+      "description": "The United Nations adopts the Genocide Convention and the Universal Declaration of Human Rights, translating lessons and arguments arising from wartime atrocity into new international norms."
+    },
+    {
+      "id": "nato-and-divided-germany",
+      "year": 1949,
+      "display": "April–October 1949",
+      "label": "NATO and Two German States",
+      "tags": ["cold-war", "diplomacy", "occupation"],
+      "description": "The North Atlantic Treaty creates a western military alliance; the Federal Republic of Germany and German Democratic Republic are then founded in separate occupation zones."
+    },
+    {
+      "id": "chinese-communist-victory",
+      "year": 1949,
+      "display": "October 1949",
+      "label": "People's Republic of China Founded",
+      "tags": ["cold-war", "pacific", "decolonization"],
+      "description": "Chinese Communist forces win the mainland civil war and establish the People's Republic of China, while the Nationalist government retreats to Taiwan, transforming Asian and global politics."
+    },
+    {
+      "id": "soviet-atomic-bomb",
+      "year": 1949,
+      "display": "August 1949",
+      "label": "Soviet Union Tests an Atomic Bomb",
+      "tags": ["nuclear", "cold-war", "technology"],
+      "description": "The first Soviet atomic test ends the US nuclear monopoly and establishes the conditions for a sustained nuclear arms race."
+    },
+    {
+      "id": "european-coal-steel-proposal",
+      "year": 1950,
+      "display": "9 May 1950",
+      "label": "Schuman Plan for European Integration",
+      "tags": ["economic-order", "international-order", "cold-war"],
+      "description": "France proposes pooling French and West German coal and steel production, making economic integration a mechanism for reconstruction, western alignment, and preventing another Franco-German war."
+    },
+    {
+      "id": "korean-war-begins",
+      "year": 1950,
+      "display": "25 June 1950",
+      "label": "Korean War Begins",
+      "tags": ["cold-war", "pacific", "land-war"],
+      "description": "North Korean forces invade South Korea. A US-led UN force intervenes, turning the divided former Japanese colony into the first major armed conflict of the Cold War."
+    }
+  ]
+}

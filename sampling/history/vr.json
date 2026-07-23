@@ -1,6 +1,6 @@
 {
   "corpus": "immersive-visual-media",
-  "purpose": "Historical evidence supplied to the alternate-present generator. A broad, researched history of immersive and visual media from which the model may retain, alter, displace, or build upon events after a user-specified divergence. Dates are established historical record; descriptions are the author's plain summaries.",
+  "purpose": "Historical evidence supplied to the alternate-history generator. A broad, researched history of immersive and visual media from which the model may retain, alter, displace, or build upon events after a user-specified divergence. Dates are established historical record; descriptions are the author's plain summaries.",
   "tagLegend": {
     "immersion": "envelopment, presence, filling the field of view/senses",
     "image": "still or moving pictorial image; visual fidelity",

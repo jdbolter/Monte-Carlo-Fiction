@@ -1,5 +1,6 @@
-export const WORLD_SCHEMA_VERSION = 'alternate-present.v1';
-export const GENERATION_PROMPT_VERSION = 'alternate-present-v6';
+export const WORLD_SCHEMA_VERSION = 'alternate-history.v1';
+export const LEGACY_WORLD_SCHEMA_VERSION = 'alternate-present.v1';
+export const GENERATION_PROMPT_VERSION = 'alternate-history-v1';
 
 const stringArray = description => ({
   type: 'array',
@@ -7,7 +8,7 @@ const stringArray = description => ({
   items: { type: 'string' }
 });
 
-const presentSection = description => stringArray(
+const endpointSection = description => stringArray(
   `${description} Prefer two or three compact factual phrases about the endpoint only; use a fourth only when needed for a distinct fact. Do not repeat timeline developments.`
 );
 
@@ -30,11 +31,15 @@ export const GENERATED_WORLD_SCHEMA = {
   type: 'object',
   additionalProperties: false,
   properties: {
+    startYear: {
+      type: 'integer',
+      description: 'The user-supplied year in which the divergence and alternate trajectory begin.'
+    },
     horizonYear: {
       type: 'integer',
-      description: 'The endpoint year requested or inferred from the scenario brief; use the current year when the brief says present without naming a year.'
+      description: 'The user-supplied ending year. It may be before, during, or after the actual present.'
     },
-    title: { type: 'string', description: 'A short, distinctive title for this alternate present.' },
+    title: { type: 'string', description: 'A short, distinctive title for this alternate history.' },
     summary: { type: 'string', description: 'One sentence stating the central difference of this world.' },
     premise: {
       type: 'object',
@@ -44,7 +49,7 @@ export const GENERATED_WORLD_SCHEMA = {
           type: 'object',
           additionalProperties: false,
           properties: {
-            year: { type: 'integer', description: 'Taken from or carefully inferred from the scenario brief.' },
+            year: { type: 'integer', description: 'Copy startYear exactly.' },
             historicalAnchor: {
               type: ['string', 'null'],
               description: 'An exact event id from the supplied corpus when one clearly anchors the divergence; otherwise null.'
@@ -95,15 +100,15 @@ export const GENERATED_WORLD_SCHEMA = {
         required: ['id', 'year', 'development', 'consequence', 'causedBy', 'status', 'sourceRefs']
       }
     },
-    present: {
+    endpoint: {
       type: 'object',
       additionalProperties: false,
       properties: {
-        technicalSystem: presentSection('What the mature technology is, how it works, and the infrastructure or standards beneath it.'),
-        entertainment: presentSection('The dominant entertainment forms, practices, and creative institutions.'),
-        socialMedia: presentSection('How communication, identity, attention, status, and communities operate.'),
-        institutionsAndEconomy: presentSection('Important companies, public institutions, ownership patterns, standards, and business models.'),
-        accessAndConflict: presentSection('Costs, exclusions, regulation, inequalities, resistance, failures, and unresolved conflicts.')
+        technicalSystem: endpointSection('What the mature technology is, how it works, and the infrastructure or standards beneath it.'),
+        entertainment: endpointSection('The dominant entertainment forms, practices, and creative institutions.'),
+        socialMedia: endpointSection('How communication, identity, attention, status, and communities operate.'),
+        institutionsAndEconomy: endpointSection('Important companies, public institutions, ownership patterns, standards, and business models.'),
+        accessAndConflict: endpointSection('Costs, exclusions, regulation, inequalities, resistance, failures, and unresolved conflicts.')
       },
       required: ['technicalSystem', 'entertainment', 'socialMedia', 'institutionsAndEconomy', 'accessAndConflict']
     },
@@ -122,10 +127,10 @@ export const GENERATED_WORLD_SCHEMA = {
       }
     }
   },
-  required: ['horizonYear', 'title', 'summary', 'premise', 'assumptions', 'historicalForces', 'timeline', 'present', 'continuities', 'tensions']
+  required: ['startYear', 'horizonYear', 'title', 'summary', 'premise', 'assumptions', 'historicalForces', 'timeline', 'endpoint', 'continuities', 'tensions']
 };
 
-export function validateGeneratedWorld(world, corpus) {
+export function validateGeneratedWorld(world, corpus, input = {}) {
   const errors = [];
   if (!world || typeof world !== 'object') return ['Output is not an object.'];
 
@@ -133,8 +138,13 @@ export function validateGeneratedWorld(world, corpus) {
   const anchor = world.premise?.divergence?.historicalAnchor;
   if (anchor && !eventIds.has(anchor)) errors.push(`historicalAnchor references unknown corpus event: ${anchor}`);
 
+  if (!Number.isInteger(world.startYear)) errors.push('startYear must be an integer.');
   if (!Number.isInteger(world.horizonYear)) errors.push('horizonYear must be an integer.');
+  if (world.startYear >= world.horizonYear) errors.push('startYear must precede horizonYear.');
+  if (Number.isInteger(input.startYear) && world.startYear !== input.startYear) errors.push(`startYear should be ${input.startYear}.`);
+  if (Number.isInteger(input.endYear) && world.horizonYear !== input.endYear) errors.push(`horizonYear should be ${input.endYear}.`);
   if (!Number.isInteger(world.premise?.divergence?.year)) errors.push('premise.divergence.year must be an integer.');
+  if (world.premise?.divergence?.year !== world.startYear) errors.push('The divergence year must equal startYear.');
   if (world.premise?.divergence?.year > world.horizonYear) errors.push('The divergence cannot occur after the horizon year.');
 
   if (!Array.isArray(world.assumptions) || world.assumptions.length < 3 || world.assumptions.length > 4) {
@@ -164,6 +174,7 @@ export function validateGeneratedWorld(world, corpus) {
   let priorYear = -Infinity;
   for (const event of world.timeline || []) {
     if (knownCauses.has(event.id)) errors.push(`Duplicate id: ${event.id}`);
+    if (event.year < world.startYear) errors.push(`${event.id} occurs before the starting year.`);
     if (event.year < priorYear) errors.push(`Timeline is not chronological at ${event.id}.`);
     if (event.year > world.horizonYear) errors.push(`${event.id} occurs after the horizon year.`);
     for (const cause of event.causedBy || []) {
@@ -176,9 +187,9 @@ export function validateGeneratedWorld(world, corpus) {
     knownCauses.add(event.id);
   }
 
-  for (const [key, values] of Object.entries(world.present || {})) {
+  for (const [key, values] of Object.entries(world.endpoint || {})) {
     if (!Array.isArray(values) || values.length < 2 || values.length > 4) {
-      errors.push(`present.${key} must contain two to four phrases.`);
+      errors.push(`endpoint.${key} must contain two to four phrases.`);
     }
   }
   if (!Array.isArray(world.continuities) || world.continuities.length !== 3) errors.push('Exactly three continuities are required.');

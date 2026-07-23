@@ -37,9 +37,9 @@ export function clearGenerationDiagnostics(directory = GENERATION_DIAGNOSTIC_DIR
   return removed;
 }
 
-export const GENERATION_SYSTEM_PROMPT = `You construct compact, causally coherent alternate-present World records from a supplied corpus of real historical events and a variable scenario brief.
+export const GENERATION_SYSTEM_PROMPT = `You construct compact, causally coherent alternate-history World records from a supplied corpus of real historical events and structured user input.
 
-The scenario brief is authoritative. Its divergence is a fiat: accept it for the experiment rather than arguing that actual history made it unlikely. Infer the supporting technical, economic, institutional, and social changes required to make it coherent, and mark their plausibility honestly.
+The supplied startYear is the divergence year and the supplied endYear is the endpoint. Copy both exactly into startYear, premise.divergence.year, and horizonYear respectively. The scenario brief's divergence is a fiat: accept it for the experiment rather than arguing that actual history made it unlikely. Infer the supporting technical, economic, institutional, and social changes required to make it coherent, and mark their plausibility honestly.
 
 Use the history corpus as evidence and raw material, not as a mandatory sequence. After the divergence, real events may be retained, altered, displaced, accelerated, delayed, or omitted. You may invent counterfactual developments, but every development must follow from named assumptions or earlier developments. sourceRefs must be exact ids from the supplied corpus; never invent a source id.
 
@@ -54,12 +54,12 @@ Make the endpoint concrete enough for later narrative history and fiction render
 The World record is compact source data, not reader-facing prose. Prefer short noun phrases and verb phrases. Sentence fragments are welcome. Use a complete sentence only when a phrase would be ambiguous. Do not add transitions, scene-setting, rhetoric, atmosphere, illustrative anecdotes, or miniature stories. State each fact once in its most specific field.
 
 Output discipline:
-- Infer all years from the scenario and causal logic. If the brief says "the present" without a year, use 2026.
+- Copy the supplied startYear and endYear exactly. All timeline developments must fall within those inclusive boundaries.
 - Supply three or four assumptions and exactly nine chronological timeline developments. Count them before returning the record.
 - Supply exactly four historicalForces grounded in cited corpus events.
-- Prefer two or three compact factual phrases in each present section; use a fourth only for a distinct fact that does not fit elsewhere. Follow them with exactly three continuities and three tensions.
+- Prefer two or three compact factual phrases in each endpoint section; use a fourth only for a distinct fact that does not fit elsewhere. Follow them with exactly three continuities and three tensions.
 - Keep timeline development and consequence values distinct and usually under eighteen words each.
-- The timeline records change over time; present records endpoint conditions only. Never restate a timeline event in present.
+- The timeline records change over time; endpoint records conditions in the supplied ending year only. Never restate a timeline event in endpoint.
 - causedBy may reference assumption ids or earlier timeline ids only.
 - Corpus event ids belong in sourceRefs, never in causedBy.
 - status is retained for a substantially unchanged real event, altered for a transformed real event, and invented for a counterfactual event without a direct real counterpart.
@@ -67,7 +67,16 @@ Output discipline:
 - Preserve causal and operational information, but remove explanatory wording a renderer can reconstruct.
 - Return only the structured World content required by the schema.`;
 
-export function buildGenerationRequest({ corpusSource, scenarioBrief, model, variationIndex, batchSize, priorWorlds = [] }) {
+export function normalizeAlternateHistoryInput(input = {}) {
+  return {
+    startYear: Number(input.startYear),
+    endYear: Number(input.endYear),
+    scenarioBrief: String(input.scenarioBrief || '').trim()
+  };
+}
+
+export function buildGenerationRequest({ corpusSource, input, scenarioBrief, startYear, endYear, model, variationIndex, batchSize, priorWorlds = [] }) {
+  const historyInput = normalizeAlternateHistoryInput(input || { scenarioBrief, startYear, endYear });
   const prior = priorWorlds.length
     ? `\nOther variants already generated from this brief:\n${priorWorlds.map(world => `- ${world.title}: ${world.summary}`).join('\n')}\nChoose a materially different causal route or institutional settlement.`
     : '';
@@ -86,7 +95,7 @@ export function buildGenerationRequest({ corpusSource, scenarioBrief, model, var
         },
         {
           type: 'text',
-          text: `SCENARIO BRIEF\n${scenarioBrief}\n\nGenerate variant ${variationIndex} of ${batchSize}.${prior}`
+          text: `ALTERNATE HISTORY INPUT\n${JSON.stringify(historyInput, null, 2)}\n\nGenerate variant ${variationIndex} of ${batchSize}.${prior}`
         }
       ]
     }],
@@ -99,14 +108,15 @@ export function buildGenerationRequest({ corpusSource, scenarioBrief, model, var
   };
 }
 
-export async function generateWorld({ corpusId, scenarioBrief, model = DEFAULT_GENERATION_MODEL, variationIndex = 1, batchSize = 1, priorWorlds = [] }) {
+export async function generateWorld({ corpusId, input, scenarioBrief, startYear, endYear, model = DEFAULT_GENERATION_MODEL, variationIndex = 1, batchSize = 1, priorWorlds = [] }) {
   const corpus = loadCorpus(corpusId);
   const source = loadCorpusSource(corpusId);
-  const request = buildGenerationRequest({ corpusSource: source, scenarioBrief, model, variationIndex, batchSize, priorWorlds });
+  const historyInput = normalizeAlternateHistoryInput(input || { scenarioBrief, startYear, endYear });
+  const request = buildGenerationRequest({ corpusSource: source, input: historyInput, model, variationIndex, batchSize, priorWorlds });
   const response = await anthropicMessages(request);
   if (response.stop_reason === 'max_tokens') {
     const diagnosticPath = saveGenerationDiagnostic(response, {
-      reason: 'max_tokens', corpusId, scenarioBrief, model, variationIndex, batchSize,
+      reason: 'max_tokens', corpusId, historyInput, model, variationIndex, batchSize,
       attempt: 1, maxTokens: request.max_tokens
     });
     throw new Error(`World generation was truncated at ${request.max_tokens} tokens. Diagnostic saved to ${diagnosticPath}.`);
@@ -120,10 +130,10 @@ export async function generateWorld({ corpusId, scenarioBrief, model = DEFAULT_G
   try { content = JSON.parse(text); }
   catch (error) { throw new Error(`Structured world JSON could not be parsed: ${error.message}`); }
 
-  const validationWarnings = validateGeneratedWorld(content, corpus);
+  const validationWarnings = validateGeneratedWorld(content, corpus, historyInput);
   const diagnosticPath = validationWarnings.length
     ? saveGenerationDiagnostic(response, {
-        reason: 'validation', errors: validationWarnings, corpusId, scenarioBrief, model,
+        reason: 'validation', errors: validationWarnings, corpusId, historyInput, model,
         variationIndex, batchSize, attempt: 1, maxTokens: request.max_tokens
       })
     : null;
@@ -131,7 +141,9 @@ export async function generateWorld({ corpusId, scenarioBrief, model = DEFAULT_G
   return makeWorldRecord(content, {
     corpusId,
     corpusHash: corpusHash(source),
-    scenarioBrief,
+    kind: 'alternate-history',
+    scenarioBrief: historyInput.scenarioBrief,
+    generationInput: historyInput,
     model,
     promptVersion: GENERATION_PROMPT_VERSION,
     batchIndex: variationIndex,
@@ -142,7 +154,7 @@ export async function generateWorld({ corpusId, scenarioBrief, model = DEFAULT_G
   });
 }
 
-export async function generateWorldBatch({ corpusId, scenarioBrief, count = 1, model = DEFAULT_GENERATION_MODEL, save = true }) {
+export async function generateWorldBatch({ corpusId, input, scenarioBrief, startYear, endYear, count = 1, model = DEFAULT_GENERATION_MODEL, save = true }) {
   const worlds = [];
   const errors = [];
   const total = Math.max(1, Math.min(20, Number(count) || 1));
@@ -153,7 +165,7 @@ export async function generateWorldBatch({ corpusId, scenarioBrief, count = 1, m
     try {
       const world = await generateWorld({
         corpusId,
-        scenarioBrief,
+        input: input || { scenarioBrief, startYear, endYear },
         model,
         variationIndex: index,
         batchSize: total,

@@ -17,6 +17,7 @@ export function listCorpora() {
         id,
         name: corpus.corpus || id,
         purpose: corpus.purpose || '',
+        experiments: corpus.experiments || ['alternate-history', 'future'],
         eventCount: corpus.events.length,
         firstYear: Math.min(...years),
         lastYear: Math.max(...years)

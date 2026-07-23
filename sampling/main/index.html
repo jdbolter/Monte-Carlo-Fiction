@@ -122,11 +122,11 @@
       <div class="lede">Build a counterfactual world that diverges from history, or construct a future scenario from the present. Both use researched historical lineages and the same selective rendering library.</div>
     </div>
     <div class="choice-grid">
-      <button class="choice-card" data-kind="alternate-present">
-        <span class="tag primary">Past → alternate present</span>
-        <h2>Alternate Present</h2>
-        <p>Specify a historical divergence and an optional endpoint. The generator reconstructs a causal path from the divergence to a mature alternate present.</p>
-        <span class="choice-action">Open alternate-present generator →</span>
+      <button class="choice-card" data-kind="alternate-history">
+        <span class="tag primary">Divergence → chosen ending year</span>
+        <h2>Alternate History</h2>
+        <p>Specify when history diverges, what changes, and how far the alternate trajectory should run. The ending year may be past, present, or future.</p>
+        <span class="choice-action">Open alternate-history generator →</span>
       </button>
       <button class="choice-card" data-kind="future">
         <span class="tag primary">Present → possible future</span>
@@ -140,18 +140,20 @@
   <section class="screen" id="screen-generate">
     <div id="present-generator" hidden>
       <div class="hero">
-        <h1>Generate alternate presents</h1>
-        <div class="lede">Combine a researched history corpus with a stipulated divergence. The model constructs a counterfactual trajectory and mature alternate present as compact World JSON.</div>
+        <h1>Generate alternate histories</h1>
+        <div class="lede">Combine a researched history corpus with a stipulated divergence, starting year, and ending year. The model constructs the counterfactual trajectory and its endpoint as compact World JSON.</div>
       </div>
       <div class="panel"><div class="form-row">
         <div class="field"><label>history corpus</label><select id="p-corpus"></select></div>
-        <div class="field"><label>worlds</label><input type="number" id="p-count" value="3" min="1" max="20"></div>
+        <div class="field"><label>starting / divergence year</label><input type="number" id="p-start" value="1990" min="1" max="2300"></div>
+        <div class="field"><label>ending year</label><input type="number" id="p-end" value="2026" min="2" max="2300"></div>
+        <div class="field"><label>worlds</label><input type="number" id="p-count" value="1" min="1" max="20"></div>
         <div class="field"><label>generation model</label><select id="p-model">
           <option value="claude-sonnet-5">sonnet-5</option><option value="claude-haiku-4-5-20251001">haiku-4.5</option><option value="claude-opus-4-8">opus-4.8</option>
         </select></div>
         <span class="spacer"></span><button class="btn btn-danger clear-all">Clear everything</button>
-        <div class="field grow"><label>scenario brief — divergence, optional endpoint, horizon, and emphasis</label><textarea id="p-brief"></textarea></div>
-        <button class="btn btn-primary" id="p-go">Generate alternate presents</button>
+        <div class="field grow"><label>scenario brief — what diverges, optional endpoint condition, and emphasis</label><textarea id="p-brief"></textarea></div>
+        <button class="btn btn-primary" id="p-go">Generate alternate histories</button>
         <span class="hint">One model call per World; multi-world requests run sequentially for prompt-cache reuse.</span>
       </div></div>
     </div>
@@ -171,7 +173,7 @@
         </select></div>
         <div class="field"><label>base year</label><input type="number" id="f-base" value="2026" min="2020" max="2200"></div>
         <div class="field"><label>horizon year</label><input type="number" id="f-horizon" value="2045" min="2027" max="2300"></div>
-        <div class="field"><label>worlds</label><input type="number" id="f-count" value="3" min="1" max="20"></div>
+        <div class="field"><label>worlds</label><input type="number" id="f-count" value="1" min="1" max="20"></div>
         <div class="field"><label>generation model</label><select id="f-model">
           <option value="claude-sonnet-5">sonnet-5</option><option value="claude-haiku-4-5-20251001">haiku-4.5</option><option value="claude-opus-4-8">opus-4.8</option>
         </select></div>
@@ -227,11 +229,25 @@ const node = html => { const wrapper = document.createElement('div'); wrapper.in
 const POST = body => ({ method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(body) });
 async function api(route, options) { const response = await fetch('/api/' + route, options); const payload = await response.json(); if (!response.ok) throw new Error(payload.error || `HTTP ${response.status}`); return payload; }
 
-const KIND_LABELS = { 'alternate-present':'Alternate Present', future:'Future Speculation' };
-const themeLabel = corpus => corpus === 'vr' ? 'VR' : corpus === 'silicon-valley' ? 'Silicon Valley' : corpus.replace(/-/g, ' ');
-const DEFAULT_PRESENT_BRIEFS = {
-  vr: `In 1990, VPL Research produces a VR system offering approximately the experiential quality that consumer Oculus systems achieved decades later: convincing stereoscopic imagery, low-latency head tracking, reliable interaction, and a sufficiently comfortable experience for sustained use. This must not be treated as an isolated miracle; infer the supporting technical and institutional changes it requires. By 2026, VR has largely fulfilled the 1990s promise that it would become the principal successor to the graphical user interface. Construct the resulting alternate present, focusing on entertainment and social media.`,
-  'silicon-valley': `In 1975, the Homebrew Computer Club develops into a durable cooperative institution rather than serving mainly as an incubator for private companies. Its norms of shared designs, user ownership, and community governance become the dominant model for the emerging personal-computer industry. By 2026, networked computing is widespread, but its major platforms and infrastructure are organized as cooperatives, public utilities, and open technical commons. Construct the resulting alternate present, focusing on work, communication, culture, and everyday economic life.`
+const KIND_LABELS = { 'alternate-history':'Alternate History', future:'Future Speculation' };
+const themeLabel = corpus => corpus === 'vr' ? 'VR' : corpus === 'silicon-valley' ? 'Silicon Valley' : corpus === 'digital-media' ? 'Digital Media' : corpus === 'world-war-ii' ? 'World War II' : corpus.replace(/-/g, ' ');
+const DEFAULT_HISTORY_DRAFTS = {
+  vr: {
+    startYear:1990, endYear:2026,
+    brief:`VPL Research produces a VR system offering approximately the experiential quality that consumer Oculus systems achieved decades later: convincing stereoscopic imagery, low-latency head tracking, reliable interaction, and a sufficiently comfortable experience for sustained use. This must not be treated as an isolated miracle; infer the supporting technical and institutional changes it requires. By the ending year, VR has largely fulfilled the 1990s promise that it would become the principal successor to the graphical user interface. Focus on entertainment and social media.`
+  },
+  'silicon-valley': {
+    startYear:1975, endYear:2026,
+    brief:`The Homebrew Computer Club develops into a durable cooperative institution rather than serving mainly as an incubator for private companies. Its norms of shared designs, user ownership, and community governance become the dominant model for the emerging personal-computer industry. By the ending year, networked computing is widespread, but its major platforms and infrastructure are organized as cooperatives, public utilities, and open technical commons. Focus on work, communication, culture, and everyday economic life.`
+  },
+  'digital-media': {
+    startYear:1984, endYear:2026,
+    brief:`Apple ships the Macintosh with a built-in, network-aware hypermedia authoring system: ordinary users can link and publish combinations of text, graphics, sound, animation, software behavior, and shared data without buying specialist tools. The format is openly documented and adopted across competing personal computers. By the ending year, interactive authored media rather than page-like documents and platform feeds has become the dominant form of digital publication. Focus on entertainment, education, social communication, creative work, and the institutions that distribute media.`
+  },
+  'world-war-ii': {
+    startYear:1938, endYear:1950,
+    brief:`Britain and France reject the Munich Agreement and support Czechoslovakia against German territorial demands. Construct a plausible alternate history in which this earlier confrontation changes the timing, alliances, military campaigns, occupations, atrocities, and political settlement of the European and global conflict. Do not assume that an earlier stand either prevents war or produces a better outcome. Follow consequences through the ending year, including effects on the Holocaust and other mass violence, the war in Asia, European empires, postwar institutions, displaced populations, and relations among the United States, Soviet Union, Europe, China, and Japan.`
+  }
 };
 const DEFAULT_FUTURE_DRAFTS = {
   vr: {
@@ -247,6 +263,13 @@ const DEFAULT_FUTURE_DRAFTS = {
     brief:'Explore how the organization of technological development could change through 2045 while preserving a mixed economy and familiar everyday computing. Attend to ownership, labor, regulation, public institutions, and uneven access.',
     pivot:'By 2028, public and cooperative investment becomes a significant alternative source of technology infrastructure funding.',
     target:'By 2045, public-interest and cooperative institutions operate a substantial share of essential digital infrastructure.'
+  },
+  'digital-media': {
+    mode:'bounded-corridor', baseYear:2026, horizonYear:2045,
+    scope:'creative work, entertainment, social media, authorship, access',
+    brief:'Explore how digital media could develop through 2045 as generative models become collaborators and production systems while older media, human creators, and familiar devices continue to coexist. Attend to creative practice, ownership, labor, distribution, cultural reception, unequal access, and resistance.',
+    pivot:'By 2028, interoperable creative-agent standards let people move projects, provenance records, and model-assisted edits among major media tools.',
+    target:'By 2045, most professional and amateur digital works are made through sustained human-agent collaboration, with recognizable institutions governing attribution, consent, and compensation.'
   }
 };
 const MODE_UI = {
@@ -257,12 +280,13 @@ const MODE_UI = {
 };
 
 let activeKind = null;
-const activeCorpus = { 'alternate-present':'vr', future:'vr' };
-let allWorlds = [], allArtifacts = [], formIds = [], defaultForm = 'narrative-history';
-const presentBriefs = { ...DEFAULT_PRESENT_BRIEFS };
+const activeCorpus = { 'alternate-history':'vr', future:'vr' };
+let allWorlds = [], allArtifacts = [], formIds = [], corpusCatalog = [], defaultForm = 'narrative-history';
+const historyDrafts = structuredClone(DEFAULT_HISTORY_DRAFTS);
 const futureDrafts = structuredClone(DEFAULT_FUTURE_DRAFTS);
 
-const worldKind = world => world.kind || 'alternate-present';
+const worldKind = world => world.kind === 'future' ? 'future' : 'alternate-history';
+const artifactKind = record => record.worldKind === 'future' ? 'future' : 'alternate-history';
 const formLabel = (form, kind = activeKind) => form === 'narrative-history' ? (kind === 'future' ? 'future trajectory' : 'narrative history') : form.replace(/-/g, ' ');
 const kindWorlds = () => allWorlds.filter(world => worldKind(world) === activeKind && world.domain === activeCorpus[activeKind]);
 
@@ -277,9 +301,9 @@ function navigate(tab) {
 function chooseKind(kind) {
   activeKind = kind;
   $('#app-nav').hidden = false; $('#context-pill').hidden = false; $('#context-pill').textContent = KIND_LABELS[kind];
-  $('#present-generator').hidden = kind !== 'alternate-present'; $('#future-generator').hidden = kind !== 'future';
-  $('#r-heading').textContent = kind === 'future' ? 'Render future scenarios' : 'Render alternate presents';
-  $('#l-heading').textContent = kind === 'future' ? 'Future render library' : 'Alternate-present render library';
+  $('#present-generator').hidden = kind !== 'alternate-history'; $('#future-generator').hidden = kind !== 'future';
+  $('#r-heading').textContent = kind === 'future' ? 'Render future scenarios' : 'Render alternate histories';
+  $('#l-heading').textContent = kind === 'future' ? 'Future render library' : 'Alternate-history render library';
   syncCorpusSelectors(); updateFormOptions(); updateFutureMode(); navigate('generate');
 }
 
@@ -301,7 +325,7 @@ function cacheTag(world) {
 function validationTag(world) { const count = world.validation?.warnings?.length || 0; return count ? `<span class="tag warning">${count} warning${count === 1 ? '' : 's'}</span>` : ''; }
 
 function worldDetails(world) {
-  const endpoint = world.kind === 'future' ? world.endpoint : world.present;
+  const endpoint = world.endpoint || world.present;
   const sections = Object.entries(endpoint || {}).map(([key, values]) => `<div class="detail-section"><h4>${esc(key.replace(/([A-Z])/g,' $1'))}</h4><ul>${values.map(value => `<li>${esc(value)}</li>`).join('')}</ul></div>`).join('');
   const historicalForces = world.historicalForces?.length ? `<div class="detail-section"><h4>Historical forces</h4><ul>${world.historicalForces.map(force => `<li><b>${esc(force.legacy)}</b> — ${esc(force.effect)} <span class="muted">(${esc((force.sourceRefs || []).join(', '))})</span></li>`).join('')}</ul></div>` : '';
   const warnings = world.validation?.warnings?.length ? `<div class="detail-section"><h4>Validation warnings</h4><ul>${world.validation.warnings.map(value => `<li>${esc(value)}</li>`).join('')}</ul><p class="hint">Diagnostic: ${esc(world.validation.diagnosticFile)}</p></div>` : '';
@@ -324,7 +348,8 @@ function premiseLines(world) {
 
 function worldCard(world, renderControls = false) {
   const forms = world.renderedForms || [], years = world.timeline.map(event => event.year).join(' · ');
-  const card = node(`<article class="card"><div class="tag-row"><span class="tag primary">${esc(themeLabel(world.domain))}</span><span class="tag">${world.kind === 'future' ? esc(world.premise.mode.replace(/-/g,' ')) : 'alternate present'}</span><span class="tag">to ${world.horizonYear}</span>${cacheTag(world)}${validationTag(world)}${forms.map(form => `<span class="tag rendered">${esc(formLabel(form,worldKind(world)))}</span>`).join('')}</div>
+  const startYear = world.kind === 'future' ? world.baseYear : (world.startYear ?? world.premise.divergence.year);
+  const card = node(`<article class="card"><div class="tag-row"><span class="tag primary">${esc(themeLabel(world.domain))}</span><span class="tag">${world.kind === 'future' ? esc(world.premise.mode.replace(/-/g,' ')) : 'alternate history'}</span><span class="tag">${startYear}–${world.horizonYear}</span>${cacheTag(world)}${validationTag(world)}${forms.map(form => `<span class="tag rendered">${esc(formLabel(form,worldKind(world)))}</span>`).join('')}</div>
     <h3>${esc(world.title)}</h3><p>${esc(world.summary)}</p>${premiseLines(world)}<p class="year-list">${esc(years)}</p>${worldDetails(world)}
     ${renderControls ? '<div class="actions"><button class="btn btn-primary btn-small render-one">Render selected form</button><span class="render-note hint"></span></div>' : ''}</article>`);
   card.querySelector('.copy-json').onclick = async event => { await navigator.clipboard.writeText(card.querySelector('pre').textContent); event.currentTarget.textContent='Copied'; setTimeout(()=>event.currentTarget.textContent='Copy JSON',1200); };
@@ -338,18 +363,34 @@ function worldCard(world, renderControls = false) {
 
 async function loadCorpora() {
   const { corpora } = await api('corpora');
-  const options = corpus => corpora.map(item => `<option value="${esc(item.id)}"${item.id===corpus?' selected':''}>${esc(themeLabel(item.id))} — ${item.eventCount} events, ${item.firstYear}–${item.lastYear}</option>`).join('');
-  $('#p-corpus').innerHTML=options(activeCorpus['alternate-present']); $('#f-corpus').innerHTML=options(activeCorpus.future); $('#r-corpus').innerHTML=options('vr'); $('#l-corpus').innerHTML=options('vr');
-  $('#p-brief').value=presentBriefs.vr; loadFutureDraft('vr');
+  corpusCatalog=corpora;
+  $('#p-corpus').innerHTML=corpusOptions('alternate-history',activeCorpus['alternate-history']);
+  $('#f-corpus').innerHTML=corpusOptions('future',activeCorpus.future);
+  $('#r-corpus').innerHTML=corpusOptions('alternate-history','vr');
+  $('#l-corpus').innerHTML=corpusOptions('alternate-history','vr');
+  loadHistoryDraft('vr'); loadFutureDraft('vr');
+  if (activeKind) syncCorpusSelectors();
 }
 
-function syncCorpusSelectors() { if (!activeKind) return; $('#r-corpus').value=activeCorpus[activeKind]; $('#l-corpus').value=activeCorpus[activeKind]; }
+function corpusOptions(kind, selected) {
+  return corpusCatalog
+    .filter(item => item.experiments.includes(kind))
+    .map(item => `<option value="${esc(item.id)}"${item.id===selected?' selected':''}>${esc(themeLabel(item.id))} — ${item.eventCount} events, ${item.firstYear}–${item.lastYear}</option>`)
+    .join('');
+}
+function syncCorpusSelectors() {
+  if (!activeKind) return;
+  $('#r-corpus').innerHTML=corpusOptions(activeKind,activeCorpus[activeKind]);
+  $('#l-corpus').innerHTML=corpusOptions(activeKind,activeCorpus[activeKind]);
+}
+function saveHistoryDraft(corpus) { if (!corpus) return; historyDrafts[corpus]={ startYear:Number($('#p-start').value),endYear:Number($('#p-end').value),brief:$('#p-brief').value }; }
+function loadHistoryDraft(corpus) { const d=historyDrafts[corpus]; $('#p-start').value=d.startYear; $('#p-end').value=d.endYear; $('#p-brief').value=d.brief; }
 function saveFutureDraft(corpus) { if (!corpus) return; futureDrafts[corpus]={ mode:$('#f-mode').value,baseYear:Number($('#f-base').value),horizonYear:Number($('#f-horizon').value),scope:$('#f-scope').value,brief:$('#f-brief').value,pivot:$('#f-pivot').value,target:$('#f-target').value }; }
 function loadFutureDraft(corpus) { const d=futureDrafts[corpus]; $('#f-mode').value=d.mode; $('#f-base').value=d.baseYear; $('#f-horizon').value=d.horizonYear; $('#f-scope').value=d.scope; $('#f-brief').value=d.brief; $('#f-pivot').value=d.pivot; $('#f-target').value=d.target; updateFutureMode(); }
 
-$('#p-corpus').onchange = event => { presentBriefs[activeCorpus['alternate-present']]=$('#p-brief').value; activeCorpus['alternate-present']=event.target.value; $('#p-brief').value=presentBriefs[event.target.value]||''; syncCorpusSelectors(); showGenerated(); };
+$('#p-corpus').onchange = event => { saveHistoryDraft(activeCorpus['alternate-history']); activeCorpus['alternate-history']=event.target.value; loadHistoryDraft(event.target.value); syncCorpusSelectors(); showGenerated(); };
 $('#f-corpus').onchange = event => { saveFutureDraft(activeCorpus.future); activeCorpus.future=event.target.value; loadFutureDraft(event.target.value); syncCorpusSelectors(); showGenerated(); };
-['#r-corpus','#l-corpus'].forEach(selector => $(selector).onchange = event => { activeCorpus[activeKind]=event.target.value; if(activeKind==='alternate-present') $('#p-corpus').value=event.target.value; else $('#f-corpus').value=event.target.value; syncCorpusSelectors(); showGenerated(); showRenderWorlds(); showLibrary(); });
+['#r-corpus','#l-corpus'].forEach(selector => $(selector).onchange = event => { activeCorpus[activeKind]=event.target.value; if(activeKind==='alternate-history') { $('#p-corpus').value=event.target.value; loadHistoryDraft(event.target.value); } else { $('#f-corpus').value=event.target.value; loadFutureDraft(event.target.value); } syncCorpusSelectors(); showGenerated(); showRenderWorlds(); showLibrary(); });
 
 function updateFutureMode() {
   const state=MODE_UI[$('#f-mode').value]; if(!state) return; $('#f-mode-help').textContent=state.help;
@@ -363,12 +404,26 @@ async function loadForms() { const data=await api('forms'); formIds=data.forms; 
 function updateFormOptions() { if (!formIds.length) return; const selected=$('#r-form').value||defaultForm; $('#r-form').innerHTML=formIds.map(form=>`<option value="${esc(form)}"${form===selected?' selected':''}>${esc(formLabel(form))}</option>`).join(''); }
 
 async function loadGenerated() { try { allWorlds=(await api('worlds')).worlds; showGenerated(); } catch(error){ $('#g-status').className='status error'; $('#g-status').textContent='Error: '+error.message; } }
-function showGenerated() { if(!activeKind) return; const worlds=kindWorlds(); $('#g-list').innerHTML=''; worlds.forEach(world=>$('#g-list').appendChild(worldCard(world))); $('#g-status').className='status'; $('#g-status').textContent=worlds.length?`${worlds.length} saved ${themeLabel(activeCorpus[activeKind])} ${activeKind==='future'?'future scenario':'alternate-present world'}${worlds.length===1?'':'s'}.`:`No ${themeLabel(activeCorpus[activeKind])} ${activeKind==='future'?'future scenarios':'alternate-present worlds'} yet.`; }
+function showGenerated() {
+  if (!activeKind) return;
+  const worlds=kindWorlds();
+  $('#g-list').innerHTML='';
+  try {
+    worlds.forEach(world=>$('#g-list').appendChild(worldCard(world)));
+    $('#g-status').className='status';
+    $('#g-status').textContent=worlds.length
+      ? `${worlds.length} saved ${themeLabel(activeCorpus[activeKind])} ${activeKind==='future'?(worlds.length===1?'future scenario':'future scenarios'):(worlds.length===1?'alternate history':'alternate histories')}.`
+      : `No ${themeLabel(activeCorpus[activeKind])} ${activeKind==='future'?'future scenarios':'alternate histories'} yet.`;
+  } catch (error) {
+    $('#g-status').className='status error';
+    $('#g-status').textContent=`Could not display saved Worlds: ${error.message}`;
+  }
+}
 
 function mergeWorlds(created) { allWorlds=[...created,...allWorlds.filter(world=>!created.some(item=>item.id===world.id))]; }
 function generationResult(result,label) { mergeWorlds(result.worlds); showGenerated(); const failed=result.errors.length?` ${result.errors.length} variant(s) failed generation.`:''; const warned=result.worlds.filter(world=>world.validation?.warnings?.length).length; $('#g-status').textContent=`${result.worlds.length} ${label}${result.worlds.length===1?'':'s'} generated and saved.${failed}${warned?` ${warned} saved with validation warnings.`:''}`; }
 
-$('#p-go').onclick=async()=>{ const button=$('#p-go'); button.disabled=true; $('#g-status').className='status'; $('#g-status').textContent='Generating alternate-present Worlds sequentially…'; try { const result=await api('generate',POST({corpusId:$('#p-corpus').value,count:Number($('#p-count').value),model:$('#p-model').value,scenarioBrief:$('#p-brief').value})); generationResult(result,'alternate present'); } catch(error){ $('#g-status').className='status error'; $('#g-status').textContent='Generation failed: '+error.message; } finally{button.disabled=false;} };
+$('#p-go').onclick=async()=>{ const button=$('#p-go'),startYear=Number($('#p-start').value),endYear=Number($('#p-end').value); if(!Number.isInteger(startYear)||!Number.isInteger(endYear)||endYear<=startYear){ $('#g-status').className='status error'; $('#g-status').textContent='The ending year must be later than the starting year.'; return; } button.disabled=true; $('#g-status').className='status'; $('#g-status').textContent='Generating alternate-history Worlds sequentially…'; try { const result=await api('generate',POST({corpusId:$('#p-corpus').value,startYear,endYear,count:Number($('#p-count').value),model:$('#p-model').value,scenarioBrief:$('#p-brief').value})); saveHistoryDraft(activeCorpus['alternate-history']); generationResult(result,'alternate history'); } catch(error){ $('#g-status').className='status error'; $('#g-status').textContent='Generation failed: '+error.message; } finally{button.disabled=false;} };
 
 $('#f-go').onclick=async()=>{ const button=$('#f-go'), mode=$('#f-mode').value, state=MODE_UI[mode]; if(state.pivotRequired&&!$('#f-pivot').value.trim()){ $('#g-status').className='status error'; $('#g-status').textContent='This mode requires a near-term pivot.'; return; } if(state.targetRequired&&!$('#f-target').value.trim()){ $('#g-status').className='status error'; $('#g-status').textContent='This mode requires a target condition.'; return; } button.disabled=true; $('#g-status').className='status'; $('#g-status').textContent='Generating future Worlds sequentially…'; try { const result=await api('generate-future',POST({corpusId:$('#f-corpus').value,count:Number($('#f-count').value),model:$('#f-model').value,mode,baseYear:Number($('#f-base').value),horizonYear:Number($('#f-horizon').value),scope:$('#f-scope').value,brief:$('#f-brief').value,pivot:$('#f-pivot').disabled?'':$('#f-pivot').value,targetCondition:$('#f-target').disabled?'':$('#f-target').value})); saveFutureDraft(activeCorpus.future); generationResult(result,'future scenario'); } catch(error){ $('#g-status').className='status error'; $('#g-status').textContent='Generation failed: '+error.message; } finally{button.disabled=false;} };
 
@@ -379,11 +434,11 @@ $('#r-form').onchange=showRenderWorlds; $('#r-refresh').onclick=loadRenderWorlds
 $('#r-all').onclick=async()=>{ const button=$('#r-all');button.disabled=true;try{allWorlds=(await api('worlds')).worlds;const form=$('#r-form').value,todo=kindWorlds().filter(world=>!(world.renderedForms||[]).includes(form));for(let i=0;i<todo.length;i++){ $('#r-status').textContent=`rendering ${i+1}/${todo.length}…`;try{await api('render',POST({worldId:todo[i].id,form,model:$('#r-model').value,renderBrief:$('#r-brief').value}));}catch{}}await loadRenderWorlds();}finally{button.disabled=false;} };
 
 async function loadLibrary(){ $('#l-status').textContent='loading…';try{allArtifacts=(await api('library')).items;showLibrary();}catch(error){ $('#l-status').textContent='Error: '+error.message;} }
-function showLibrary(){ if(!activeKind)return;const items=allArtifacts.filter(record=>(record.worldKind||'alternate-present')===activeKind&&record.domain===activeCorpus[activeKind]);$('#l-list').innerHTML='';$('#l-count').textContent=`${items.length} artifact${items.length===1?'':'s'}`;$('#l-status').textContent=items.length?'':'The library is empty.';items.forEach(record=>{const verdict=record.verdict?`<span class="tag rendered">${esc(record.verdict)}</span>`:'';const card=node(`<article class="card artifact-card" tabindex="0" role="button" aria-label="Read ${esc(record.worldTitle)}"><div class="tag-row"><span class="tag primary">${esc(formLabel(record.form,record.worldKind))}</span><span class="tag">${record.horizonYear}</span>${verdict}</div><h3>${esc(record.worldTitle)}</h3><p class="hint">${esc(record.worldSummary)}</p><p class="story-preview">${esc(record.text)}</p><div class="actions"><button class="btn btn-small">Read full text</button></div></article>`);const open=()=>openArtifact(record);card.onclick=open;card.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open();}};$('#l-list').appendChild(card);}); }
-function openArtifact(record){ const dialog=$('#artifact-dialog');$('#d-tags').innerHTML=`<span class="tag primary">${esc(formLabel(record.form,record.worldKind))}</span><span class="tag">${esc(themeLabel(record.domain))}</span><span class="tag">${record.horizonYear}</span><span class="tag">${esc(record.model)}</span>`;$('#d-title').textContent=record.worldTitle;$('#d-summary').textContent=record.worldSummary;$('#d-brief').innerHTML=record.renderBrief?`<p class="hint"><b>Render brief:</b> ${esc(record.renderBrief)}</p>`:'';$('#d-story').textContent=record.text;$('#d-verdicts').innerHTML=`<button class="vbtn ${record.verdict==='cohere'?'sel':''}" data-v="cohere">cohere</button><button class="vbtn ${record.verdict==='strain'?'sel':''}" data-v="strain">strain</button><button class="vbtn ${record.verdict==='incoherent'?'sel':''}" data-v="incoherent">incoherent</button><input class="note" placeholder="note (optional)" value="${esc(record.note)}"><span class="saved"></span>`;const note=$('#d-verdicts .note'),saved=$('#d-verdicts .saved');$('#d-verdicts').querySelectorAll('.vbtn').forEach(button=>button.onclick=async()=>{try{await api('verdict',POST({id:record.id,verdict:button.dataset.v,note:note.value}));record.verdict=button.dataset.v;record.note=note.value;$('#d-verdicts').querySelectorAll('.vbtn').forEach(item=>item.classList.remove('sel'));button.classList.add('sel');saved.textContent='saved';showLibrary();}catch(error){saved.textContent=error.message;}});dialog.showModal(); }
+function showLibrary(){ if(!activeKind)return;const items=allArtifacts.filter(record=>artifactKind(record)===activeKind&&record.domain===activeCorpus[activeKind]);$('#l-list').innerHTML='';$('#l-count').textContent=`${items.length} artifact${items.length===1?'':'s'}`;$('#l-status').textContent=items.length?'':'The library is empty.';items.forEach(record=>{const verdict=record.verdict?`<span class="tag rendered">${esc(record.verdict)}</span>`:'';const card=node(`<article class="card artifact-card" tabindex="0" role="button" aria-label="Read ${esc(record.worldTitle)}"><div class="tag-row"><span class="tag primary">${esc(formLabel(record.form,artifactKind(record)))}</span><span class="tag">${record.horizonYear}</span>${verdict}</div><h3>${esc(record.worldTitle)}</h3><p class="hint">${esc(record.worldSummary)}</p><p class="story-preview">${esc(record.text)}</p><div class="actions"><button class="btn btn-small">Read full text</button></div></article>`);const open=()=>openArtifact(record);card.onclick=open;card.onkeydown=event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();open();}};$('#l-list').appendChild(card);}); }
+function openArtifact(record){ const dialog=$('#artifact-dialog');$('#d-tags').innerHTML=`<span class="tag primary">${esc(formLabel(record.form,artifactKind(record)))}</span><span class="tag">${esc(themeLabel(record.domain))}</span><span class="tag">${record.horizonYear}</span><span class="tag">${esc(record.model)}</span>`;$('#d-title').textContent=record.worldTitle;$('#d-summary').textContent=record.worldSummary;$('#d-brief').innerHTML=record.renderBrief?`<p class="hint"><b>Render brief:</b> ${esc(record.renderBrief)}</p>`:'';$('#d-story').textContent=record.text;$('#d-verdicts').innerHTML=`<button class="vbtn ${record.verdict==='cohere'?'sel':''}" data-v="cohere">cohere</button><button class="vbtn ${record.verdict==='strain'?'sel':''}" data-v="strain">strain</button><button class="vbtn ${record.verdict==='incoherent'?'sel':''}" data-v="incoherent">incoherent</button><input class="note" placeholder="note (optional)" value="${esc(record.note)}"><span class="saved"></span>`;const note=$('#d-verdicts .note'),saved=$('#d-verdicts .saved');$('#d-verdicts').querySelectorAll('.vbtn').forEach(button=>button.onclick=async()=>{try{await api('verdict',POST({id:record.id,verdict:button.dataset.v,note:note.value}));record.verdict=button.dataset.v;record.note=note.value;$('#d-verdicts').querySelectorAll('.vbtn').forEach(item=>item.classList.remove('sel'));button.classList.add('sel');saved.textContent='saved';showLibrary();}catch(error){saved.textContent=error.message;}});dialog.showModal(); }
 $('#artifact-dialog .dialog-close').onclick=()=>$('#artifact-dialog').close(); $('#artifact-dialog').onclick=event=>{if(event.target===$('#artifact-dialog'))$('#artifact-dialog').close();}; $('#l-refresh').onclick=loadLibrary;
 
-document.querySelectorAll('.clear-all').forEach(button=>button.onclick=async()=>{if(!confirm('Delete all alternate-present and future Worlds and all rendered artifacts? Diagnostics will remain.'))return;try{const result=await api('clear-all',POST({}));allWorlds=[];allArtifacts=[];$('#g-list').innerHTML='';$('#r-list').innerHTML='';$('#l-list').innerHTML='';$('#g-status').textContent=`Cleared ${result.worlds} worlds and ${result.artifacts} artifacts.`;$('#r-status').textContent='no worlds yet';$('#l-count').textContent='0 artifacts';$('#l-status').textContent='The library is empty.';}catch(error){alert('Clear failed: '+error.message);}});
+document.querySelectorAll('.clear-all').forEach(button=>button.onclick=async()=>{if(!confirm('Delete all Alternate History and Future Speculation Worlds and all rendered artifacts? Diagnostics will remain.'))return;try{const result=await api('clear-all',POST({}));allWorlds=[];allArtifacts=[];$('#g-list').innerHTML='';$('#r-list').innerHTML='';$('#l-list').innerHTML='';$('#g-status').textContent=`Cleared ${result.worlds} worlds and ${result.artifacts} artifacts.`;$('#r-status').textContent='no worlds yet';$('#l-count').textContent='0 artifacts';$('#l-status').textContent='The library is empty.';}catch(error){alert('Clear failed: '+error.message);}});
 
 await Promise.all([loadCorpora(),loadForms(),loadGenerated()]);
 </script>

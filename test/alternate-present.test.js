@@ -4,13 +4,14 @@ import { mkdtempSync, readFileSync, rmSync } from 'fs';
 import { dirname, join } from 'path';
 import { tmpdir } from 'os';
 import { loadCorpus, loadCorpusSource, listCorpora } from '../sampling/history.js';
-import { buildGenerationRequest, clearGenerationDiagnostics, saveGenerationDiagnostic } from '../sampling/world-generator.js';
-import { validateGeneratedWorld } from '../sampling/world-schema.js';
+import { buildGenerationRequest, clearGenerationDiagnostics, normalizeAlternateHistoryInput, saveGenerationDiagnostic } from '../sampling/world-generator.js';
+import { LEGACY_WORLD_SCHEMA_VERSION, validateGeneratedWorld } from '../sampling/world-schema.js';
 import { buildRenderRequest, renderPayload } from '../sampling/render-world.js';
 import { makeWorldRecord } from '../sampling/world.js';
 
 function sampleContent() {
   return {
+    startYear: 1990,
     horizonYear: 2026,
     title: 'The Spatial Web',
     summary: 'Immersive space becomes the ordinary interface for networked entertainment and social life.',
@@ -45,7 +46,7 @@ function sampleContent() {
       { id: 'e8', year: 2024, development: 'Realm governance becomes a public controversy.', consequence: 'Public-interest rules gain support.', causedBy: ['e7'], status: 'invented', sourceRefs: [] },
       { id: 'e9', year: 2026, development: 'Interoperability rules take effect.', consequence: 'A mature but contested spatial web emerges.', causedBy: ['e8'], status: 'invented', sourceRefs: [] }
     ],
-    present: {
+    endpoint: {
       technicalSystem: ['Lightweight mixed-reality glasses are the normal personal interface.', 'Open protocols connect persistent spaces.'],
       entertainment: ['Entertainment combines performance, games, and explorable narrative spaces.', 'Flat film and television remain popular.'],
       socialMedia: ['People gather in persistent places rather than primarily consuming feeds.', 'Text messaging remains the low-friction alternative.'],
@@ -62,18 +63,26 @@ function sampleContent() {
 }
 
 test('history corpora are discovered and loadable', () => {
-  const ids = listCorpora().map(corpus => corpus.id);
-  assert.deepEqual(ids, ['silicon-valley', 'vr']);
+  const corpora = listCorpora();
+  const ids = corpora.map(corpus => corpus.id);
+  assert.deepEqual(ids, ['digital-media', 'silicon-valley', 'vr', 'world-war-ii']);
+  assert.equal(loadCorpus('digital-media').events.length, 70);
   assert.ok(loadCorpus('vr').events.length > 50);
+  const war = loadCorpus('world-war-ii');
+  assert.equal(war.events.length, 67);
+  assert.equal(war.events[0].year, 1933);
+  assert.equal(war.events.at(-1).year, 1950);
+  assert.deepEqual(corpora.find(corpus => corpus.id === 'world-war-ii').experiments, ['alternate-history']);
+  assert.ok(corpora.filter(corpus => corpus.id !== 'world-war-ii').every(corpus => corpus.experiments.includes('future')));
 });
 
 test('valid generated content passes causal validation', () => {
-  assert.deepEqual(validateGeneratedWorld(sampleContent(), loadCorpus('vr')), []);
+  assert.deepEqual(validateGeneratedWorld(sampleContent(), loadCorpus('vr'), { startYear: 1990, endYear: 2026 }), []);
 });
 
 test('a fourth distinct endpoint phrase is accepted', () => {
   const content = sampleContent();
-  content.present.technicalSystem.push('Public projection systems use municipal interoperability standards.');
+  content.endpoint.technicalSystem.push('Public projection systems use municipal interoperability standards.');
   assert.deepEqual(validateGeneratedWorld(content, loadCorpus('vr')), []);
 });
 
@@ -90,7 +99,7 @@ test('generation request caches the history and leaves the brief variable', () =
   const source = loadCorpusSource('vr');
   const request = buildGenerationRequest({
     corpusSource: source,
-    scenarioBrief: 'A sufficiently detailed variable scenario brief for the test.',
+    input: { startYear: 1990, endYear: 2010, scenarioBrief: 'A sufficiently detailed variable scenario brief for the test.' },
     model: 'claude-sonnet-5',
     variationIndex: 1,
     batchSize: 3
@@ -99,6 +108,8 @@ test('generation request caches the history and leaves the brief variable', () =
   assert.deepEqual(historyBlock.cache_control, { type: 'ephemeral' });
   assert.equal(briefBlock.cache_control, undefined);
   assert.match(historyBlock.text, /vpl-eyephone/);
+  assert.match(briefBlock.text, /"startYear": 1990/);
+  assert.match(briefBlock.text, /"endYear": 2010/);
   assert.match(briefBlock.text, /variant 1 of 3/i);
   assert.match(request.system, /exactly nine chronological timeline developments/i);
   assert.equal(request.output_config.format.type, 'json_schema');
@@ -111,12 +122,12 @@ test('local validation enforces compact array counts omitted from the API schema
   const content = sampleContent();
   content.assumptions.pop();
   content.timeline.pop();
-  content.present.entertainment.pop();
+  content.endpoint.entertainment.pop();
   content.continuities.pop();
   const errors = validateGeneratedWorld(content, loadCorpus('vr'));
   assert.ok(errors.some(error => error.includes('Three or four enabling assumptions')));
   assert.ok(errors.some(error => error.includes('Exactly nine timeline developments')));
-  assert.ok(errors.some(error => error.includes('present.entertainment')));
+  assert.ok(errors.some(error => error.includes('endpoint.entertainment')));
   assert.ok(errors.some(error => error.includes('Exactly three continuities')));
 });
 
@@ -138,9 +149,10 @@ test('truncated generation responses can be saved for diagnosis', () => {
 test('application metadata wraps model-generated content', () => {
   const world = makeWorldRecord(sampleContent(), {
     corpusId: 'vr', corpusHash: 'abc123', scenarioBrief: 'brief', model: 'claude-sonnet-5',
-    promptVersion: 'alternate-present-v1', batchIndex: 1, batchSize: 1, usage: {}
+    promptVersion: 'alternate-history-v1', batchIndex: 1, batchSize: 1, usage: {}
   });
-  assert.equal(world.schema, 'alternate-present.v1');
+  assert.equal(world.schema, 'alternate-history.v1');
+  assert.equal(world.kind, 'alternate-history');
   assert.equal(world.domain, 'vr');
   assert.equal(world.validation.status, 'valid');
   assert.deepEqual(world.validation.warnings, []);
@@ -151,7 +163,7 @@ test('application metadata wraps model-generated content', () => {
 test('application metadata preserves semantic warnings and their diagnostic', () => {
   const world = makeWorldRecord(sampleContent(), {
     corpusId: 'vr', corpusHash: 'abc123', scenarioBrief: 'brief', model: 'claude-sonnet-5',
-    promptVersion: 'alternate-present-v5', batchIndex: 1, batchSize: 1, usage: {},
+    promptVersion: 'alternate-history-v1', batchIndex: 1, batchSize: 1, usage: {},
     validationWarnings: ['Timeline is not chronological at e3.'],
     validationDiagnostic: 'world-generation-example.json'
   });
@@ -160,9 +172,19 @@ test('application metadata preserves semantic warnings and their diagnostic', ()
   assert.equal(world.validation.diagnosticFile, 'world-generation-example.json');
 });
 
+test('alternate-history input normalizes explicit temporal boundaries', () => {
+  assert.deepEqual(
+    normalizeAlternateHistoryInput({ startYear: '1968', endYear: '1999', scenarioBrief: '  divergence  ' }),
+    { startYear: 1968, endYear: 1999, scenarioBrief: 'divergence' }
+  );
+  assert.equal(LEGACY_WORLD_SCHEMA_VERSION, 'alternate-present.v1');
+});
+
 test('render request receives canon and optional direction but no generation provenance or story seeds', () => {
   const world = { ...sampleContent(), id: 'alt-test', domain: 'vr', provenance: { scenarioBrief: 'private input' } };
   const payload = renderPayload(world);
+  assert.equal(payload.baseYear, 1990);
+  assert.equal(payload.endpoint.technicalSystem.length, 2);
   assert.equal(payload.timeline.length, 9);
   assert.equal(payload.historicalForces.length, 4);
   assert.equal(payload.provenance, undefined);
@@ -171,6 +193,7 @@ test('render request receives canon and optional direction but no generation pro
   assert.match(request.messages[0].content, /WORLD RECORD/);
   assert.match(request.messages[0].content, /The Spatial Web/);
   assert.match(request.messages[0].content, /reluctant older user/);
+  assert.match(request.messages[0].content, /alternate history from 1990 through 2026/i);
   assert.match(request.messages[0].content, /VPL Research/);
   assert.match(request.messages[0].content, /Do not recount the lineage excerpts/);
   assert.doesNotMatch(request.messages[0].content, /private input/);
@@ -178,8 +201,12 @@ test('render request receives canon and optional direction but no generation pro
 
 test('existing worlds without historical forces still receive their cited lineage at render time', () => {
   const content = sampleContent();
+  content.present = content.endpoint;
+  delete content.endpoint;
+  delete content.startYear;
   delete content.historicalForces;
-  const request = buildRenderRequest({ ...content, id: 'old-alt', domain: 'vr' }, { form: 'fiction' });
+  const request = buildRenderRequest({ ...content, id: 'old-alt', kind: 'alternate-present', domain: 'vr' }, { form: 'fiction' });
   assert.match(request.messages[0].content, /Virtuality VR Arcades/);
   assert.doesNotMatch(request.messages[0].content, /"historicalForces"/);
+  assert.equal(renderPayload(content).endpoint.technicalSystem.length, 2);
 });

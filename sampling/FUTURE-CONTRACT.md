@@ -1,6 +1,6 @@
 # Future World contract: `future.v1`
 
-The future contract is separate from `alternate-present.v1` but preserves the same durable boundary
+The future contract is separate from `alternate-history.v1` but preserves the same durable boundary
 between World construction and rendering.
 
 ```text

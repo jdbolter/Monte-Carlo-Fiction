@@ -2,15 +2,15 @@
 
 ## Current architecture
 
-The project generates **model-authored structured alternate presents and future scenarios** from
+The project generates **model-authored structured alternate histories and future scenarios** from
 real historical lineages and user-authored briefs. It no longer samples abstract dimensions or
 selects a backstory algorithmically.
 
 The pipeline has three deliberate stages:
 
 1. **Evidence** — `sampling/history/*.json`, stable historical event corpora.
-2. **World generation** — one Anthropic structured-output call per World. Alternate presents use
-   `alternate-present.v1`; four future modes use `future.v1`. The lineage prefix is explicitly
+2. **World generation** — one Anthropic structured-output call per World. Alternate histories use
+   `alternate-history.v1`; four future modes use `future.v1`. The lineage prefix is explicitly
    cached and batch generation is sequential so it can be reused.
 3. **Rendering** — a separate model call turns a selected saved World into a narrative history,
    fiction, scene, testimony, or found document. Renderers never regenerate the World.
@@ -23,6 +23,10 @@ structured generation and selective prose rendering.
 - `sampling/history.js` — discovers and loads history corpora; computes corpus hashes.
 - `sampling/history/vr.json` — 68-event immersive/visual-media history.
 - `sampling/history/silicon-valley.json` — 56-event computing/capital history.
+- `sampling/history/digital-media.json` — 70-event history of the computer as a digital medium,
+  from programmable machines through generative and agentic creative systems.
+- `sampling/history/world-war-ii.json` — 67-event global chronology from the Nazi seizure of power
+  in 1933 through the war and its immediate aftermath in 1950; Alternate History only.
 - `sampling/world-schema.js` — Anthropic JSON schema plus application-level causal validation.
 - `sampling/world-generator.js` — cached prompt, structured-output request, semantic audit, and
   sequential batch generation.
@@ -48,7 +52,11 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
 
 - The scenario divergence is a fiat; the generator infers necessary enablers rather than rejecting
   it.
+- Alternate History copies the user-supplied starting/divergence year and ending year exactly; the
+  endpoint is not assumed to be the actual present.
 - Real historical events are evidence and raw material, not a mandatory chronological path.
+- A corpus may declare an `experiments` allowlist. Omission preserves the default availability in
+  both Alternate History and Future Speculation.
 - `sourceRefs` must exist in the selected corpus.
 - New Worlds contain exactly four `historicalForces`, each citing corpus events and distinguishing
   an inherited legacy from its causal effect on the World.
@@ -73,7 +81,7 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
 
 `sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. Clear
 Everything removes Worlds and artifacts but preserves diagnostic responses. Loaders accept
-`alternate-present.v1`, `future.v1`, and `artifact.v1`.
+`alternate-history.v1`, legacy `alternate-present.v1`, `future.v1`, and `artifact.v1`.
 
 ## Open work
 
