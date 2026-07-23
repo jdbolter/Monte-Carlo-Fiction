@@ -2,14 +2,15 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, unlinkSync, writeFile
 import { dirname, join } from 'path';
 import { fileURLToPath } from 'url';
 import { anthropicMessages, usageSummary } from './anthropic.js';
+import { resolveCorpusEvents } from './history.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 export const LIBRARY_DIR = join(__dirname, 'outputs', 'library');
 export const DEFAULT_RENDER_MODEL = 'claude-sonnet-5';
 
 export const FORMS = {
-  'narrative-history': `Write an accessible trajectory narrative of approximately 1,000 words. Trace the major stages to the endpoint, with technology, institutions, public reception, entertainment, and social practices as the principal subjects. Introduce a few people where useful, but do not turn this into a character-centered short story. Explain unfamiliar innovations plainly: what they physically or operationally are, how people use them, and why they matter. End with a concrete account of the endpoint year.`,
-  fiction: `Write approximately 1,000 words of fiction centered on an ordinary person living in the endpoint year. Invent characters, setting, situation, and plot from the world's endpoint facts and tensions. The world must emerge through action, material details, institutions, and friction rather than an explanatory lecture. Do not treat old devices from the causal timeline as current technology; depict their mature descendants.`,
+  'narrative-history': `Write an accessible trajectory narrative of approximately 1,000 words. Trace the major stages to the endpoint, with technology, institutions, public reception, entertainment, and social practices as the principal subjects. Introduce a few people where useful, but do not turn this into a character-centered short story. Explain unfamiliar innovations plainly: what they physically or operationally are, how people use them, and why they matter. Show how inherited historical forces enable, constrain, or redirect the trajectory rather than merely recounting their source events. End with a concrete account of the endpoint year.`,
+  fiction: `Write approximately 1,000 words of fiction centered on an ordinary person living in the endpoint year. Invent characters, setting, situation, and plot from the world's endpoint facts and tensions. The world must emerge through action, material details, institutions, and friction rather than an explanatory lecture. Make two or three inherited historical forces perceptible through mature technologies, institutions, habits, language, infrastructure, or conflict, without stopping to recount history. Do not treat old devices from the causal timeline as current technology; depict their mature descendants.`,
   'found-document': `Write a single primary-source document from inside the endpoint year, about 300 words: a notice, listing, warranty, syllabus, obituary, memo, policy, review, or letter. It must read as genuine found material with no external framing.`,
   scene: `Write a single scene of approximately 500 words, with an ordinary person doing an ordinary thing in the endpoint year. Convey the world's institutions, mature technology, benefits, and friction through what happens. Begin inside the scene.`,
   testimony: `Write approximately 450 words of first-person testimony from someone describing an ordinary part of life in the endpoint year. Use plain speech and concrete particulars; the speaker does not know that their world is counterfactual.`
@@ -23,7 +24,7 @@ For an alternate-present World, narrate the timeline as counterfactual history. 
 
 Preserve the mixed ecology recorded under continuities. Do not make the central medium govern every message or eliminate every older medium. Avoid automatic utopia, dystopia, ominous science fiction, and frictionless promotional prose. Use the world's actual mixture of benefit, normality, exclusion, irritation, conflict, and pleasure.
 
-The World uses compact phrases rather than publication-ready sentences. Treat them as canonical facts, not wording to copy or mechanically paraphrase. Compose fresh, fluent prose appropriate to the selected form.
+The World uses compact phrases rather than publication-ready sentences. Treat them as canonical facts, not wording to copy or mechanically paraphrase. Its historicalForces are authoritative interpretations of how actual history weighs on this World. The accompanying lineage excerpts explain the cited source events but are evidence, not additional events that must be recounted. Compose fresh, fluent prose appropriate to the selected form.
 
 When explaining history, do not merely name or allude to an innovation. State briefly what it was, how it worked or what a person experienced, and what it made newly possible. When writing from inside the world, invent characters and situations that translate the endpoint facts and tensions into concrete action and material detail.
 
@@ -38,11 +39,25 @@ export function renderPayload(world) {
     horizonYear: world.horizonYear,
     premise: world.premise,
     assumptions: world.assumptions,
+    historicalForces: world.historicalForces,
     timeline: world.timeline,
     endpoint: world.kind === 'future' ? world.endpoint : world.present,
     continuities: world.continuities,
     tensions: world.tensions
   };
+}
+
+export function referencedHistory(world) {
+  const refs = [
+    world.premise?.divergence?.historicalAnchor,
+    ...(world.historicalForces || []).flatMap(force => force.sourceRefs || []),
+    ...(world.timeline || []).flatMap(event => event.sourceRefs || [])
+  ].filter(Boolean);
+  try {
+    return resolveCorpusEvents(world.domain, [...new Set(refs)]);
+  } catch {
+    return [];
+  }
 }
 
 export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT_RENDER_MODEL, renderBrief = '' } = {}) {
@@ -54,6 +69,10 @@ export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT
   const direction = brief
     ? `RENDER BRIEF\n${brief}\n\nUse this brief for choices of focus, viewpoint, setting, tone, or emphasis. It may not contradict the World record.`
     : 'RENDER BRIEF\nNo additional direction. Choose a suitable focus, viewpoint, and setting from the World record.';
+  const history = referencedHistory(world);
+  const historyDirection = form === 'narrative-history'
+    ? 'Use relevant lineage excerpts to explain path dependence and transformation. Do not march through them as a separate chronology or mention source ids.'
+    : 'Do not recount the lineage excerpts or mention source ids. Let relevant legacies appear indirectly through endpoint life, mature descendants, institutions, practices, and conflicts.';
   return {
     model,
     max_tokens: ['narrative-history', 'fiction'].includes(form) ? 2600 : 1600,
@@ -61,7 +80,7 @@ export function buildRenderRequest(world, { form = DEFAULT_FORM, model = DEFAULT
     system: RENDER_SYSTEM_PROMPT,
     messages: [{
       role: 'user',
-      content: `${task}\n\n${kindDirection}\n\n${direction}\n\nWORLD RECORD\n${JSON.stringify(renderPayload(world), null, 2)}`
+      content: `${task}\n\n${kindDirection}\n\n${direction}\n\nHISTORICAL USE\n${historyDirection}\n\nWORLD RECORD\n${JSON.stringify(renderPayload(world), null, 2)}\n\nREFERENCED HISTORICAL LINEAGE\n${JSON.stringify(history, null, 2)}`
     }]
   };
 }

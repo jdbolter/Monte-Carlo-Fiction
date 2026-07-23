@@ -1,5 +1,5 @@
 export const WORLD_SCHEMA_VERSION = 'alternate-present.v1';
-export const GENERATION_PROMPT_VERSION = 'alternate-present-v5';
+export const GENERATION_PROMPT_VERSION = 'alternate-present-v6';
 
 const stringArray = description => ({
   type: 'array',
@@ -10,6 +10,21 @@ const stringArray = description => ({
 const presentSection = description => stringArray(
   `${description} Prefer two or three compact factual phrases about the endpoint only; use a fourth only when needed for a distinct fact. Do not repeat timeline developments.`
 );
+
+const historicalForces = {
+  type: 'array',
+  description: 'Exactly four compact interpretations of how actual history continues to enable, constrain, or redirect this alternate world.',
+  items: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      sourceRefs: stringArray('One or more exact ids from the supplied history corpus supporting this force.'),
+      legacy: { type: 'string', description: 'Compact phrase naming the inherited capability, institution, business pattern, cultural practice, or remembered failure.' },
+      effect: { type: 'string', description: 'Compact phrase stating how that inheritance enables, constrains, or redirects the alternate trajectory or endpoint.' }
+    },
+    required: ['sourceRefs', 'legacy', 'effect']
+  }
+};
 
 export const GENERATED_WORLD_SCHEMA = {
   type: 'object',
@@ -61,6 +76,7 @@ export const GENERATED_WORLD_SCHEMA = {
         required: ['id', 'claim', 'timing', 'plausibility']
       }
     },
+    historicalForces,
     timeline: {
       type: 'array',
       description: 'Exactly nine chronological developments connecting the divergence to the endpoint.',
@@ -106,7 +122,7 @@ export const GENERATED_WORLD_SCHEMA = {
       }
     }
   },
-  required: ['horizonYear', 'title', 'summary', 'premise', 'assumptions', 'timeline', 'present', 'continuities', 'tensions']
+  required: ['horizonYear', 'title', 'summary', 'premise', 'assumptions', 'historicalForces', 'timeline', 'present', 'continuities', 'tensions']
 };
 
 export function validateGeneratedWorld(world, corpus) {
@@ -123,6 +139,17 @@ export function validateGeneratedWorld(world, corpus) {
 
   if (!Array.isArray(world.assumptions) || world.assumptions.length < 3 || world.assumptions.length > 4) {
     errors.push('Three or four enabling assumptions are required.');
+  }
+  if (!Array.isArray(world.historicalForces) || world.historicalForces.length !== 4) {
+    errors.push('Exactly four historical forces are required.');
+  }
+  for (const [index, force] of (world.historicalForces || []).entries()) {
+    if (!Array.isArray(force.sourceRefs) || force.sourceRefs.length === 0) {
+      errors.push(`historicalForces[${index}] must cite at least one corpus event.`);
+    }
+    for (const ref of force.sourceRefs || []) {
+      if (!eventIds.has(ref)) errors.push(`historicalForces[${index}] references unknown corpus event: ${ref}`);
+    }
   }
   if (!Array.isArray(world.timeline) || world.timeline.length !== 9) {
     errors.push('Exactly nine timeline developments are required.');

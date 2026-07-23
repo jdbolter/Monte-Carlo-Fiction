@@ -54,7 +54,9 @@ Only unusable API results—such as truncation, refusal, or missing JSON—fail 
 
 ## Rendering
 
-`render-world.js` sends only the completed World content, not the full history corpus. Current forms:
+`render-world.js` sends the completed World plus compact excerpts of only the historical events
+cited by its `historicalForces`, timeline, and divergence anchor—not the full history corpus.
+Current forms:
 
 - `narrative-history` — approximately 1,000 words;
 - `fiction` — approximately 1,000 words;
@@ -64,5 +66,8 @@ The World contains no characters, scenes, plots, or miniature story examples. Fi
 invent them from endpoint facts and tensions. The interface provides an optional render brief for
 focus, viewpoint, setting, tone, or emphasis; a blank brief leaves those choices to the renderer.
 
-The renderer receives a normalized endpoint for either contract. It treats alternate trajectories
-as counterfactual history and future trajectories as coherent possibilities rather than predictions.
+The renderer receives a normalized endpoint for either contract. Narrative history makes inherited
+forces explicit as path dependence and transformation. Fiction makes them perceptible indirectly
+through mature descendants, institutions, practices, infrastructure, and conflict. Alternate
+trajectories remain counterfactual history; future trajectories remain coherent possibilities
+rather than predictions.

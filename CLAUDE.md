@@ -50,6 +50,8 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
   it.
 - Real historical events are evidence and raw material, not a mandatory chronological path.
 - `sourceRefs` must exist in the selected corpus.
+- New Worlds contain exactly four `historicalForces`, each citing corpus events and distinguishing
+  an inherited legacy from its causal effect on the World.
 - `causedBy` may reference assumptions or earlier timeline events only.
 - Semantic violations are saved as World validation warnings and persistent diagnostic responses;
   they do not trigger an automatic corrective model call or prevent saving.
@@ -60,6 +62,8 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
   characters, scenes, plots, or miniature story examples; those belong to rendering.
 - An optional render brief may guide focus, viewpoint, setting, tone, or emphasis, but may not
   contradict the saved World.
+- Rendering resolves only the World's cited historical events. Narrative history uses them to
+  explain path dependence; fiction expresses their effects indirectly rather than recounting them.
 - Application metadata—not the model—supplies IDs, model name, corpus hash, prompt version,
   original brief, generation time, and usage.
 - Future modes control which boundaries are supplied: pivot-forward, endpoint-backcast,

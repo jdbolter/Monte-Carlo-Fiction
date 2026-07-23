@@ -43,6 +43,8 @@ The scenario brief is authoritative. Its divergence is a fiat: accept it for the
 
 Use the history corpus as evidence and raw material, not as a mandatory sequence. After the divergence, real events may be retained, altered, displaced, accelerated, delayed, or omitted. You may invent counterfactual developments, but every development must follow from named assumptions or earlier developments. sourceRefs must be exact ids from the supplied corpus; never invent a source id.
 
+History must exert causal pressure, not merely decorate the timeline. Identify inherited capabilities, institutions, business patterns, cultural practices, and remembered failures that make some paths easier and others harder. Record exactly four of these under historicalForces. Each force must cite one or more corpus events and state both the inherited legacy and its concrete effect on this alternate trajectory or endpoint. Do not merely summarize the cited event.
+
 Construct a mature endpoint, not a museum of the divergence era. Devices, interfaces, media forms, institutions, business models, creative practices, and social conventions must continue evolving across the timeline. Never imply that an old device remains current merely because it caused the divergence.
 
 Preserve a mixed media ecology. A successful new medium does not automatically eliminate text, flat screens, phones, physical venues, or every familiar institution. State important continuities explicitly. Include ordinary benefits, inconveniences, exclusions, failures, resistance, and power conflicts; do not default to either utopia or dystopia.
@@ -54,6 +56,7 @@ The World record is compact source data, not reader-facing prose. Prefer short n
 Output discipline:
 - Infer all years from the scenario and causal logic. If the brief says "the present" without a year, use 2026.
 - Supply three or four assumptions and exactly nine chronological timeline developments. Count them before returning the record.
+- Supply exactly four historicalForces grounded in cited corpus events.
 - Prefer two or three compact factual phrases in each present section; use a fourth only for a distinct fact that does not fit elsewhere. Follow them with exactly three continuities and three tensions.
 - Keep timeline development and consequence values distinct and usually under eighteen words each.
 - The timeline records change over time; present records endpoint conditions only. Never restate a timeline event in present.

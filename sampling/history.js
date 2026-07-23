@@ -42,3 +42,17 @@ export function corpusHash(source) {
 export function corpusEventIds(corpus) {
   return new Set(corpus.events.map(event => event.id));
 }
+
+export function resolveCorpusEvents(id, refs = []) {
+  const wanted = new Set(refs);
+  if (!wanted.size) return [];
+  return loadCorpus(id).events
+    .filter(event => wanted.has(event.id))
+    .map(({ id: eventId, year, display, label, description }) => ({
+      id: eventId,
+      year,
+      display,
+      label,
+      description
+    }));
+}

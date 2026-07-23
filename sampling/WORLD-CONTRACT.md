@@ -1,7 +1,8 @@
 # World contract: `alternate-present.v1`
 
 The saved World is the durable boundary between counterfactual generation and rendering. A renderer
-does not receive the full history corpus and does not reconsider the causal path.
+does not receive the full history corpus or reconsider the causal path; it receives compact excerpts
+of only the historical events cited by the World.
 
 ```text
 World {
@@ -16,6 +17,8 @@ World {
   }
 
   assumptions[] { id, claim, timing, plausibility }
+
+  historicalForces[] { sourceRefs[], legacy, effect }
 
   timeline[] {
     id, year, development, consequence
@@ -57,6 +60,8 @@ World {
 
 - **Premise** preserves what was stipulated, separate from what the model inferred.
 - **Assumptions** expose the supporting miracles or stretches instead of hiding them in prose.
+- **Historical forces** interpret how inherited systems, practices, and remembered failures make
+  some paths easier and others harder.
 - **Timeline** provides the causal spine required by narrative history.
 - **Present** records the mature endpoint rather than asking every renderer to reinvent it.
 - **Continuities** prevent totalizing worlds in which one innovation replaces all media and social
@@ -69,7 +74,8 @@ World {
 ## Compactness
 
 Compactness comes from bounded item counts, factual phrases, and avoiding duplicated prose, not
-abbreviated keys. The target is three or four assumptions, exactly nine timeline events, preferably
+abbreviated keys. The target is three or four assumptions, exactly four historical forces, exactly
+nine timeline events, preferably
 two or three phrases per endpoint section (four when needed for a distinct fact), exactly three
 continuities, and exactly three tensions. The
 timeline records change; `present` records endpoint conditions and must not repeat the timeline.

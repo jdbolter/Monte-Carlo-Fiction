@@ -28,6 +28,12 @@ function sampleContent() {
       { id: 'a2', claim: 'Graphics investment follows the headset market.', timing: 'during the 1990s', plausibility: 'medium' },
       { id: 'a3', claim: 'Open spatial standards prevent early fragmentation.', timing: 'by 1996', plausibility: 'medium' }
     ],
+    historicalForces: [
+      { sourceRefs: ['vpl-eyephone'], legacy: 'Commercial VR vocabulary and embodied interface practice', effect: 'Early consumer systems inherit an established design language' },
+      { sourceRefs: ['virtuality-arcade'], legacy: 'Venue-based networked immersion', effect: 'Shared spaces precede household adoption' },
+      { sourceRefs: ['second-life'], legacy: 'User-built worlds with internal economies', effect: 'Creator ownership becomes an early policy conflict' },
+      { sourceRefs: ['oculus-kickstarter'], legacy: 'Enthusiast hardware communities', effect: 'Open peripheral markets resist platform enclosure' }
+    ],
     timeline: [
       { id: 'e1', year: 1990, development: 'VPL launches the system.', consequence: 'VR becomes credible.', causedBy: ['a1', 'a2'], status: 'altered', sourceRefs: ['vpl-eyephone'] },
       { id: 'e2', year: 1993, development: 'Arcades network shared worlds.', consequence: 'Social presence gains a market.', causedBy: ['e1'], status: 'altered', sourceRefs: ['virtuality-arcade'] },
@@ -158,11 +164,22 @@ test('render request receives canon and optional direction but no generation pro
   const world = { ...sampleContent(), id: 'alt-test', domain: 'vr', provenance: { scenarioBrief: 'private input' } };
   const payload = renderPayload(world);
   assert.equal(payload.timeline.length, 9);
+  assert.equal(payload.historicalForces.length, 4);
   assert.equal(payload.provenance, undefined);
   assert.equal(payload.livedExamples, undefined);
   const request = buildRenderRequest(world, { form: 'fiction', renderBrief: 'A reluctant older user at a family celebration.' });
   assert.match(request.messages[0].content, /WORLD RECORD/);
   assert.match(request.messages[0].content, /The Spatial Web/);
   assert.match(request.messages[0].content, /reluctant older user/);
+  assert.match(request.messages[0].content, /VPL Research/);
+  assert.match(request.messages[0].content, /Do not recount the lineage excerpts/);
   assert.doesNotMatch(request.messages[0].content, /private input/);
+});
+
+test('existing worlds without historical forces still receive their cited lineage at render time', () => {
+  const content = sampleContent();
+  delete content.historicalForces;
+  const request = buildRenderRequest({ ...content, id: 'old-alt', domain: 'vr' }, { form: 'fiction' });
+  assert.match(request.messages[0].content, /Virtuality VR Arcades/);
+  assert.doesNotMatch(request.messages[0].content, /"historicalForces"/);
 });

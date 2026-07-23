@@ -37,6 +37,12 @@ function futureContent() {
       { id: 'a2', claim: 'Cheap solid-state projection', timing: 'early 2030s', plausibility: 'high' },
       { id: 'a3', claim: 'Open spatial content standards', timing: 'by 2032', plausibility: 'medium' }
     ],
+    historicalForces: [
+      { sourceRefs: ['cave'], legacy: 'Institutional room-scale immersion', effect: 'Municipal venues become more plausible than immediate household adoption' },
+      { sourceRefs: ['videoplace'], legacy: 'Unencumbered bodily interaction', effect: 'Public systems prioritize camera-based participation over headsets' },
+      { sourceRefs: ['vitarama-cinerama'], legacy: 'Immersion sold as collective spectacle', effect: 'Venue operators finance shared projection infrastructure' },
+      { sourceRefs: ['sega-vr-virtual-boy'], legacy: 'Remembered consumer headset failure', effect: 'Procurement emphasizes comfort and non-wearable access' }
+    ],
     timeline: [
       { id: 'e1', year: 2028, development: 'Pilot civic projection rooms open', consequence: 'Public use cases become visible', causedBy: ['a1'], status: 'adaptation', sourceRefs: ['cave'] },
       { id: 'e2', year: 2030, development: 'Schools share room-scale curricula', consequence: 'Educational procurement lowers costs', causedBy: ['e1'], status: 'adaptation', sourceRefs: ['videoplace'] },
@@ -111,9 +117,12 @@ test('future record and renderer preserve the World-kind boundary', () => {
   assert.equal(world.provenance.generationInput.mode, 'bounded-corridor');
   const payload = renderPayload(world);
   assert.equal(payload.kind, 'future');
+  assert.equal(payload.historicalForces.length, 4);
   assert.equal(payload.endpoint.technicalSystem.length, 2);
   assert.equal(payload.present, undefined);
   const request = buildRenderRequest(world, { form: 'narrative-history' });
   assert.match(request.messages[0].content, /future scenario/i);
   assert.match(request.messages[0].content, /coherent possibility/i);
+  assert.match(request.messages[0].content, /University of Illinois CAVE/);
+  assert.match(request.messages[0].content, /path dependence and transformation/i);
 });

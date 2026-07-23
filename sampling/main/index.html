@@ -303,10 +303,11 @@ function validationTag(world) { const count = world.validation?.warnings?.length
 function worldDetails(world) {
   const endpoint = world.kind === 'future' ? world.endpoint : world.present;
   const sections = Object.entries(endpoint || {}).map(([key, values]) => `<div class="detail-section"><h4>${esc(key.replace(/([A-Z])/g,' $1'))}</h4><ul>${values.map(value => `<li>${esc(value)}</li>`).join('')}</ul></div>`).join('');
+  const historicalForces = world.historicalForces?.length ? `<div class="detail-section"><h4>Historical forces</h4><ul>${world.historicalForces.map(force => `<li><b>${esc(force.legacy)}</b> — ${esc(force.effect)} <span class="muted">(${esc((force.sourceRefs || []).join(', '))})</span></li>`).join('')}</ul></div>` : '';
   const warnings = world.validation?.warnings?.length ? `<div class="detail-section"><h4>Validation warnings</h4><ul>${world.validation.warnings.map(value => `<li>${esc(value)}</li>`).join('')}</ul><p class="hint">Diagnostic: ${esc(world.validation.diagnosticFile)}</p></div>` : '';
   const json = { ...world }; delete json.renderedForms;
   return `<details><summary>Inspect trajectory and endpoint</summary>
-    <div class="detail-section"><h4>Assumptions</h4><ul>${world.assumptions.map(a => `<li><b>${esc(a.plausibility)}</b> — ${esc(a.claim)} (${esc(a.timing)})</li>`).join('')}</ul></div>
+    <div class="detail-section"><h4>Assumptions</h4><ul>${world.assumptions.map(a => `<li><b>${esc(a.plausibility)}</b> — ${esc(a.claim)} (${esc(a.timing)})</li>`).join('')}</ul></div>${historicalForces}
     <div class="detail-section"><h4>Timeline</h4><ul>${world.timeline.map(e => `<li><b>${e.year}</b> — ${esc(e.development)} <span class="muted">${esc(e.consequence)}</span></li>`).join('')}</ul></div>${sections}
     <div class="detail-section"><h4>Continuities</h4><ul>${world.continuities.map(x => `<li>${esc(x)}</li>`).join('')}</ul></div>${warnings}</details>
     <details><summary>View or copy complete World JSON</summary><pre>${esc(JSON.stringify(json,null,2))}</pre><button class="btn btn-small copy-json">Copy JSON</button></details>`;

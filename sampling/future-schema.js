@@ -1,5 +1,5 @@
 export const FUTURE_WORLD_SCHEMA_VERSION = 'future.v1';
-export const FUTURE_PROMPT_VERSION = 'future-v1';
+export const FUTURE_PROMPT_VERSION = 'future-v2';
 export const FUTURE_MODES = ['pivot-forward', 'endpoint-backcast', 'bounded-corridor', 'open-exploration'];
 
 const stringArray = description => ({
@@ -21,6 +21,21 @@ const sourcedCondition = (statementKey, statementDescription) => ({
   },
   required: [statementKey, 'source']
 });
+
+const historicalForces = {
+  type: 'array',
+  description: 'Exactly four compact interpretations of how historical lineage continues to enable, constrain, or redirect this future.',
+  items: {
+    type: 'object',
+    additionalProperties: false,
+    properties: {
+      sourceRefs: stringArray('One or more exact ids from the supplied historical lineage supporting this force.'),
+      legacy: { type: 'string', description: 'Compact phrase naming the inherited capability, institution, business pattern, cultural practice, or remembered failure.' },
+      effect: { type: 'string', description: 'Compact phrase stating how that inheritance enables, constrains, or redirects the projected trajectory or endpoint.' }
+    },
+    required: ['sourceRefs', 'legacy', 'effect']
+  }
+};
 
 export const GENERATED_FUTURE_SCHEMA = {
   type: 'object',
@@ -66,6 +81,7 @@ export const GENERATED_FUTURE_SCHEMA = {
         required: ['id', 'claim', 'timing', 'plausibility']
       }
     },
+    historicalForces,
     timeline: {
       type: 'array',
       description: 'Exactly nine chronological projected developments from the base year toward the horizon.',
@@ -111,7 +127,7 @@ export const GENERATED_FUTURE_SCHEMA = {
       }
     }
   },
-  required: ['baseYear', 'horizonYear', 'title', 'summary', 'premise', 'assumptions', 'timeline', 'endpoint', 'continuities', 'tensions']
+  required: ['baseYear', 'horizonYear', 'title', 'summary', 'premise', 'assumptions', 'historicalForces', 'timeline', 'endpoint', 'continuities', 'tensions']
 };
 
 export function validateFutureWorld(world, corpus, input = {}) {
@@ -136,6 +152,17 @@ export function validateFutureWorld(world, corpus, input = {}) {
 
   if (!Array.isArray(world.assumptions) || world.assumptions.length < 3 || world.assumptions.length > 4) {
     warnings.push('Three or four enabling assumptions are expected.');
+  }
+  if (!Array.isArray(world.historicalForces) || world.historicalForces.length !== 4) {
+    warnings.push('Exactly four historical forces are expected.');
+  }
+  for (const [index, force] of (world.historicalForces || []).entries()) {
+    if (!Array.isArray(force.sourceRefs) || force.sourceRefs.length === 0) {
+      warnings.push(`historicalForces[${index}] should cite at least one lineage event.`);
+    }
+    for (const ref of force.sourceRefs || []) {
+      if (!eventIds.has(ref)) warnings.push(`historicalForces[${index}] references unknown lineage event: ${ref}`);
+    }
   }
   if (!Array.isArray(world.timeline) || world.timeline.length !== 9) {
     warnings.push('Exactly nine projected timeline developments are expected.');

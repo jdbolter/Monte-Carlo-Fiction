@@ -61,6 +61,7 @@ Both World contracts contain:
 
 - a premise distinguishing supplied conditions from model inferences;
 - enabling assumptions with qualitative plausibility;
+- exactly four historical forces stating how cited legacies enable, constrain, or redirect the World;
 - an exactly nine-event causal timeline;
 - a mature endpoint state covering technology, entertainment, social media, institutions,
   economics, access, and conflict;
@@ -76,6 +77,11 @@ match exact IDs in the selected historical corpus, and `causedBy` must point to 
 earlier timeline events. The application audits these rules after generation. A World with semantic
 problems is still saved, visibly marked with warnings, and accompanied by a diagnostic file for
 later prompt and validator improvement. There is no automatic semantic-regeneration call.
+
+At render time, the application resolves only the corpus events cited by the World. Narrative
+histories use them to explain path dependence and transformation. Fiction uses the resulting
+historical forces indirectly through mature technologies, institutions, habits, infrastructure,
+and conflicts rather than recounting background history.
 
 See [`sampling/WORLD-CONTRACT.md`](sampling/WORLD-CONTRACT.md) and
 [`sampling/FUTURE-CONTRACT.md`](sampling/FUTURE-CONTRACT.md) for the contracts, and

@@ -20,6 +20,8 @@ World {
 
   assumptions[] { id, claim, timing, plausibility }
 
+  historicalForces[] { sourceRefs[], legacy, effect }
+
   timeline[] {
     id, year, development, consequence
     causedBy[]
@@ -51,6 +53,10 @@ World {
 
 The general brief and historical lineage are always present. Modes only determine which corridor
 boundaries the user stipulates and which the model must infer.
+
+Each World records exactly four historical forces. These do not predict by analogy or repeat the
+lineage; they state how inherited capabilities, institutions, business patterns, cultural practices,
+adoption dynamics, and remembered failures enable, constrain, or redirect the projected future.
 
 ## Audit policy
 

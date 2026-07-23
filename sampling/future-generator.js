@@ -23,6 +23,8 @@ export const FUTURE_SYSTEM_PROMPT = `You construct compact, causally coherent fu
 
 The historical corpus establishes technological, institutional, and cultural lineage. Use it as evidence about paths, constraints, recurring patterns, and inherited systems—not as a list of future milestones. sourceRefs must be exact corpus ids. Corpus ids belong only in sourceRefs, never in causedBy.
 
+History must exert causal pressure, not merely decorate projected events. Identify inherited capabilities, institutions, business patterns, cultural practices, adoption dynamics, and remembered failures that make some futures easier and others harder. Record exactly four under historicalForces. Each force must cite one or more lineage events and state both the inherited legacy and its concrete effect on the projected trajectory or endpoint. Do not merely summarize the cited event.
+
 Respect the selected generation mode. Supplied pivots and target conditions are experimental fiats. Inferred pivots and endpoints must be distinctive, operationally concrete, and consistent with the brief. This is scenario construction, not prediction: avoid presenting the result as inevitable or most likely.
 
 Build a forward chronological causal trajectory from the base year to the horizon. Each projected development must follow from assumptions or earlier projected developments. Include technical change together with institutions, business models, public reception, regulation, cultural uses, resistance, uneven access, and failure.
@@ -35,6 +37,7 @@ Output discipline:
 - Copy the supplied baseYear, horizonYear, and mode exactly.
 - Produce a pivot and targetCondition in every mode; mark each source as supplied or inferred accurately.
 - Supply three or four assumptions and exactly nine chronological projected developments.
+- Supply exactly four historicalForces grounded in cited lineage events.
 - Prefer two or three compact phrases per endpoint section; use a fourth only for a distinct fact.
 - causedBy may contain assumption ids or earlier timeline ids only.
 - status is continuation for an extension of an established trajectory, adaptation for a redirected inherited system, and novel for a development without a close lineage precedent.
