@@ -37,6 +37,7 @@ export function makeWorldRecord(content, metadata) {
       generatedAt,
       batchIndex: metadata.batchIndex,
       batchSize: metadata.batchSize,
+      alternativeRoute: metadata.alternativeRoute || null,
       usage: metadata.usage
     }
   };

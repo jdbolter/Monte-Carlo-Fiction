@@ -17,12 +17,14 @@ file is auto-discovered and needs no registry or interface change.
 | `history.js` | Corpus discovery, loading, event IDs, and hashes |
 | `HISTORY-CORPUS-CONTRACT.md` | Authoritative corpus format, template, and research guidance |
 | `validate-corpora.js` | Offline validation for all discovered corpus files |
+| `alternative-planner.js` | Compact distinct-route planning for multi-World Alternate History requests |
 | `world-schema.js` | Structured-output JSON schema and causal validation |
-| `world-generator.js` | Cached Anthropic prompt and sequential batch generation |
+| `world-generator.js` | Direct single-World or planned route-assigned batch generation |
 | `future-schema.js` | `future.v1` structured-output schema, modes, and semantic audit |
 | `future-generator.js` | Four-mode cached future generation |
 | `world.js` | World envelope, IDs, persistence, listing, and clearing |
 | `render-world.js` | World-to-artifact render forms and artifact persistence |
+| `artifact-pdf.js` | Dependency-free, on-demand PDF layout for saved rendered artifacts |
 | `anthropic.js` | Shared API retry/backoff and usage normalization |
 | `main-server.js` | Local HTTP API and static server |
 | `main/index.html` | Generate / Render / Library interface |
@@ -32,10 +34,14 @@ file is auto-discovered and needs no registry or interface change.
 ## Prompt caching
 
 Each generation request contains two user content blocks. The first holds the complete history
-corpus and ends with an explicit five-minute cache breakpoint. The second holds the variable
-scenario or future inputs, batch index, and prior variant summaries. Batch
-generation is sequential because a cache entry becomes reusable only after the first response
-begins.
+corpus and ends with an explicit five-minute cache breakpoint. The second holds variable task
+input.
+
+For more than one Alternate History World, the first call returns a compact set of distinct causal
+routes. The planner and World generator use the same system prompt and exact history block, so
+route-specific World calls can reuse the cache created when planning begins. Each World call
+receives one assigned route rather than summaries of Worlds already generated. Single-World
+requests skip planning. Future batches retain their existing sequential behavior.
 
 Each World stores Anthropic's cache creation/read counters in `provenance.usage`, and the interface
 shows whether a request created or hit the cache.

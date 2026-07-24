@@ -1,6 +1,6 @@
 export const WORLD_SCHEMA_VERSION = 'alternate-history.v1';
 export const LEGACY_WORLD_SCHEMA_VERSION = 'alternate-present.v1';
-export const GENERATION_PROMPT_VERSION = 'alternate-history-v1';
+export const GENERATION_PROMPT_VERSION = 'alternate-history-v2';
 
 const stringArray = description => ({
   type: 'array',

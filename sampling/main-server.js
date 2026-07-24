@@ -8,6 +8,7 @@ import { generateWorldBatch, DEFAULT_GENERATION_MODEL, normalizeAlternateHistory
 import { generateFutureWorldBatch, DEFAULT_FUTURE_MODEL, normalizeFutureInput } from './future-generator.js';
 import { FUTURE_MODES } from './future-schema.js';
 import { clearWorlds, listWorlds, loadWorld } from './world.js';
+import { artifactPdfFilename, createArtifactPdf } from './artifact-pdf.js';
 import {
   clearArtifacts,
   DEFAULT_FORM,
@@ -52,6 +53,17 @@ function sendJson(res, status, payload) {
   res.end(JSON.stringify(payload));
 }
 
+function sendPdf(res, artifact) {
+  const pdf = createArtifactPdf(artifact);
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Content-Length', pdf.length);
+  res.setHeader('Content-Disposition', `attachment; filename="${artifactPdfFilename(artifact)}"`);
+  res.setHeader('Cache-Control', 'no-store');
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  res.end(pdf);
+}
+
 function worldForClient(world, formsMap) {
   return {
     ...world,
@@ -68,7 +80,7 @@ function artifactsForClient() {
   }));
 }
 
-async function handleApi(route, req, res) {
+async function handleApi(route, req, res, url) {
   const body = req.method === 'POST' ? await readBody(req) : {};
 
   if (route === 'status' && req.method === 'GET') {
@@ -99,7 +111,8 @@ async function handleApi(route, req, res) {
     const formsMap = renderedFormsByWorld();
     return sendJson(res, 200, {
       worlds: result.worlds.map(world => worldForClient(world, formsMap)),
-      errors: result.errors
+      errors: result.errors,
+      planning: result.planning
     });
   }
 
@@ -156,6 +169,13 @@ async function handleApi(route, req, res) {
 
   if (route === 'library' && req.method === 'GET') return sendJson(res, 200, { items: artifactsForClient() });
 
+  if (route === 'artifact-pdf' && req.method === 'GET') {
+    const id = String(url.searchParams.get('id') || '');
+    const artifact = artifactsForClient().find(record => record.id === id);
+    if (!artifact) return sendJson(res, 404, { error: `No such artifact: ${id}` });
+    return sendPdf(res, artifact);
+  }
+
   if (route === 'verdict' && req.method === 'POST') {
     try { return sendJson(res, 200, setVerdict(String(body.id || ''), String(body.verdict || ''), String(body.note || ''))); }
     catch (error) { return sendJson(res, 400, { error: error.message }); }
@@ -186,7 +206,7 @@ function serveStatic(pathname, res) {
 const server = http.createServer(async (req, res) => {
   const url = new URL(req.url, `http://${req.headers.host}`);
   if (url.pathname.startsWith('/api/')) {
-    try { await handleApi(url.pathname.slice('/api/'.length), req, res); }
+    try { await handleApi(url.pathname.slice('/api/'.length), req, res, url); }
     catch (error) { sendJson(res, 500, { error: error.message }); }
     return;
   }

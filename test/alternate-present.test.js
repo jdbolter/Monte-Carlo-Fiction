@@ -4,8 +4,9 @@ import { mkdtempSync, readFileSync, rmSync } from 'fs';
 import { dirname, join } from 'path';
 import { tmpdir } from 'os';
 import { fileURLToPath } from 'url';
+import { buildAlternativePlanRequest, validateAlternativePlan } from '../sampling/alternative-planner.js';
 import { loadCorpus, loadCorpusSource, listCorpora, validateCorpus } from '../sampling/history.js';
-import { buildGenerationRequest, clearGenerationDiagnostics, normalizeAlternateHistoryInput, saveGenerationDiagnostic } from '../sampling/world-generator.js';
+import { buildGenerationRequest, clearGenerationDiagnostics, generateWorldBatch, GENERATION_SYSTEM_PROMPT, normalizeAlternateHistoryInput, saveGenerationDiagnostic } from '../sampling/world-generator.js';
 import { LEGACY_WORLD_SCHEMA_VERSION, validateGeneratedWorld } from '../sampling/world-schema.js';
 import { buildRenderRequest, renderPayload } from '../sampling/render-world.js';
 import { makeWorldRecord } from '../sampling/world.js';
@@ -63,6 +64,27 @@ function sampleContent() {
   };
 }
 
+function sampleAlternativePlan() {
+  return {
+    alternatives: [
+      {
+        id: 'route-1',
+        causalThesis: 'Public research institutions establish open spatial-computing infrastructure.',
+        decisiveMechanisms: ['Public procurement favors open standards', 'Universities operate shared immersive services'],
+        eventsToTransform: ['vpl-eyephone', 'cave'],
+        expectedEndpointDifference: 'A federated public and educational spatial network'
+      },
+      {
+        id: 'route-2',
+        causalThesis: 'Entertainment firms consolidate VR as a closed mass-market medium.',
+        decisiveMechanisms: ['Arcade operators finance household systems', 'Exclusive content drives platform concentration'],
+        eventsToTransform: ['virtuality-arcade', 'facebook-oculus'],
+        expectedEndpointDifference: 'A small number of vertically integrated entertainment platforms'
+      }
+    ]
+  };
+}
+
 test('history corpora are discovered and loadable', () => {
   const corpora = listCorpora();
   const ids = corpora.map(corpus => corpus.id);
@@ -106,12 +128,14 @@ test('validation rejects future causes and invented source ids', () => {
 
 test('generation request caches the history and leaves the brief variable', () => {
   const source = loadCorpusSource('vr');
+  const route = sampleAlternativePlan().alternatives[0];
   const request = buildGenerationRequest({
     corpusSource: source,
     input: { startYear: 1990, endYear: 2010, scenarioBrief: 'A sufficiently detailed variable scenario brief for the test.' },
     model: 'claude-sonnet-5',
-    variationIndex: 1,
-    batchSize: 3
+    alternativeIndex: 1,
+    batchSize: 3,
+    alternativeRoute: route
   });
   const [historyBlock, briefBlock] = request.messages[0].content;
   assert.deepEqual(historyBlock.cache_control, { type: 'ephemeral' });
@@ -119,12 +143,133 @@ test('generation request caches the history and leaves the brief variable', () =
   assert.match(historyBlock.text, /vpl-eyephone/);
   assert.match(briefBlock.text, /"startYear": 1990/);
   assert.match(briefBlock.text, /"endYear": 2010/);
-  assert.match(briefBlock.text, /variant 1 of 3/i);
+  assert.match(briefBlock.text, /alternative 1 of 3/i);
+  assert.match(briefBlock.text, /ASSIGNED ALTERNATIVE ROUTE/);
+  assert.match(briefBlock.text, /Public research institutions/);
+  assert.doesNotMatch(briefBlock.text, /Other variants already generated/i);
   assert.match(request.system, /exactly nine chronological timeline developments/i);
   assert.equal(request.output_config.format.type, 'json_schema');
   assert.equal(request.max_tokens, 6000);
   assert.equal(request.output_config.format.schema.properties.timeline.minItems, undefined);
   assert.equal(request.output_config.format.schema.properties.timeline.maxItems, undefined);
+});
+
+test('alternative planner shares the cached history prefix and validates exact routes', () => {
+  const source = loadCorpusSource('vr');
+  const input = { startYear: 1990, endYear: 2010, scenarioBrief: 'A sufficiently detailed variable scenario brief for the test.' };
+  const request = buildAlternativePlanRequest({
+    corpusSource: source,
+    input,
+    count: 2,
+    model: 'claude-sonnet-5',
+    systemPrompt: GENERATION_SYSTEM_PROMPT
+  });
+  const generation = buildGenerationRequest({
+    corpusSource: source,
+    input,
+    model: 'claude-sonnet-5',
+    alternativeIndex: 1,
+    batchSize: 2,
+    alternativeRoute: sampleAlternativePlan().alternatives[0]
+  });
+  assert.equal(request.system, generation.system);
+  assert.equal(request.messages[0].content[0].text, generation.messages[0].content[0].text);
+  assert.deepEqual(request.messages[0].content[0].cache_control, { type: 'ephemeral' });
+  assert.match(request.messages[0].content[1].text, /ALTERNATIVE PLANNING INPUT/);
+  assert.match(request.messages[0].content[1].text, /"alternativeCount": 2/);
+  assert.equal(request.output_config.format.type, 'json_schema');
+  assert.equal(request.output_config.format.schema.properties.alternatives.minItems, undefined);
+  assert.deepEqual(validateAlternativePlan(sampleAlternativePlan(), loadCorpus('vr'), 2), []);
+
+  const invalid = sampleAlternativePlan();
+  invalid.alternatives[1].eventsToTransform = ['not-a-corpus-event'];
+  assert.ok(validateAlternativePlan(invalid, loadCorpus('vr'), 2).some(error => error.includes('unknown corpus event')));
+});
+
+test('multi-World generation plans once and assigns one saved route per World', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalKey = process.env.ANTHROPIC_API_KEY;
+  const requests = [];
+  process.env.ANTHROPIC_API_KEY = 'test-key';
+  globalThis.fetch = async (_url, options) => {
+    const request = JSON.parse(options.body);
+    requests.push(request);
+    const isPlanning = request.messages[0].content[1].text.includes('ALTERNATIVE PLANNING INPUT');
+    return {
+      ok: true,
+      json: async () => ({
+        stop_reason: 'end_turn',
+        content: [{ type: 'text', text: JSON.stringify(isPlanning ? sampleAlternativePlan() : sampleContent()) }],
+        usage: { input_tokens: 100, cache_read_input_tokens: isPlanning ? 0 : 80, output_tokens: 20 }
+      })
+    };
+  };
+
+  try {
+    const result = await generateWorldBatch({
+      corpusId: 'vr',
+      input: {
+        startYear: 1990,
+        endYear: 2026,
+        scenarioBrief: 'VPL launches a practical consumer system and changes the subsequent history of immersive media.'
+      },
+      count: 2,
+      model: 'claude-sonnet-5',
+      save: false
+    });
+    assert.equal(requests.length, 3);
+    assert.match(requests[0].messages[0].content[1].text, /ALTERNATIVE PLANNING INPUT/);
+    assert.match(requests[1].messages[0].content[1].text, /route-1/);
+    assert.match(requests[2].messages[0].content[1].text, /route-2/);
+    assert.equal(result.planning.alternativeCount, 2);
+    assert.deepEqual(result.worlds.map(world => world.provenance.alternativeRoute.id), ['route-1', 'route-2']);
+    assert.deepEqual(result.errors, []);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalKey;
+  }
+});
+
+test('single-World generation skips alternative planning', async () => {
+  const originalFetch = globalThis.fetch;
+  const originalKey = process.env.ANTHROPIC_API_KEY;
+  const requests = [];
+  process.env.ANTHROPIC_API_KEY = 'test-key';
+  globalThis.fetch = async (_url, options) => {
+    const request = JSON.parse(options.body);
+    requests.push(request);
+    return {
+      ok: true,
+      json: async () => ({
+        stop_reason: 'end_turn',
+        content: [{ type: 'text', text: JSON.stringify(sampleContent()) }],
+        usage: {}
+      })
+    };
+  };
+
+  try {
+    const result = await generateWorldBatch({
+      corpusId: 'vr',
+      input: {
+        startYear: 1990,
+        endYear: 2026,
+        scenarioBrief: 'VPL launches a practical consumer system and changes the subsequent history of immersive media.'
+      },
+      count: 1,
+      model: 'claude-sonnet-5',
+      save: false
+    });
+    assert.equal(requests.length, 1);
+    assert.match(requests[0].messages[0].content[1].text, /single-World generation/);
+    assert.equal(result.planning, null);
+    assert.equal(result.worlds[0].provenance.alternativeRoute, null);
+  } finally {
+    globalThis.fetch = originalFetch;
+    if (originalKey === undefined) delete process.env.ANTHROPIC_API_KEY;
+    else process.env.ANTHROPIC_API_KEY = originalKey;
+  }
 });
 
 test('local validation enforces compact array counts omitted from the API schema', () => {
@@ -156,9 +301,10 @@ test('truncated generation responses can be saved for diagnosis', () => {
 });
 
 test('application metadata wraps model-generated content', () => {
+  const alternativeRoute = sampleAlternativePlan().alternatives[0];
   const world = makeWorldRecord(sampleContent(), {
     corpusId: 'vr', corpusHash: 'abc123', scenarioBrief: 'brief', model: 'claude-sonnet-5',
-    promptVersion: 'alternate-history-v1', batchIndex: 1, batchSize: 1, usage: {}
+    promptVersion: 'alternate-history-v1', batchIndex: 1, batchSize: 2, alternativeRoute, usage: {}
   });
   assert.equal(world.schema, 'alternate-history.v1');
   assert.equal(world.kind, 'alternate-history');
@@ -166,6 +312,7 @@ test('application metadata wraps model-generated content', () => {
   assert.equal(world.validation.status, 'valid');
   assert.deepEqual(world.validation.warnings, []);
   assert.equal(world.provenance.scenarioBrief, 'brief');
+  assert.deepEqual(world.provenance.alternativeRoute, alternativeRoute);
   assert.match(world.id, /^alt-vr-/);
 });
 

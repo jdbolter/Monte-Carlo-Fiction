@@ -48,6 +48,12 @@ World {
     historyCorpus, historyCorpusHash, scenarioBrief
     generatorModel, promptVersion, generatedAt
     batchIndex, batchSize
+    alternativeRoute? {
+      id, causalThesis
+      decisiveMechanisms[]
+      eventsToTransform[]
+      expectedEndpointDifference
+    }
     usage {
       inputTokens, cacheCreationInputTokens
       cacheReadInputTokens, outputTokens
@@ -71,6 +77,11 @@ World {
 - **Validation** preserves semantic audit warnings without discarding an otherwise renderable World
   or purchasing an automatic corrective generation.
 - **Provenance** makes a costly, nondeterministic generation auditable.
+
+For a single-World request, `alternativeRoute` is `null`. For a batch of two or more, a compact
+planning call first creates one distinct causal route per requested World. The application assigns
+and preserves the route but does not audit the resulting Worlds for similarity or purchase
+automatic replacements.
 
 ## Compactness
 

@@ -11,6 +11,7 @@ The opening screen separates two experiments that share a core pipeline:
 
 ```
 historical lineage (cached) + structured brief
+    → distinct causal-route plan when more than one World is requested
     → model-generated World JSON
     → inspect and select
     → narrative history, fiction, scene, testimony, or found document
@@ -51,19 +52,34 @@ npm run validate:corpora
 
 - **Choose experiment** — enter the Alternate History or Future Speculation side of the app.
 - **Generate** — choose a historical lineage and generate one structured World by default, or up
-  to 20 variants. Alternate
-  History includes `digital-media`, `vr`, `silicon-valley`, and a 67-event `world-war-ii`
-  chronology covering 1933–1950. Future Speculation uses the first three lineages; corpus
-  eligibility is declared in the corpus data, so the two lists can diverge. Future generation
-  supports pivot-forward, endpoint-backcast, bounded-corridor, and open-exploration modes.
+  to 20 alternatives. Alternate History includes `digital-media`, `vr`, `silicon-valley`,
+  `world-war-ii`, and `cold-war`. WWII covers 1933–1950; the Cold War corpus covers 1945–1993.
+  Future Speculation uses the first three lineages; corpus eligibility is declared in the corpus
+  data, so the two lists can diverge. Future generation supports pivot-forward,
+  endpoint-backcast, bounded-corridor, and open-exploration modes.
 - **Render** — inspect complete World JSON and render selected worlds. The primary forms are
   `narrative-history` and `fiction`; shorter diagnostic forms are also retained. An optional render
   brief can specify focus, viewpoint, setting, tone, or emphasis without changing the World.
-- **Library** — read renders and record `cohere`, `strain`, or `incoherent` judgments.
+- **Library** — read renders, save any complete rendered text as a paginated PDF, and record
+  `cohere`, `strain`, or `incoherent` judgments.
 - **Clear everything** — deletes generated worlds and rendered artifacts together.
 
 Generated worlds and artifacts are gitignored. Each saved World records the exact scenario brief,
-history-corpus hash, model, prompt version, batch position, and API/cache token usage.
+history-corpus hash, model, prompt version, batch position, assigned alternative route when
+applicable, and API/cache token usage.
+
+## Distinct alternatives
+
+A request for one Alternate History World goes directly to World generation. A request for two or
+more first makes one compact structured-output call that designs the requested number of distinct
+causal routes. Each route states a causal thesis, decisive mechanisms, corpus events to transform,
+and an expected endpoint difference. The application then assigns one route to each sequential
+World-generation call.
+
+The planner and World calls use the same system prompt and identical cached corpus prefix, allowing
+the route-specific calls to reuse the cache created by planning. The assigned route is saved under
+`provenance.alternativeRoute` and shown on the World card. The application does not score,
+reject, compare, or automatically regenerate similar Worlds; that judgment remains with the user.
 
 ## World contents
 

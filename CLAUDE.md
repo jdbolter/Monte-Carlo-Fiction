@@ -9,9 +9,11 @@ selects a backstory algorithmically.
 The pipeline has three deliberate stages:
 
 1. **Evidence** — `sampling/history/*.json`, stable historical event corpora.
-2. **World generation** — one Anthropic structured-output call per World. Alternate histories use
-   `alternate-history.v1`; four future modes use `future.v1`. The lineage prefix is explicitly
-   cached and batch generation is sequential so it can be reused.
+2. **World generation** — Alternate History uses one direct Anthropic structured-output call for a
+   single World. A multi-World request first makes one compact alternative-route planning call,
+   then one World call per assigned route. Alternate histories use `alternate-history.v1`; four
+   future modes use `future.v1`. The lineage prefix is explicitly cached and batch generation is
+   sequential so it can be reused.
 3. **Rendering** — a separate model call turns a selected saved World into a narrative history,
    fiction, scene, testimony, or found document. Renderers never regenerate the World.
 
@@ -31,12 +33,15 @@ structured generation and selective prose rendering.
 - `sampling/history/world-war-ii.json` — 67-event global chronology from the Nazi seizure of power
   in 1933 through the war and its immediate aftermath in 1950; Alternate History only.
 - `sampling/world-schema.js` — Anthropic JSON schema plus application-level causal validation.
+- `sampling/alternative-planner.js` — compact causal-route schema, request, and structural
+  validation for multi-World Alternate History batches.
 - `sampling/world-generator.js` — cached prompt, structured-output request, semantic audit, and
-  sequential batch generation.
+  direct or route-assigned sequential generation.
 - `sampling/future-schema.js`, `sampling/future-generator.js` — future contract, four modes, audit,
   and cached sequential generation.
 - `sampling/world.js` — saved World envelope and filesystem persistence.
 - `sampling/render-world.js` — render forms, prompt, artifact persistence, and verdicts.
+- `sampling/artifact-pdf.js` — on-demand paginated PDF generation for Library artifacts.
 - `sampling/anthropic.js` — shared Messages API retry/backoff and usage normalization.
 - `sampling/main-server.js`, `sampling/main/index.html` — zero-dependency web application.
 - `test/alternate-present.test.js` — offline schema, cache-boundary, validation, and render tests.
@@ -78,6 +83,12 @@ The app starts on port 3000 and tries the next 20 ports if necessary. `.env.loca
   explain path dependence; fiction expresses their effects indirectly rather than recounting them.
 - Application metadata—not the model—supplies IDs, model name, corpus hash, prompt version,
   original brief, generation time, and usage.
+- One requested Alternate History World skips route planning. Two or more trigger exactly one
+  alternative-plan call, followed by one World call per route.
+- Planned routes must differ in causal thesis, mechanisms, transformed corpus events, and expected
+  endpoint settlement. Do not reintroduce prior-World summary prompting.
+- Save each assigned route under `provenance.alternativeRoute`. There is deliberately no automated
+  diversity audit, similarity rejection, or corrective regeneration.
 - Future modes control which boundaries are supplied: pivot-forward, endpoint-backcast,
   bounded-corridor, or open-exploration. All output timelines remain chronological and forward.
 
@@ -118,13 +129,14 @@ or a more general World contract.
 
 ## Generated data
 
-`sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. Clear
-Everything removes Worlds and artifacts but preserves diagnostic responses. Loaders accept
+`sampling/worlds/*.json` and `sampling/outputs/*/*.json` are gitignored model outputs. Library PDF
+downloads are generated on demand and are not stored by the application. Clear Everything removes
+Worlds and artifacts but preserves diagnostic responses. Loaders accept
 `alternate-history.v1`, legacy `alternate-present.v1`, `future.v1`, and `artifact.v1`.
 
 ## Open work
 
-- Evaluate generated Worlds for causal quality and diversity across repeated briefs.
+- Evaluate whether planned routes produce meaningfully distinct Worlds across repeated briefs.
 - Tune schema field counts and generator instructions from real output.
 - Compare Sonnet, Haiku, and OpenAI models after an OpenAI provider is implemented.
 - Evaluate all four future modes and decide whether to add a researched current-drivers corpus.
